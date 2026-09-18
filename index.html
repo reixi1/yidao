@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小六壬神课 · YiDao</title>
+    <title>易道 · YiDao — 小六壬 & 八字排盘</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
     <style>
@@ -12,7 +12,7 @@
             --bg:#08080e;--surface:#111119;--surface-2:#1a1a25;--surface-3:#242435;
             --accent:#c9a24d;--accent-dim:#8b6914;--accent-glow:rgba(201,162,77,.15);
             --text:#e8e0d0;--text-muted:#6e6760;--red:#b84038;--green:#4a9e6e;
-            --border:#2a2a3a;
+            --blue:#4a80b4;--border:#2a2a3a;
             --font-display:'Noto Serif SC','Songti SC',serif;
             --font-body:'Noto Sans SC','PingFang SC',sans-serif;
             --font-en:'Cormorant Garamond',serif;
@@ -29,13 +29,13 @@
         }
         .container{max-width:960px;margin:0 auto;padding:0 24px}
 
-        /* NAV */
+        /* ── NAV ── */
         .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 24px;transition:background .4s,box-shadow .4s}
         .nav.scrolled{background:rgba(8,8,14,.92);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--border)}
         .nav-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
         .nav-logo{font-family:var(--font-display);font-size:1.4rem;font-weight:900;color:var(--accent);text-decoration:none;letter-spacing:.08em}
-        .nav-links{display:flex;gap:32px}
-        .nav-links a{color:var(--text-muted);text-decoration:none;font-size:.88rem;transition:color .3s;position:relative}
+        .nav-links{display:flex;gap:28px}
+        .nav-links a{color:var(--text-muted);text-decoration:none;font-size:.85rem;transition:color .3s;position:relative}
         .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--accent);transition:width .3s}
         .nav-links a:hover{color:var(--text)}
         .nav-links a:hover::after{width:100%}
@@ -44,53 +44,131 @@
         .mobile-menu.open{display:flex}
         .mobile-menu a{color:var(--text);text-decoration:none;font-size:1.1rem;padding:8px 0}
 
-        /* HERO */
+        /* ── HERO ── */
         .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
         .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,rgba(201,162,77,.06) 0%,transparent 50%),radial-gradient(ellipse at 70% 30%,rgba(184,64,56,.04) 0%,transparent 50%)}
         .hero-content{position:relative;z-index:2;text-align:center;padding-top:80px}
         .hero-symbol{font-size:6rem;color:var(--accent);text-shadow:0 0 60px var(--accent-glow),0 0 120px rgba(201,162,77,.08);animation:pulse 4s ease-in-out infinite;margin-bottom:24px;display:block}
         @keyframes pulse{0%,100%{opacity:.8;transform:scale(1)}50%{opacity:1;transform:scale(1.03)}}
         .hero-content h1{font-family:var(--font-display);font-size:clamp(2.5rem,7vw,4.5rem);font-weight:900;letter-spacing:.15em;margin-bottom:16px;opacity:0;animation:fadeUp 1s ease .3s forwards}
-        .hero-content .subtitle-en{font-family:var(--font-en);font-size:clamp(.9rem,2vw,1.1rem);color:var(--accent-dim);letter-spacing:.2em;margin-bottom:12px;opacity:0;animation:fadeUp 1s ease .5s forwards}
-        .hero-content p{font-size:clamp(.95rem,2.5vw,1.15rem);color:var(--text-muted);margin-bottom:48px;opacity:0;animation:fadeUp 1s ease .7s forwards}
-        .hero-cta{display:inline-block;padding:14px 48px;border:1px solid var(--accent);color:var(--accent);text-decoration:none;font-family:var(--font-display);font-size:1rem;letter-spacing:.15em;transition:background .4s,color .4s,letter-spacing .4s;opacity:0;animation:fadeUp 1s ease .9s forwards}
-        .hero-cta:hover{background:var(--accent);color:var(--bg);letter-spacing:.25em}
+        .hero-sub-en{font-family:var(--font-en);font-size:clamp(.9rem,2vw,1.1rem);color:var(--accent-dim);letter-spacing:.2em;margin-bottom:12px;opacity:0;animation:fadeUp 1s ease .5s forwards}
+        .hero-content>p{font-size:clamp(.95rem,2.5vw,1.15rem);color:var(--text-muted);margin-bottom:48px;opacity:0;animation:fadeUp 1s ease .7s forwards}
+        .hero-cards{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp 1s ease .9s forwards}
+        .hero-card{padding:14px 36px;border:1px solid var(--border);color:var(--text-muted);text-decoration:none;font-family:var(--font-display);font-size:.92rem;letter-spacing:.1em;transition:border-color .3s,color .3s,background .3s}
+        .hero-card:hover{border-color:var(--accent);color:var(--accent);background:rgba(201,162,77,.05)}
         @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 
-        /* SECTIONS */
+        /* ── SHARED ── */
         .section{padding:80px 0}
         .section-title{font-family:var(--font-display);font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;text-align:center;margin-bottom:12px}
-        .section-subtitle{text-align:center;color:var(--text-muted);font-size:.92rem;margin-bottom:48px}
-        .divider{width:40px;height:2px;background:var(--accent);margin:0 auto 48px}
+        .section-subtitle{text-align:center;color:var(--text-muted);font-size:.9rem;margin-bottom:40px}
+        .divider{width:40px;height:2px;background:var(--accent);margin:0 auto 40px}
         .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
         .reveal.in-view{opacity:1;transform:translateY(0)}
 
-        /* API CONFIG */
+        /* ── CONFIG ── */
         .config-card{max-width:560px;margin:0 auto;background:var(--surface);border:1px solid var(--border);padding:32px}
         .config-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-        .config-header h3{font-family:var(--font-display);font-size:1.1rem;color:var(--text)}
-        .config-status{font-size:.78rem;padding:3px 10px;border-radius:2px}
+        .config-header h3{font-family:var(--font-display);font-size:1.05rem}
+        .config-status{font-size:.75rem;padding:3px 10px;border-radius:2px}
         .status-ok{background:rgba(74,158,110,.15);color:var(--green);border:1px solid rgba(74,158,110,.3)}
         .status-none{background:rgba(110,103,96,.15);color:var(--text-muted);border:1px solid rgba(110,103,96,.3)}
-        .key-row{display:flex;gap:12px}
-        .key-input{flex:1;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:12px 16px;font-size:.95rem;font-family:var(--font-body);outline:none;transition:border-color .3s}
+        .key-row{display:flex;gap:10px}
+        .key-input{flex:1;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:12px 16px;font-size:.92rem;font-family:var(--font-body);outline:none;transition:border-color .3s}
         .key-input:focus{border-color:var(--accent-dim)}
         .key-input::placeholder{color:var(--text-muted)}
-        .key-btn{padding:12px 24px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-family:var(--font-display);font-size:.9rem;letter-spacing:.08em;cursor:pointer;transition:background .3s,color .3s;white-space:nowrap}
+        .key-btn{padding:12px 20px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-family:var(--font-display);font-size:.85rem;letter-spacing:.06em;cursor:pointer;transition:background .3s,color .3s;white-space:nowrap}
         .key-btn:hover{background:var(--accent);color:var(--bg)}
+        .key-btn.sm{padding:8px 14px;font-size:.78rem}
         .key-btn.danger{border-color:var(--red);color:var(--red)}
         .key-btn.danger:hover{background:var(--red);color:var(--text)}
-        .config-tip{margin-top:16px;font-size:.78rem;color:var(--text-muted);line-height:1.6}
+        .config-tip{margin-top:14px;font-size:.76rem;color:var(--text-muted);line-height:1.6}
         .config-tip a{color:var(--accent-dim);text-decoration:none}
-        .config-tip a:hover{text-decoration:underline}
 
-        /* SIX POSITIONS WHEEL */
-        .wheel-container{position:relative;width:340px;height:340px;margin:0 auto 48px}
-        .wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100px;height:100px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--accent);background:var(--surface)}
+        /* ── BUTTONS ── */
+        .cast-btn{padding:14px 56px;background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:var(--font-display);font-size:1rem;letter-spacing:.18em;cursor:pointer;transition:background .4s,color .4s,letter-spacing .4s,transform .2s}
+        .cast-btn:hover{background:var(--accent);color:var(--bg);letter-spacing:.28em}
+        .cast-btn:active{transform:scale(.97)}
+        .cast-btn:disabled{opacity:.35;cursor:not-allowed}
+        .cast-btn:disabled:hover{background:transparent;color:var(--accent);letter-spacing:.18em}
+
+        /* ── LOADING ── */
+        .loading{display:none;flex-direction:column;align-items:center;gap:16px;padding:40px 0}
+        .loading.show{display:flex}
+        .loading-spinner{width:36px;height:36px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .loading-text{font-size:.85rem;color:var(--text-muted);font-family:var(--font-display);letter-spacing:.06em}
+
+        /* ── BAZI FORM ── */
+        .bazi-form{max-width:600px;margin:0 auto;background:var(--surface);border:1px solid var(--border);padding:36px}
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+        .form-group{display:flex;flex-direction:column;gap:5px}
+        .form-group label{font-size:.78rem;color:var(--text-muted);letter-spacing:.04em}
+        .form-group input,.form-group select{
+            background:var(--surface-2);border:1px solid var(--border);color:var(--text);
+            padding:11px 14px;font-size:.92rem;font-family:var(--font-body);outline:none;transition:border-color .3s;
+        }
+        .form-group input:focus,.form-group select:focus{border-color:var(--accent-dim)}
+        .form-group select option{background:var(--surface)}
+        .form-actions{display:flex;gap:12px;margin-top:20px}
+        .form-actions .cast-btn{flex:1}
+        .form-note{margin-top:14px;font-size:.72rem;color:var(--text-muted);text-align:center}
+
+        /* ── BAZI RESULT ── */
+        .bazi-results{display:none;animation:fadeUp .6s ease}
+        .bazi-results.show{display:block}
+
+        /* Pillar Row */
+        .pillar-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+        .pillar{background:var(--surface);border:1px solid var(--border);padding:20px 12px;text-align:center;transition:border-color .3s}
+        .pillar:hover{border-color:var(--accent-dim)}
+        .pillar-label{font-size:.7rem;color:var(--text-muted);letter-spacing:.12em;margin-bottom:10px;text-transform:uppercase}
+        .pillar-stem{font-family:var(--font-display);font-size:2rem;font-weight:900;line-height:1;color:var(--accent)}
+        .pillar-branch{font-family:var(--font-display);font-size:1.6rem;font-weight:700;line-height:1;color:var(--text);margin:6px 0 4px}
+        .pillar-element{font-size:.72rem;color:var(--text-muted);margin-bottom:6px}
+        .pillar-hidden{font-size:.7rem;color:var(--accent-dim);opacity:.7;line-height:1.5}
+        .pillar-god{font-size:.7rem;color:var(--text-muted);margin-top:4px}
+
+        /* Info Cards */
+        .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:24px}
+        .info-item{background:var(--surface);border:1px solid var(--border);padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+        .info-item-label{font-size:.68rem;color:var(--text-muted);letter-spacing:.08em}
+        .info-item-value{font-family:var(--font-display);font-size:.95rem;color:var(--text);font-weight:700}
+
+        /* Da Yun */
+        .dayun-title{font-family:var(--font-display);font-size:1.1rem;color:var(--accent);margin:32px 0 16px;padding-left:12px;border-left:3px solid var(--accent);letter-spacing:.06em}
+        .dayun-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-bottom:24px}
+        .dayun-card{background:var(--surface);border:1px solid var(--border);padding:12px 8px;text-align:center;transition:border-color .3s}
+        .dayun-card:hover{border-color:var(--accent-dim)}
+        .dayun-age{font-size:.68rem;color:var(--text-muted);margin-bottom:4px}
+        .dayun-stems{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--accent);line-height:1.3}
+        .dayun-branch{font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--text);line-height:1.3}
+        .dayun-12cs{font-size:.65rem;color:var(--accent-dim);margin-top:4px}
+
+        /* Lu Nian */
+        .dayun-card.active{border-color:var(--accent);box-shadow:0 0 12px var(--accent-glow)}
+        .ln-title{font-family:var(--font-display);font-size:1rem;color:var(--text);margin:20px 0 12px;letter-spacing:.04em}
+        .ln-scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+        .ln-scroll::-webkit-scrollbar{height:4px}
+        .ln-scroll::-webkit-scrollbar-track{background:var(--surface)}
+        .ln-scroll::-webkit-scrollbar-thumb{background:var(--accent-dim)}
+        .ln-card{min-width:56px;background:var(--surface-2);border:1px solid var(--border);padding:8px 6px;text-align:center;flex-shrink:0}
+        .ln-year{font-size:.6rem;color:var(--text-muted);margin-bottom:2px}
+        .ln-stem{font-family:var(--font-display);font-size:.88rem;font-weight:700;color:var(--accent)}
+        .ln-age{font-size:.58rem;color:var(--text-muted)}
+
+        /* Qiyun Info */
+        .qiyun-card{background:var(--surface);border:1px solid var(--border);padding:20px;margin-bottom:24px}
+        .qiyun-card h4{font-family:var(--font-display);font-size:.9rem;color:var(--accent);margin-bottom:10px;letter-spacing:.06em}
+        .qiyun-card p{font-size:.85rem;color:var(--text);line-height:1.8}
+
+        /* ── LR DIVINATION ── */
+        .wheel-container{position:relative;width:320px;height:320px;margin:0 auto 40px}
+        .wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:88px;height:88px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:var(--accent);background:var(--surface)}
         .wheel-ring{position:absolute;inset:0;border:1px dashed var(--border);border-radius:50%;opacity:.3}
         .pos-node{
-            position:absolute;width:80px;text-align:center;
-            top:50%;left:50%;margin-left:-40px;margin-top:-36px;
+            position:absolute;width:72px;text-align:center;
+            top:50%;left:50%;margin-left:-36px;margin-top:-32px;
             cursor:pointer;transition:transform .3s,filter .3s;
         }
         .pos-node:hover{transform:translate(var(--tx),var(--ty)) scale(1.12)!important;filter:brightness(1.3)}
@@ -98,105 +176,94 @@
         .pos-node.active .pos-icon{animation:nodeGlow 1.5s ease-in-out infinite}
         @keyframes nodeGlow{0%,100%{box-shadow:0 0 8px var(--glow)}50%{box-shadow:0 0 24px var(--glow),0 0 48px var(--glow)}}
         .pos-icon{
-            width:48px;height:48px;border-radius:50%;
-            border:2px solid var(--border);display:flex;align-items:center;justify-content:center;
-            margin:0 auto 6px;font-size:1.1rem;font-family:var(--font-display);font-weight:700;
-            background:var(--surface);transition:border-color .3s,background .3s,box-shadow .3s;
+            width:44px;height:44px;border-radius:50%;border:2px solid var(--border);
+            display:flex;align-items:center;justify-content:center;margin:0 auto 5px;
+            font-size:1rem;font-family:var(--font-display);font-weight:700;
+            background:var(--surface);transition:border-color .3s,box-shadow .3s;
         }
-        .pos-label{font-size:.72rem;color:var(--text-muted);font-family:var(--font-display)}
-        .pos-element{font-size:.6rem;color:var(--text-muted);opacity:.5}
+        .pos-label{font-size:.7rem;color:var(--text-muted);font-family:var(--font-display)}
+        .pos-element{font-size:.58rem;color:var(--text-muted);opacity:.5}
 
-        /* POS LEGEND */
-        .pos-legend{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;max-width:600px;margin:0 auto 48px}
-        .pos-legend-item{display:flex;align-items:center;gap:6px;padding:8px;background:var(--surface);border:1px solid var(--border);transition:border-color .3s}
+        .pos-legend{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;max-width:560px;margin:0 auto 40px}
+        .pos-legend-item{display:flex;align-items:center;gap:5px;padding:6px 8px;background:var(--surface);border:1px solid var(--border);cursor:pointer;transition:border-color .3s}
         .pos-legend-item.active{border-color:var(--accent-dim)}
-        .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-        .legend-name{font-size:.75rem;font-family:var(--font-display);color:var(--text-muted)}
+        .legend-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+        .legend-name{font-size:.68rem;font-family:var(--font-display);color:var(--text-muted)}
 
-        /* DIVINATION BUTTON */
-        .cast-section{text-align:center;margin-bottom:48px}
-        .cast-btn{
-            padding:16px 64px;background:transparent;border:1px solid var(--accent);
-            color:var(--accent);font-family:var(--font-display);font-size:1.1rem;letter-spacing:.2em;
-            cursor:pointer;transition:background .4s,color .4s,letter-spacing .4s,transform .2s;
-        }
-        .cast-btn:hover{background:var(--accent);color:var(--bg);letter-spacing:.3em}
-        .cast-btn:active{transform:scale(.97)}
-        .cast-btn:disabled{opacity:.35;cursor:not-allowed}
-        .cast-btn:disabled:hover{background:transparent;color:var(--accent);letter-spacing:.2em}
+        .cast-section{text-align:center;margin-bottom:36px}
 
-        /* LOADING */
-        .loading{display:none;flex-direction:column;align-items:center;gap:16px;padding:40px 0}
-        .loading.show{display:flex}
-        .loading-spinner{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
-        @keyframes spin{to{transform:rotate(360deg)}}
-        .loading-text{font-size:.88rem;color:var(--text-muted);font-family:var(--font-display);letter-spacing:.08em}
-
-        /* RESULTS */
-        .results{display:none;animation:fadeUp .6s ease}
-        .results.show{display:block}
-        .result-time{text-align:center;font-family:var(--font-en);font-size:1rem;color:var(--accent-dim);letter-spacing:.08em;margin-bottom:32px}
-        .result-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
-        .result-card{
-            background:var(--surface);border:1px solid var(--border);padding:24px;text-align:center;
+        /* LR Results */
+        .lr-results{display:none;animation:fadeUp .6s ease}
+        .lr-results.show{display:block}
+        .lr-time{text-align:center;font-family:var(--font-en);font-size:.95rem;color:var(--accent-dim);letter-spacing:.06em;margin-bottom:28px}
+        .lr-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+        .lr-card{
+            background:var(--surface);border:1px solid var(--border);padding:22px;text-align:center;
             opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s,border-color .3s;
         }
-        .result-card.visible{opacity:1;transform:translateY(0)}
-        .result-card:nth-child(2).visible{transition-delay:.15s}
-        .result-card:nth-child(3).visible{transition-delay:.3s}
-        .result-card:hover{border-color:var(--accent-dim)}
-        .result-card-title{font-size:.75rem;color:var(--text-muted);letter-spacing:.15em;margin-bottom:12px;text-transform:uppercase}
-        .result-card-pos{
-            font-family:var(--font-display);font-size:1.8rem;font-weight:900;margin-bottom:4px;
-        }
-        .result-card-element{font-size:.82rem;color:var(--text-muted);margin-bottom:12px}
-        .result-card-fortune{display:inline-block;padding:2px 12px;font-size:.75rem;border-radius:2px}
+        .lr-card.visible{opacity:1;transform:translateY(0)}
+        .lr-card:nth-child(2).visible{transition-delay:.15s}
+        .lr-card:nth-child(3).visible{transition-delay:.3s}
+        .lr-card:hover{border-color:var(--accent-dim)}
+        .lr-card-title{font-size:.72rem;color:var(--text-muted);letter-spacing:.15em;margin-bottom:10px;text-transform:uppercase}
+        .lr-card-pos{font-family:var(--font-display);font-size:1.6rem;font-weight:900;margin-bottom:4px}
+        .lr-card-element{font-size:.78rem;color:var(--text-muted);margin-bottom:10px}
+        .lr-card-fortune{display:inline-block;padding:2px 10px;font-size:.72rem;border-radius:2px}
         .fortune-吉{background:rgba(74,158,110,.12);color:var(--green);border:1px solid rgba(74,158,110,.3)}
         .fortune-凶{background:rgba(184,64,56,.12);color:#d06050;border:1px solid rgba(184,64,56,.3)}
         .fortune-中{background:rgba(201,162,77,.12);color:var(--accent);border:1px solid rgba(201,162,77,.3)}
-        .result-card-text{margin-top:12px;font-size:.82rem;color:var(--text-muted);line-height:1.7;text-align:left}
-
-        /* HOURMSG */
-        .hourmsg-card{
-            background:var(--surface);border:1px solid var(--border);padding:32px;
-            opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s;
-        }
+        .lr-card-text{margin-top:10px;font-size:.78rem;color:var(--text-muted);line-height:1.7;text-align:left}
+        .hourmsg-card{background:var(--surface);border:1px solid var(--border);padding:28px;opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
         .hourmsg-card.visible{opacity:1;transform:translateY(0)}
-        .hourmsg-title{font-family:var(--font-display);font-size:1.1rem;color:var(--accent);margin-bottom:16px;letter-spacing:.08em;display:flex;align-items:center;gap:8px}
-        .hourmsg-title::before{content:'';width:3px;height:18px;background:var(--accent);display:block}
-        .hourmsg-body{font-size:.9rem;line-height:2;color:var(--text)}
-        .hourmsg-body p{margin-bottom:12px}
+        .hourmsg-title{font-family:var(--font-display);font-size:1rem;color:var(--accent);margin-bottom:14px;letter-spacing:.06em;display:flex;align-items:center;gap:8px}
+        .hourmsg-title::before{content:'';width:3px;height:16px;background:var(--accent);display:block}
+        .hourmsg-body{font-size:.88rem;line-height:2;color:var(--text)}
 
-        /* RETRY */
-        .retry-section{text-align:center;margin-top:32px}
-        .retry-btn{
-            padding:12px 40px;background:transparent;border:1px solid var(--border);
-            color:var(--text-muted);font-family:var(--font-display);font-size:.9rem;letter-spacing:.08em;
-            cursor:pointer;transition:border-color .3s,color .3s;
-        }
+        .retry-section{text-align:center;margin-top:28px}
+        .retry-btn{padding:10px 36px;background:transparent;border:1px solid var(--border);color:var(--text-muted);font-family:var(--font-display);font-size:.88rem;letter-spacing:.06em;cursor:pointer;transition:border-color .3s,color .3s}
         .retry-btn:hover{border-color:var(--accent);color:var(--accent)}
 
-        /* FOOTER */
-        .footer{padding:48px 24px;text-align:center;border-top:1px solid var(--border)}
-        .footer-logo{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:8px;letter-spacing:.08em}
-        .footer p{font-size:.78rem;color:var(--text-muted);line-height:1.6}
+        /* ── FOOTER ── */
+        .footer{padding:40px 24px;text-align:center;border-top:1px solid var(--border)}
+        .footer-logo{font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:8px;letter-spacing:.06em}
+        .footer p{font-size:.75rem;color:var(--text-muted);line-height:1.6}
 
-        /* RESPONSIVE */
+        /* ── TABS ── */
+        .module-tabs{display:flex;justify-content:center;gap:4px;margin-bottom:0}
+        .module-tab{
+            padding:12px 32px;background:transparent;border:1px solid var(--border);border-bottom:none;
+            color:var(--text-muted);font-family:var(--font-display);font-size:.9rem;letter-spacing:.06em;
+            cursor:pointer;transition:all .3s;position:relative;
+        }
+        .module-tab:hover{color:var(--text)}
+        .module-tab.active{color:var(--accent);border-color:var(--accent-dim);background:var(--surface)}
+        .module-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:var(--surface)}
+        .module-panel{display:none}
+        .module-panel.active{display:block}
+
+        /* ── RESPONSIVE ── */
         @media(max-width:768px){
             .nav-links{display:none}
             .nav-toggle{display:flex}
             .hero-symbol{font-size:4rem}
-            .wheel-container{width:280px;height:280px}
-            .wheel-center{width:76px;height:76px;font-size:1.5rem}
-            .pos-icon{width:38px;height:38px;font-size:.9rem}
-            .pos-node{width:60px;margin-left:-30px}
+            .hero-cards{flex-direction:column;align-items:center}
+            .hero-card{width:220px}
+            .wheel-container{width:260px;height:260px}
+            .wheel-center{width:70px;height:70px;font-size:1.3rem}
+            .pos-icon{width:36px;height:36px;font-size:.85rem}
+            .pos-node{width:56px;margin-left:-28px}
             .pos-legend{grid-template-columns:repeat(3,1fr)}
-            .result-cards{grid-template-columns:1fr}
+            .lr-cards{grid-template-columns:1fr}
+            .pillar-row{grid-template-columns:repeat(2,1fr)}
+            .form-grid{grid-template-columns:1fr}
+            .form-actions{flex-direction:column}
+            .dayun-grid{grid-template-columns:repeat(auto-fill,minmax(75px,1fr))}
+            .module-tab{padding:10px 20px;font-size:.82rem}
+            .config-card,.bazi-form{padding:20px}
             .key-row{flex-direction:column}
-            .cast-btn{padding:14px 40px;font-size:1rem}
         }
         @media(max-width:480px){
-            .wheel-container{width:240px;height:240px}
+            .wheel-container{width:220px;height:220px}
             .pos-legend{grid-template-columns:repeat(2,1fr)}
         }
     </style>
@@ -209,13 +276,15 @@
         <a href="#" class="nav-logo">易道</a>
         <div class="nav-links">
             <a href="#config">配置</a>
-            <a href="#divination">起卦</a>
+            <a href="#modules">小六壬</a>
+            <a href="#modules">八字排盘</a>
         </div>
         <button class="nav-toggle" id="navToggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')">☰</button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
         <a href="#config" onclick="this.parentElement.classList.remove('open')">配置</a>
-        <a href="#divination" onclick="this.parentElement.classList.remove('open')">起卦</a>
+        <a href="#modules" onclick="switchTab('lr');this.parentElement.classList.remove('open')">小六壬</a>
+        <a href="#modules" onclick="switchTab('bz');this.parentElement.classList.remove('open')">八字排盘</a>
     </div>
 </nav>
 
@@ -223,18 +292,21 @@
 <section class="hero">
     <div class="hero-content">
         <span class="hero-symbol">☯</span>
-        <h1>小六壬神课</h1>
-        <div class="subtitle-en">XIAO LIU REN DIVINATION</div>
-        <p>掐指一算 · 洞察天机 · 趋吉避凶</p>
-        <a href="#config" class="hero-cta">开始占卜</a>
+        <h1>易 道</h1>
+        <div class="hero-sub-en">YIDAO · CHINESE DIVINATION</div>
+        <p>掐指一算，洞察天机 · 趋吉避凶，智慧人生</p>
+        <div class="hero-cards">
+            <a href="#modules" class="hero-card" onclick="switchTab('lr')">小六壬神课</a>
+            <a href="#modules" class="hero-card" onclick="switchTab('bz')">八字排盘</a>
+        </div>
     </div>
 </section>
 
-<!-- API CONFIG -->
+<!-- CONFIG -->
 <section class="section" id="config">
     <div class="container">
         <div class="section-title reveal">接口配置</div>
-        <div class="section-subtitle reveal">输入你的 API 密钥以启用在线排盘</div>
+        <div class="section-subtitle reveal">输入你的 API 密钥，两个模块共用同一个 Key</div>
         <div class="divider reveal"></div>
         <div class="config-card reveal">
             <div class="config-header">
@@ -244,57 +316,126 @@
             <div class="key-row">
                 <input type="password" class="key-input" id="keyInput" placeholder="输入你的接口密钥…">
                 <button class="key-btn" onclick="saveKey()">保存</button>
-                <button class="key-btn" onclick="toggleVisibility()">显示</button>
-                <button class="key-btn danger" onclick="clearKey()">清除</button>
+                <button class="key-btn sm" onclick="toggleVis()">👁</button>
+                <button class="key-btn sm danger" onclick="clearKey()">✕</button>
             </div>
             <p class="config-tip">
-                前往 <a href="https://api.t1qq.com" target="_blank" rel="noopener">api.t1qq.com</a> 注册并获取免费接口密钥，密钥仅保存在你的浏览器本地，不会上传至任何第三方。
+                前往 <a href="https://api.t1qq.com" target="_blank" rel="noopener">api.t1qq.com</a> 注册并获取免费接口密钥。密钥仅保存在浏览器本地，通过 Netlify Function 代理请求，不会暴露给第三方。
             </p>
         </div>
     </div>
 </section>
 
-<!-- DIVINATION -->
-<section class="section" id="divination" style="background:var(--surface);">
+<!-- MODULES -->
+<section class="section" id="modules" style="background:var(--surface);">
     <div class="container">
-        <div class="section-title reveal">小六壬 · 起卦</div>
-        <div class="section-subtitle reveal">心中默念所问之事，按下方按钮依时起卦</div>
-        <div class="divider reveal"></div>
-
-        <!-- WHEEL -->
-        <div class="wheel-container reveal" id="wheelContainer">
-            <div class="wheel-ring"></div>
-            <div class="wheel-center">☰</div>
-            <!-- Nodes injected by JS -->
+        <div class="module-tabs reveal">
+            <button class="module-tab active" data-tab="lr" onclick="switchTab('lr')">小六壬神课</button>
+            <button class="module-tab" data-tab="bz" onclick="switchTab('bz')">八字排盘</button>
         </div>
 
-        <!-- LEGEND -->
-        <div class="pos-legend reveal" id="posLegend">
-            <!-- Injected by JS -->
-        </div>
+        <!-- ═══ LR PANEL ═══ -->
+        <div class="module-panel active" id="panel-lr" style="background:var(--bg);border:1px solid var(--border);border-top:none;padding:40px 24px;">
+            <div class="section-title" style="margin-top:0">小六壬 · 起卦</div>
+            <div class="section-subtitle">心中默念所问之事，按下方按钮依时起卦</div>
+            <div class="divider"></div>
 
-        <!-- CAST -->
-        <div class="cast-section reveal">
-            <button class="cast-btn" id="castBtn" onclick="castDivination()">起 卦</button>
-        </div>
-
-        <!-- LOADING -->
-        <div class="loading" id="loadingEl">
-            <div class="loading-spinner"></div>
-            <span class="loading-text">掐指推算中…</span>
-        </div>
-
-        <!-- RESULTS -->
-        <div class="results" id="resultsEl">
-            <div class="result-time" id="resultTime"></div>
-            <div class="result-cards" id="resultCards"></div>
-            <div class="hourmsg-card" id="hourmsgCard">
-                <div class="hourmsg-title">时辰注解</div>
-                <div class="hourmsg-body" id="hourmsgBody"></div>
+            <div class="wheel-container" id="wheelContainer">
+                <div class="wheel-ring"></div>
+                <div class="wheel-center">☰</div>
             </div>
-            <div class="retry-section">
-                <button class="retry-btn" onclick="castDivination()">重新起卦</button>
+            <div class="pos-legend" id="posLegend"></div>
+
+            <div class="cast-section">
+                <button class="cast-btn" id="lrCastBtn" onclick="castLR()">起 卦</button>
             </div>
+            <div class="loading" id="lrLoading">
+                <div class="loading-spinner"></div>
+                <span class="loading-text">掐指推算中…</span>
+            </div>
+            <div class="lr-results" id="lrResults">
+                <div class="lr-time" id="lrTime"></div>
+                <div class="lr-cards" id="lrCards"></div>
+                <div class="hourmsg-card" id="hourmsgCard">
+                    <div class="hourmsg-title">时辰注解</div>
+                    <div class="hourmsg-body" id="hourmsgBody"></div>
+                </div>
+                <div class="retry-section">
+                    <button class="retry-btn" onclick="castLR()">重新起卦</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ BZ PANEL ═══ -->
+        <div class="module-panel" id="panel-bz" style="background:var(--bg);border:1px solid var(--border);border-top:none;padding:40px 24px;">
+            <div class="section-title" style="margin-top:0">八字排盘</div>
+            <div class="section-subtitle">输入出生信息，自动排出四柱八字与大运流年</div>
+            <div class="divider"></div>
+
+            <div class="bazi-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>出生年份</label>
+                        <input type="number" id="bzYear" placeholder="如 1990" min="1900" max="2100">
+                    </div>
+                    <div class="form-group">
+                        <label>出生月份</label>
+                        <select id="bzMonth">
+                            <option value="">选择月份</option>
+                            <option value="1">1月</option><option value="2">2月</option>
+                            <option value="3">3月</option><option value="4">4月</option>
+                            <option value="5">5月</option><option value="6">6月</option>
+                            <option value="7">7月</option><option value="8">8月</option>
+                            <option value="9">9月</option><option value="10">10月</option>
+                            <option value="11">11月</option><option value="12">12月</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>出生日期</label>
+                        <input type="number" id="bzDay" placeholder="如 15" min="1" max="31">
+                    </div>
+                    <div class="form-group">
+                        <label>出生时辰（小时）</label>
+                        <select id="bzHour">
+                            <option value="">选择时辰</option>
+                            <option value="00">子时 23:00-01:00</option>
+                            <option value="01">丑时 01:00-03:00</option>
+                            <option value="03">寅时 03:00-05:00</option>
+                            <option value="05">卯时 05:00-07:00</option>
+                            <option value="07">辰时 07:00-09:00</option>
+                            <option value="09">巳时 09:00-11:00</option>
+                            <option value="11">午时 11:00-13:00</option>
+                            <option value="13">未时 13:00-15:00</option>
+                            <option value="15">申时 15:00-17:00</option>
+                            <option value="17">酉时 17:00-19:00</option>
+                            <option value="19">戌时 19:00-21:00</option>
+                            <option value="21">亥时 21:00-23:00</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>出生分钟</label>
+                        <input type="number" id="bzMinute" placeholder="如 30" min="0" max="59">
+                    </div>
+                    <div class="form-group">
+                        <label>性别</label>
+                        <select id="bzGender">
+                            <option value="0">男（乾造）</option>
+                            <option value="1">女（坤造）</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="cast-btn" id="bzCastBtn" onclick="castBZ()">排 盘</button>
+                </div>
+                <div class="form-note">※ 精确排盘建议使用真太阳时校验（可选参数：东经度数）</div>
+            </div>
+
+            <div class="loading" id="bzLoading">
+                <div class="loading-spinner"></div>
+                <span class="loading-text">排盘计算中…</span>
+            </div>
+
+            <div class="bazi-results" id="bzResults"></div>
         </div>
     </div>
 </section>
@@ -302,13 +443,70 @@
 <!-- FOOTER -->
 <footer class="footer">
     <div class="footer-logo">易道 · YiDao</div>
-    <p>小六壬神课 — 传统文化仅供学习参考，不作为决策依据<br>
-    数据来源：t1qq.com 免费易学 API</p>
+    <p>传统文化仅供学习参考，不作为决策依据<br>数据来源：t1qq.com 免费易学 API</p>
 </footer>
 
 <script>
 // ═══════════════════════════════════════
-//  CONSTANTS
+//  STATE
+// ═══════════════════════════════════════
+let apiKey = localStorage.getItem('yidao_key') || '';
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+    buildWheel();
+    buildLegend();
+    updateKeyUI();
+    if (apiKey) document.getElementById('keyInput').value = apiKey;
+
+    window.addEventListener('scroll', () => {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+});
+
+// ═══════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════
+function switchTab(tab) {
+    document.querySelectorAll('.module-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+    document.querySelectorAll('.module-panel').forEach(p => p.classList.toggle('active', p.id === `panel-${tab}`));
+}
+
+// ═══════════════════════════════════════
+//  API KEY
+// ═══════════════════════════════════════
+function saveKey() {
+    const v = document.getElementById('keyInput').value.trim();
+    if (!v) return;
+    apiKey = v;
+    localStorage.setItem('yidao_key', v);
+    updateKeyUI();
+}
+function clearKey() {
+    apiKey = '';
+    localStorage.removeItem('yidao_key');
+    document.getElementById('keyInput').value = '';
+    updateKeyUI();
+}
+function toggleVis() {
+    const i = document.getElementById('keyInput');
+    i.type = i.type === 'password' ? 'text' : 'password';
+}
+function updateKeyUI() {
+    const s = document.getElementById('keyStatus');
+    if (apiKey) { s.textContent = '已配置'; s.className = 'config-status status-ok'; }
+    else { s.textContent = '未配置'; s.className = 'config-status status-none'; }
+}
+
+// ═══════════════════════════════════════
+//  LR: POSITIONS & WHEEL
 // ═══════════════════════════════════════
 const POSITIONS = [
     { name:'大安', color:'#4a9e6e', element:'木', dir:'东方', spirit:'青龙', fortune:'吉', brief:'身不动时，凡事安稳，所求皆遂。' },
@@ -319,257 +517,271 @@ const POSITIONS = [
     { name:'空亡', color:'#5a5a5a', element:'土', dir:'中央', spirit:'勾陈', fortune:'凶', brief:'事不详，求财无益，暗中多阻。' }
 ];
 
-const API_PROXY = '/.netlify/functions/lr-proxy';
-
-// ═══════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════
-let apiKey = localStorage.getItem('lr_api_key') || '';
-
-// ═══════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
-    buildWheel();
-    buildLegend();
-    updateKeyUI();
-
-    if (apiKey) {
-        document.getElementById('keyInput').value = apiKey;
-    }
-
-    // Scroll nav effect
-    window.addEventListener('scroll', () => {
-        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
-    });
-
-    // Reveal on scroll
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-});
-
-// ═══════════════════════════════════════
-//  BUILD WHEEL
-// ═══════════════════════════════════════
 function buildWheel() {
-    const container = document.getElementById('wheelContainer');
+    const c = document.getElementById('wheelContainer');
     POSITIONS.forEach((pos, i) => {
-        const angle = (i * 60 - 90) * Math.PI / 180;
-        const r = 130;
-        const x = Math.cos(angle) * r;
-        const y = Math.sin(angle) * r;
-
-        const node = document.createElement('div');
-        node.className = 'pos-node';
-        node.id = `node-${i}`;
-        node.style.setProperty('--tx', x + 'px');
-        node.style.setProperty('--ty', y + 'px');
-        node.style.setProperty('--glow', pos.color);
-        node.style.transform = `translate(${x}px, ${y}px)`;
-        node.style.animationDelay = `${i * 0.08}s`;
-        node.innerHTML = `
-            <div class="pos-icon" style="border-color:${pos.color};color:${pos.color}">${pos.name[0]}</div>
-            <div class="pos-label">${pos.name}</div>
-            <div class="pos-element">${pos.element} · ${pos.fortune}</div>
-        `;
-        node.addEventListener('click', () => showPosDetail(i));
-        container.appendChild(node);
+        const a = (i * 60 - 90) * Math.PI / 180, r = 120;
+        const x = Math.cos(a) * r, y = Math.sin(a) * r;
+        const n = document.createElement('div');
+        n.className = 'pos-node'; n.id = `node-${i}`;
+        n.style.setProperty('--tx', x+'px');
+        n.style.setProperty('--ty', y+'px');
+        n.style.setProperty('--glow', pos.color);
+        n.style.transform = `translate(${x}px,${y}px)`;
+        n.innerHTML = `<div class="pos-icon" style="border-color:${pos.color};color:${pos.color}">${pos.name[0]}</div>
+            <div class="pos-label">${pos.name}</div><div class="pos-element">${pos.element} · ${pos.fortune}</div>`;
+        n.onclick = () => alert(`${pos.name}\n五行：${pos.element}  方位：${pos.dir}\n神煞：${pos.spirit}  吉凶：${pos.fortune}\n\n${pos.brief}`);
+        c.appendChild(n);
     });
 }
-
 function buildLegend() {
-    const legend = document.getElementById('posLegend');
+    const l = document.getElementById('posLegend');
     POSITIONS.forEach((pos, i) => {
-        const item = document.createElement('div');
-        item.className = 'pos-legend-item';
-        item.id = `legend-${i}`;
-        item.innerHTML = `
-            <span class="legend-dot" style="background:${pos.color}"></span>
-            <span class="legend-name">${pos.name} · ${pos.spirit}</span>
-        `;
-        item.addEventListener('click', () => showPosDetail(i));
-        legend.appendChild(item);
+        const d = document.createElement('div');
+        d.className = 'pos-legend-item'; d.id = `legend-${i}`;
+        d.innerHTML = `<span class="legend-dot" style="background:${pos.color}"></span><span class="legend-name">${pos.name} · ${pos.spirit}</span>`;
+        l.appendChild(d);
     });
 }
-
-function showPosDetail(idx) {
-    const pos = POSITIONS[idx];
-    alert(`${pos.name}\n五行：${pos.element}  方位：${pos.dir}\n神煞：${pos.spirit}  吉凶：${pos.fortune}\n\n${pos.brief}`);
-}
-
-// ═══════════════════════════════════════
-//  API KEY MANAGEMENT
-// ═══════════════════════════════════════
-function saveKey() {
-    const input = document.getElementById('keyInput');
-    const key = input.value.trim();
-    if (!key) { input.focus(); return; }
-    apiKey = key;
-    localStorage.setItem('lr_api_key', key);
-    updateKeyUI();
-}
-
-function clearKey() {
-    apiKey = '';
-    localStorage.removeItem('lr_api_key');
-    document.getElementById('keyInput').value = '';
-    updateKeyUI();
-}
-
-function toggleVisibility() {
-    const input = document.getElementById('keyInput');
-    input.type = input.type === 'password' ? 'text' : 'password';
-}
-
-function updateKeyUI() {
-    const status = document.getElementById('keyStatus');
-    if (apiKey) {
-        status.textContent = '已配置';
-        status.className = 'config-status status-ok';
-    } else {
-        status.textContent = '未配置';
-        status.className = 'config-status status-none';
-    }
-}
-
-// ═══════════════════════════════════════
-//  DIVINATION
-// ═══════════════════════════════════════
-async function castDivination() {
-    if (!apiKey) {
-        document.getElementById('keyInput').focus();
-        document.getElementById('config').scrollIntoView({ behavior: 'smooth' });
-        return;
-    }
-
-    const btn = document.getElementById('castBtn');
-    const loading = document.getElementById('loadingEl');
-    const results = document.getElementById('resultsEl');
-
-    btn.disabled = true;
-    results.classList.remove('show');
-    loading.classList.add('show');
-
-    // Clear previous highlights
-    clearHighlights();
-
-    try {
-        const res = await fetch(`${API_PROXY}?key=${encodeURIComponent(apiKey)}`);
-        const data = await res.json();
-
-        if (data.code !== 200) {
-            throw new Error(data.error || `接口返回异常 (code: ${data.code})`);
-        }
-
-        displayResults(data);
-    } catch (err) {
-        loading.classList.remove('show');
-        btn.disabled = false;
-        alert('起卦失败：' + err.message);
-    }
-}
-
-function clearHighlights() {
+function clearHL() {
     POSITIONS.forEach((_, i) => {
         document.getElementById(`node-${i}`).classList.remove('active');
         document.getElementById(`legend-${i}`).classList.remove('active');
     });
 }
-
-function findPositionName(text) {
-    if (!text) return -1;
-    for (let i = 0; i < POSITIONS.length; i++) {
-        if (text.includes(POSITIONS[i].name)) return i;
-    }
+function findPosIdx(t) {
+    if (!t) return -1;
+    for (let i = 0; i < POSITIONS.length; i++) if (t.includes(POSITIONS[i].name)) return i;
     return -1;
 }
 
-function displayResults(data) {
-    const loading = document.getElementById('loadingEl');
-    const results = document.getElementById('resultsEl');
-    const btn = document.getElementById('castBtn');
+// ═══════════════════════════════════════
+//  LR: CAST
+// ═══════════════════════════════════════
+async function castLR() {
+    if (!apiKey) { document.getElementById('keyInput').focus(); document.getElementById('config').scrollIntoView({behavior:'smooth'}); return; }
+    const btn = document.getElementById('lrCastBtn');
+    btn.disabled = true;
+    document.getElementById('lrResults').classList.remove('show');
+    document.getElementById('lrLoading').classList.add('show');
+    clearHL();
 
-    loading.classList.remove('show');
+    try {
+        const res = await fetch(`/.netlify/functions/lr-proxy?key=${encodeURIComponent(apiKey)}`);
+        const data = await res.json();
+        if (data.code !== 200) throw new Error(data.error || `接口异常 code: ${data.code}`);
+        displayLR(data);
+    } catch (e) {
+        alert('起卦失败：' + e.message);
+    } finally {
+        document.getElementById('lrLoading').classList.remove('show');
+        btn.disabled = false;
+    }
+}
 
-    // Time
-    const timeStr = data.time || new Date().toLocaleString('zh-CN');
-    document.getElementById('resultTime').textContent = timeStr;
-
-    // Result cards
-    const cardsEl = document.getElementById('resultCards');
+function displayLR(data) {
+    document.getElementById('lrTime').textContent = data.time || new Date().toLocaleString('zh-CN');
+    const cardsEl = document.getElementById('lrCards');
     cardsEl.innerHTML = '';
-
-    const classes = [
-        { label: '月课', value: data.res && data.res.monthclass },
-        { label: '日课', value: data.res && data.res.dayclass },
-        { label: '时课', value: data.res && data.res.nowclass }
+    const cls = [
+        { label:'月课', value: data.res?.monthclass },
+        { label:'日课', value: data.res?.dayclass },
+        { label:'时课', value: data.res?.nowclass }
     ];
-
-    const activeIndices = new Set();
-
-    classes.forEach((cls, ci) => {
+    const active = new Set();
+    cls.forEach((c, ci) => {
+        const idx = findPosIdx(c.value);
+        if (idx >= 0) active.add(idx);
+        const pos = idx >= 0 ? POSITIONS[idx] : null;
         const card = document.createElement('div');
-        card.className = 'result-card';
-
-        const posIdx = findPositionName(cls.value);
-        const pos = posIdx >= 0 ? POSITIONS[posIdx] : null;
-
-        if (posIdx >= 0) activeIndices.add(posIdx);
-
-        let html = `<div class="result-card-title">${cls.label}</div>`;
-
+        card.className = 'lr-card';
+        let h = `<div class="lr-card-title">${c.label}</div>`;
         if (pos) {
-            html += `<div class="result-card-pos" style="color:${pos.color}">${pos.name}</div>`;
-            html += `<div class="result-card-element">${pos.element} · ${pos.spirit} · ${pos.dir}</div>`;
-            html += `<span class="result-card-fortune fortune-${pos.fortune}">${pos.fortune}</span>`;
-            html += `<div class="result-card-text">${pos.brief}</div>`;
-        } else if (cls.value) {
-            html += `<div class="result-card-pos" style="color:var(--text)">${cls.value}</div>`;
+            h += `<div class="lr-card-pos" style="color:${pos.color}">${pos.name}</div>`;
+            h += `<div class="lr-card-element">${pos.element} · ${pos.spirit} · ${pos.dir}</div>`;
+            h += `<span class="lr-card-fortune fortune-${pos.fortune}">${pos.fortune}</span>`;
+            h += `<div class="lr-card-text">${pos.brief}</div>`;
         } else {
-            html += `<div class="result-card-pos" style="color:var(--text-muted)">—</div>`;
+            h += `<div class="lr-card-pos">${c.value || '—'}</div>`;
         }
-
-        card.innerHTML = html;
+        card.innerHTML = h;
         cardsEl.appendChild(card);
-
-        // Stagger animation
-        requestAnimationFrame(() => {
-            setTimeout(() => card.classList.add('visible'), ci * 150);
-        });
+        requestAnimationFrame(() => setTimeout(() => card.classList.add('visible'), ci * 150));
+    });
+    active.forEach(i => {
+        document.getElementById(`node-${i}`).classList.add('active');
+        document.getElementById(`legend-${i}`).classList.add('active');
     });
 
-    // Highlight active positions on wheel
-    activeIndices.forEach(idx => {
-        document.getElementById(`node-${idx}`).classList.add('active');
-        document.getElementById(`legend-${idx}`).classList.add('active');
-    });
-
-    // Hourmsg
-    const hourmsgBody = document.getElementById('hourmsgBody');
-    const hourmsgCard = document.getElementById('hourmsgCard');
-
+    const hmCard = document.getElementById('hourmsgCard');
+    const hmBody = document.getElementById('hourmsgBody');
     if (data.hourmsg) {
-        // Format: split by 。or ！for readability
-        const formatted = data.hourmsg
-            .replace(/。/g, '。<br>')
-            .replace(/！/g, '！<br>')
-            .replace(/<br>$/, '');
-        hourmsgBody.innerHTML = `<p>${formatted}</p>`;
-        hourmsgCard.style.display = 'block';
-        setTimeout(() => hourmsgCard.classList.add('visible'), 500);
-    } else {
-        hourmsgCard.style.display = 'none';
+        hmBody.innerHTML = `<p>${data.hourmsg.replace(/。/g, '。<br>').replace(/！/g, '！<br>').replace(/<br>$/, '')}</p>`;
+        hmCard.style.display = 'block';
+        setTimeout(() => hmCard.classList.add('visible'), 400);
+    } else { hmCard.style.display = 'none'; }
+
+    document.getElementById('lrResults').classList.add('show');
+    setTimeout(() => document.getElementById('lrResults').scrollIntoView({behavior:'smooth',block:'start'}), 200);
+}
+
+// ═══════════════════════════════════════
+//  BZ: CAST
+// ═══════════════════════════════════════
+async function castBZ() {
+    if (!apiKey) { document.getElementById('keyInput').focus(); document.getElementById('config').scrollIntoView({behavior:'smooth'}); return; }
+
+    const year = document.getElementById('bzYear').value;
+    const month = document.getElementById('bzMonth').value;
+    const day = document.getElementById('bzDay').value;
+    const hour = document.getElementById('bzHour').value;
+    const minute = document.getElementById('bzMinute').value || '0';
+    const gender = document.getElementById('bzGender').value;
+
+    if (!year || !month || !day || hour === '') { alert('请填写完整的出生信息'); return; }
+
+    const btn = document.getElementById('bzCastBtn');
+    btn.disabled = true;
+    document.getElementById('bzResults').classList.remove('show');
+    document.getElementById('bzLoading').classList.add('show');
+
+    try {
+        const qs = new URLSearchParams({
+            key: apiKey, x: gender, y: year, m: month, d: day, h: hour, i: minute, s: '0'
+        });
+        const res = await fetch(`/.netlify/functions/bz-proxy?${qs}`);
+        const data = await res.json();
+        if (data.code !== 200) throw new Error(data.msg || `接口异常 code: ${data.code}`);
+        displayBZ(data);
+    } catch (e) {
+        alert('排盘失败：' + e.message);
+    } finally {
+        document.getElementById('bzLoading').classList.remove('show');
+        btn.disabled = false;
+    }
+}
+
+function displayBZ(data) {
+    const d = data.data;
+    const el = document.getElementById('bzResults');
+
+    let html = '';
+
+    // ── 基本信息 ──
+    html += `<div class="info-grid">`;
+    const infoItems = [
+        { label:'命造', value: d.mz || '—' },
+        { label:'性别', value: d.xb || '—' },
+        { label:'生肖', value: d.sx || '—' },
+        { label:'星座', value: d.xz || '—' },
+        { label:'公历', value: (Array.isArray(d.gl) ? d.gl.join(' ') : (d.gl || '—')) },
+        { label:'农历', value: (typeof d.nl === 'object' && d.nl?.gz ? d.nl.gz : (Array.isArray(d.nl) ? d.nl.join(' ') : (d.nl || '—'))) },
+        { label:'日干阴阳', value: d.cyy || '—' },
+        { label:'起运', value: d.qyy_desc || '—' }
+    ];
+    infoItems.forEach(it => {
+        html += `<div class="info-item"><span class="info-item-label">${it.label}</span><span class="info-item-value">${it.value}</span></div>`;
+    });
+    html += `</div>`;
+
+    // ── 四柱 ──
+    const ctg = Array.isArray(d.ctg) ? d.ctg : [];
+    const cdz = Array.isArray(d.cdz) ? d.cdz : [];
+    const labels = ['年柱','月柱','日柱','时柱'];
+    const ewxtg = Array.isArray(d.ewxtg) ? d.ewxtg : [];
+    const ewxdz = Array.isArray(d.ewxdz) ? d.ewxdz : [];
+    const bctg = Array.isArray(d.bctg) ? d.bctg : [];
+    const bzcg = Array.isArray(d.bzcg) ? d.bzcg : [];
+
+    // Map branch indices for hidden stems
+    const branchOrder = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+    const branchToIdx = {};
+    branchOrder.forEach((b, i) => branchToIdx[b] = i);
+
+    html += `<div class="pillar-row">`;
+    for (let i = 0; i < 4; i++) {
+        const stem = ctg[i] || '—';
+        const branch = cdz[i] || '—';
+        const stemEl = ewxtg[i] || '';
+        const branchEl = ewxdz[i] || '';
+
+        // Find hidden stems for this branch
+        const bi = branchToIdx[branch];
+        const hStems = [];
+        if (bi !== undefined) {
+            // Hidden stems are in bctg array, indexed by branch position
+            const h = bctg[bi];
+            if (h && h !== '') hStems.push(h);
+        }
+        // Ten gods for hidden stems
+        const tenGod = (i === 2) ? '日主' : (bzcg[bi] || '');
+
+        html += `<div class="pillar">
+            <div class="pillar-label">${labels[i]}</div>
+            <div class="pillar-stem">${stem}</div>
+            <div class="pillar-branch">${branch}</div>
+            <div class="pillar-element">${stemEl} · ${branchEl}</div>
+            ${hStems.length ? `<div class="pillar-hidden">藏：${hStems.join(' ')}</div>` : ''}
+            ${tenGod ? `<div class="pillar-god">${tenGod}</div>` : ''}
+        </div>`;
+    }
+    html += `</div>`;
+
+    // ── 起运信息 ──
+    if (d.qyy_desc || d.qyy_desc2 || d.qyy) {
+        html += `<div class="qiyun-card">
+            <h4>起运信息</h4>
+            <p>${d.qyy_desc || ''}</p>
+            ${d.qyy ? `<p>起运公历：<strong>${d.qyy}</strong> 年</p>` : ''}
+            ${d.qyy_desc2 ? `<p>${d.qyy_desc2}</p>` : ''}
+        </div>`;
     }
 
-    // Show results
-    results.classList.add('show');
-    setTimeout(() => {
-        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 200);
+    // ── 大运 ──
+    const dy = Array.isArray(d.dy) ? d.dy : [];
+    if (dy.length) {
+        html += `<div class="dayun-title">大运排布</div>`;
+        html += `<div class="dayun-grid">`;
+        dy.forEach((yun, yi) => {
+            const age = yun.zqage || '';
+            const endAge = yun.zboz || '';
+            const tgStem = yun.zfma || '';
+            const dzBranch = yun.zfmb || '';
+            const nzsc = yun.nzsc || '';
+            const isActive = yi === 0;
+            html += `<div class="dayun-card ${isActive ? 'active' : ''}" title="起始${age}岁 末端${endAge}岁 ${nzsc}">
+                <div class="dayun-age">${age}~${endAge}岁</div>
+                <div class="dayun-stems">${tgStem || '?'}</div>
+                <div class="dayun-branch">${dzBranch || '?'}</div>
+                ${nzsc ? `<div class="dayun-12cs">${nzsc}</div>` : ''}
+            </div>`;
 
-    btn.disabled = false;
+            // Show liu nian for each da yun
+            const ly = Array.isArray(yun.ly) ? yun.ly : [];
+            if (ly.length) {
+                html += `</div>`; // close dayun-grid temporarily
+                html += `<div class="ln-title">${tgStem}${dzBranch}运 · 流年（${age}~${endAge}岁）</div>`;
+                html += `<div class="ln-scroll">`;
+                ly.forEach(ln => {
+                    const lye = ln.lye || '';
+                    const year = ln.year || '';
+                    const ageL = ln.age || '';
+                    html += `<div class="ln-card">
+                        <div class="ln-year">${year}</div>
+                        <div class="ln-stem">${lye}</div>
+                        <div class="ln-age">${ageL}岁</div>
+                    </div>`;
+                });
+                html += `</div>`;
+                html += `<div class="dayun-grid" style="margin-top:0">`; // reopen for next iteration handling
+            }
+        });
+        html += `</div>`;
+    }
+
+    el.innerHTML = html;
+    el.classList.add('show');
+    setTimeout(() => el.scrollIntoView({behavior:'smooth',block:'start'}), 200);
 }
 </script>
 </body>
