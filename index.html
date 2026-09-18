@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小六壬神课 · YiDao</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg:#08080e;--surface:#111119;--surface-2:#1a1a25;--surface-3:#242435;
+            --accent:#c9a24d;--accent-dim:#8b6914;--accent-glow:rgba(201,162,77,.15);
+            --text:#e8e0d0;--text-muted:#6e6760;--red:#b84038;--green:#4a9e6e;
+            --border:#2a2a3a;
+            --font-display:'Noto Serif SC','Songti SC',serif;
+            --font-body:'Noto Sans SC','PingFang SC',sans-serif;
+            --font-en:'Cormorant Garamond',serif;
+        }
+        html{scroll-behavior:smooth}
+        body{
+            font-family:var(--font-body);background:var(--bg);color:var(--text);
+            line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+        }
+        body::before{
+            content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+            background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            opacity:.03;
+        }
+        .container{max-width:960px;margin:0 auto;padding:0 24px}
+
+        /* NAV */
+        .nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 24px;transition:background .4s,box-shadow .4s}
+        .nav.scrolled{background:rgba(8,8,14,.92);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--border)}
+        .nav-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+        .nav-logo{font-family:var(--font-display);font-size:1.4rem;font-weight:900;color:var(--accent);text-decoration:none;letter-spacing:.08em}
+        .nav-links{display:flex;gap:32px}
+        .nav-links a{color:var(--text-muted);text-decoration:none;font-size:.88rem;transition:color .3s;position:relative}
+        .nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--accent);transition:width .3s}
+        .nav-links a:hover{color:var(--text)}
+        .nav-links a:hover::after{width:100%}
+        .nav-toggle{display:none;background:none;border:none;color:var(--text);font-size:1.4rem;cursor:pointer;width:40px;height:40px;align-items:center;justify-content:center}
+        .mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;background:rgba(8,8,14,.96);backdrop-filter:blur(16px);padding:24px;flex-direction:column;gap:20px;border-bottom:1px solid var(--border)}
+        .mobile-menu.open{display:flex}
+        .mobile-menu a{color:var(--text);text-decoration:none;font-size:1.1rem;padding:8px 0}
+
+        /* HERO */
+        .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+        .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,rgba(201,162,77,.06) 0%,transparent 50%),radial-gradient(ellipse at 70% 30%,rgba(184,64,56,.04) 0%,transparent 50%)}
+        .hero-content{position:relative;z-index:2;text-align:center;padding-top:80px}
+        .hero-symbol{font-size:6rem;color:var(--accent);text-shadow:0 0 60px var(--accent-glow),0 0 120px rgba(201,162,77,.08);animation:pulse 4s ease-in-out infinite;margin-bottom:24px;display:block}
+        @keyframes pulse{0%,100%{opacity:.8;transform:scale(1)}50%{opacity:1;transform:scale(1.03)}}
+        .hero-content h1{font-family:var(--font-display);font-size:clamp(2.5rem,7vw,4.5rem);font-weight:900;letter-spacing:.15em;margin-bottom:16px;opacity:0;animation:fadeUp 1s ease .3s forwards}
+        .hero-content .subtitle-en{font-family:var(--font-en);font-size:clamp(.9rem,2vw,1.1rem);color:var(--accent-dim);letter-spacing:.2em;margin-bottom:12px;opacity:0;animation:fadeUp 1s ease .5s forwards}
+        .hero-content p{font-size:clamp(.95rem,2.5vw,1.15rem);color:var(--text-muted);margin-bottom:48px;opacity:0;animation:fadeUp 1s ease .7s forwards}
+        .hero-cta{display:inline-block;padding:14px 48px;border:1px solid var(--accent);color:var(--accent);text-decoration:none;font-family:var(--font-display);font-size:1rem;letter-spacing:.15em;transition:background .4s,color .4s,letter-spacing .4s;opacity:0;animation:fadeUp 1s ease .9s forwards}
+        .hero-cta:hover{background:var(--accent);color:var(--bg);letter-spacing:.25em}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+        /* SECTIONS */
+        .section{padding:80px 0}
+        .section-title{font-family:var(--font-display);font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;text-align:center;margin-bottom:12px}
+        .section-subtitle{text-align:center;color:var(--text-muted);font-size:.92rem;margin-bottom:48px}
+        .divider{width:40px;height:2px;background:var(--accent);margin:0 auto 48px}
+        .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
+        .reveal.in-view{opacity:1;transform:translateY(0)}
+
+        /* API CONFIG */
+        .config-card{max-width:560px;margin:0 auto;background:var(--surface);border:1px solid var(--border);padding:32px}
+        .config-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+        .config-header h3{font-family:var(--font-display);font-size:1.1rem;color:var(--text)}
+        .config-status{font-size:.78rem;padding:3px 10px;border-radius:2px}
+        .status-ok{background:rgba(74,158,110,.15);color:var(--green);border:1px solid rgba(74,158,110,.3)}
+        .status-none{background:rgba(110,103,96,.15);color:var(--text-muted);border:1px solid rgba(110,103,96,.3)}
+        .key-row{display:flex;gap:12px}
+        .key-input{flex:1;background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:12px 16px;font-size:.95rem;font-family:var(--font-body);outline:none;transition:border-color .3s}
+        .key-input:focus{border-color:var(--accent-dim)}
+        .key-input::placeholder{color:var(--text-muted)}
+        .key-btn{padding:12px 24px;border:1px solid var(--accent);background:transparent;color:var(--accent);font-family:var(--font-display);font-size:.9rem;letter-spacing:.08em;cursor:pointer;transition:background .3s,color .3s;white-space:nowrap}
+        .key-btn:hover{background:var(--accent);color:var(--bg)}
+        .key-btn.danger{border-color:var(--red);color:var(--red)}
+        .key-btn.danger:hover{background:var(--red);color:var(--text)}
+        .config-tip{margin-top:16px;font-size:.78rem;color:var(--text-muted);line-height:1.6}
+        .config-tip a{color:var(--accent-dim);text-decoration:none}
+        .config-tip a:hover{text-decoration:underline}
+
+        /* SIX POSITIONS WHEEL */
+        .wheel-container{position:relative;width:340px;height:340px;margin:0 auto 48px}
+        .wheel-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100px;height:100px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--accent);background:var(--surface)}
+        .wheel-ring{position:absolute;inset:0;border:1px dashed var(--border);border-radius:50%;opacity:.3}
+        .pos-node{
+            position:absolute;width:80px;text-align:center;
+            top:50%;left:50%;margin-left:-40px;margin-top:-36px;
+            cursor:pointer;transition:transform .3s,filter .3s;
+        }
+        .pos-node:hover{transform:translate(var(--tx),var(--ty)) scale(1.12)!important;filter:brightness(1.3)}
+        .pos-node.active{filter:brightness(1.5) drop-shadow(0 0 12px var(--glow))}
+        .pos-node.active .pos-icon{animation:nodeGlow 1.5s ease-in-out infinite}
+        @keyframes nodeGlow{0%,100%{box-shadow:0 0 8px var(--glow)}50%{box-shadow:0 0 24px var(--glow),0 0 48px var(--glow)}}
+        .pos-icon{
+            width:48px;height:48px;border-radius:50%;
+            border:2px solid var(--border);display:flex;align-items:center;justify-content:center;
+            margin:0 auto 6px;font-size:1.1rem;font-family:var(--font-display);font-weight:700;
+            background:var(--surface);transition:border-color .3s,background .3s,box-shadow .3s;
+        }
+        .pos-label{font-size:.72rem;color:var(--text-muted);font-family:var(--font-display)}
+        .pos-element{font-size:.6rem;color:var(--text-muted);opacity:.5}
+
+        /* POS LEGEND */
+        .pos-legend{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;max-width:600px;margin:0 auto 48px}
+        .pos-legend-item{display:flex;align-items:center;gap:6px;padding:8px;background:var(--surface);border:1px solid var(--border);transition:border-color .3s}
+        .pos-legend-item.active{border-color:var(--accent-dim)}
+        .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+        .legend-name{font-size:.75rem;font-family:var(--font-display);color:var(--text-muted)}
+
+        /* DIVINATION BUTTON */
+        .cast-section{text-align:center;margin-bottom:48px}
+        .cast-btn{
+            padding:16px 64px;background:transparent;border:1px solid var(--accent);
+            color:var(--accent);font-family:var(--font-display);font-size:1.1rem;letter-spacing:.2em;
+            cursor:pointer;transition:background .4s,color .4s,letter-spacing .4s,transform .2s;
+        }
+        .cast-btn:hover{background:var(--accent);color:var(--bg);letter-spacing:.3em}
+        .cast-btn:active{transform:scale(.97)}
+        .cast-btn:disabled{opacity:.35;cursor:not-allowed}
+        .cast-btn:disabled:hover{background:transparent;color:var(--accent);letter-spacing:.2em}
+
+        /* LOADING */
+        .loading{display:none;flex-direction:column;align-items:center;gap:16px;padding:40px 0}
+        .loading.show{display:flex}
+        .loading-spinner{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .loading-text{font-size:.88rem;color:var(--text-muted);font-family:var(--font-display);letter-spacing:.08em}
+
+        /* RESULTS */
+        .results{display:none;animation:fadeUp .6s ease}
+        .results.show{display:block}
+        .result-time{text-align:center;font-family:var(--font-en);font-size:1rem;color:var(--accent-dim);letter-spacing:.08em;margin-bottom:32px}
+        .result-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+        .result-card{
+            background:var(--surface);border:1px solid var(--border);padding:24px;text-align:center;
+            opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s,border-color .3s;
+        }
+        .result-card.visible{opacity:1;transform:translateY(0)}
+        .result-card:nth-child(2).visible{transition-delay:.15s}
+        .result-card:nth-child(3).visible{transition-delay:.3s}
+        .result-card:hover{border-color:var(--accent-dim)}
+        .result-card-title{font-size:.75rem;color:var(--text-muted);letter-spacing:.15em;margin-bottom:12px;text-transform:uppercase}
+        .result-card-pos{
+            font-family:var(--font-display);font-size:1.8rem;font-weight:900;margin-bottom:4px;
+        }
+        .result-card-element{font-size:.82rem;color:var(--text-muted);margin-bottom:12px}
+        .result-card-fortune{display:inline-block;padding:2px 12px;font-size:.75rem;border-radius:2px}
+        .fortune-吉{background:rgba(74,158,110,.12);color:var(--green);border:1px solid rgba(74,158,110,.3)}
+        .fortune-凶{background:rgba(184,64,56,.12);color:#d06050;border:1px solid rgba(184,64,56,.3)}
+        .fortune-中{background:rgba(201,162,77,.12);color:var(--accent);border:1px solid rgba(201,162,77,.3)}
+        .result-card-text{margin-top:12px;font-size:.82rem;color:var(--text-muted);line-height:1.7;text-align:left}
+
+        /* HOURMSG */
+        .hourmsg-card{
+            background:var(--surface);border:1px solid var(--border);padding:32px;
+            opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s;
+        }
+        .hourmsg-card.visible{opacity:1;transform:translateY(0)}
+        .hourmsg-title{font-family:var(--font-display);font-size:1.1rem;color:var(--accent);margin-bottom:16px;letter-spacing:.08em;display:flex;align-items:center;gap:8px}
+        .hourmsg-title::before{content:'';width:3px;height:18px;background:var(--accent);display:block}
+        .hourmsg-body{font-size:.9rem;line-height:2;color:var(--text)}
+        .hourmsg-body p{margin-bottom:12px}
+
+        /* RETRY */
+        .retry-section{text-align:center;margin-top:32px}
+        .retry-btn{
+            padding:12px 40px;background:transparent;border:1px solid var(--border);
+            color:var(--text-muted);font-family:var(--font-display);font-size:.9rem;letter-spacing:.08em;
+            cursor:pointer;transition:border-color .3s,color .3s;
+        }
+        .retry-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+        /* FOOTER */
+        .footer{padding:48px 24px;text-align:center;border-top:1px solid var(--border)}
+        .footer-logo{font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:8px;letter-spacing:.08em}
+        .footer p{font-size:.78rem;color:var(--text-muted);line-height:1.6}
+
+        /* RESPONSIVE */
+        @media(max-width:768px){
+            .nav-links{display:none}
+            .nav-toggle{display:flex}
+            .hero-symbol{font-size:4rem}
+            .wheel-container{width:280px;height:280px}
+            .wheel-center{width:76px;height:76px;font-size:1.5rem}
+            .pos-icon{width:38px;height:38px;font-size:.9rem}
+            .pos-node{width:60px;margin-left:-30px}
+            .pos-legend{grid-template-columns:repeat(3,1fr)}
+            .result-cards{grid-template-columns:1fr}
+            .key-row{flex-direction:column}
+            .cast-btn{padding:14px 40px;font-size:1rem}
+        }
+        @media(max-width:480px){
+            .wheel-container{width:240px;height:240px}
+            .pos-legend{grid-template-columns:repeat(2,1fr)}
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+    <div class="nav-inner">
+        <a href="#" class="nav-logo">易道</a>
+        <div class="nav-links">
+            <a href="#config">配置</a>
+            <a href="#divination">起卦</a>
+        </div>
+        <button class="nav-toggle" id="navToggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')">☰</button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#config" onclick="this.parentElement.classList.remove('open')">配置</a>
+        <a href="#divination" onclick="this.parentElement.classList.remove('open')">起卦</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content">
+        <span class="hero-symbol">☯</span>
+        <h1>小六壬神课</h1>
+        <div class="subtitle-en">XIAO LIU REN DIVINATION</div>
+        <p>掐指一算 · 洞察天机 · 趋吉避凶</p>
+        <a href="#config" class="hero-cta">开始占卜</a>
+    </div>
+</section>
+
+<!-- API CONFIG -->
+<section class="section" id="config">
+    <div class="container">
+        <div class="section-title reveal">接口配置</div>
+        <div class="section-subtitle reveal">输入你的 API 密钥以启用在线排盘</div>
+        <div class="divider reveal"></div>
+        <div class="config-card reveal">
+            <div class="config-header">
+                <h3>API Key</h3>
+                <span class="config-status" id="keyStatus">未配置</span>
+            </div>
+            <div class="key-row">
+                <input type="password" class="key-input" id="keyInput" placeholder="输入你的接口密钥…">
+                <button class="key-btn" onclick="saveKey()">保存</button>
+                <button class="key-btn" onclick="toggleVisibility()">显示</button>
+                <button class="key-btn danger" onclick="clearKey()">清除</button>
+            </div>
+            <p class="config-tip">
+                前往 <a href="https://api.t1qq.com" target="_blank" rel="noopener">api.t1qq.com</a> 注册并获取免费接口密钥，密钥仅保存在你的浏览器本地，不会上传至任何第三方。
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- DIVINATION -->
+<section class="section" id="divination" style="background:var(--surface);">
+    <div class="container">
+        <div class="section-title reveal">小六壬 · 起卦</div>
+        <div class="section-subtitle reveal">心中默念所问之事，按下方按钮依时起卦</div>
+        <div class="divider reveal"></div>
+
+        <!-- WHEEL -->
+        <div class="wheel-container reveal" id="wheelContainer">
+            <div class="wheel-ring"></div>
+            <div class="wheel-center">☰</div>
+            <!-- Nodes injected by JS -->
+        </div>
+
+        <!-- LEGEND -->
+        <div class="pos-legend reveal" id="posLegend">
+            <!-- Injected by JS -->
+        </div>
+
+        <!-- CAST -->
+        <div class="cast-section reveal">
+            <button class="cast-btn" id="castBtn" onclick="castDivination()">起 卦</button>
+        </div>
+
+        <!-- LOADING -->
+        <div class="loading" id="loadingEl">
+            <div class="loading-spinner"></div>
+            <span class="loading-text">掐指推算中…</span>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results" id="resultsEl">
+            <div class="result-time" id="resultTime"></div>
+            <div class="result-cards" id="resultCards"></div>
+            <div class="hourmsg-card" id="hourmsgCard">
+                <div class="hourmsg-title">时辰注解</div>
+                <div class="hourmsg-body" id="hourmsgBody"></div>
+            </div>
+            <div class="retry-section">
+                <button class="retry-btn" onclick="castDivination()">重新起卦</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-logo">易道 · YiDao</div>
+    <p>小六壬神课 — 传统文化仅供学习参考，不作为决策依据<br>
+    数据来源：t1qq.com 免费易学 API</p>
+</footer>
+
+<script>
+// ═══════════════════════════════════════
+//  CONSTANTS
+// ═══════════════════════════════════════
+const POSITIONS = [
+    { name:'大安', color:'#4a9e6e', element:'木', dir:'东方', spirit:'青龙', fortune:'吉', brief:'身不动时，凡事安稳，所求皆遂。' },
+    { name:'留连', color:'#8b7355', element:'土', dir:'中央', spirit:'玄武', fortune:'凶', brief:'卜者逢之，事情拖延，暗昧不明。' },
+    { name:'速喜', color:'#c94040', element:'火', dir:'南方', spirit:'朱雀', fortune:'吉', brief:'喜即至，求财向南，有好消息。' },
+    { name:'赤口', color:'#b0b0b0', element:'金', dir:'西方', spirit:'白虎', fortune:'凶', brief:'口舌多，多争吵，宜守不宜动。' },
+    { name:'小吉', color:'#4a80b4', element:'水', dir:'北方', spirit:'六合', fortune:'吉', brief:'最吉昌，诸事可为，贵人相助。' },
+    { name:'空亡', color:'#5a5a5a', element:'土', dir:'中央', spirit:'勾陈', fortune:'凶', brief:'事不详，求财无益，暗中多阻。' }
+];
+
+const API_PROXY = '/.netlify/functions/lr-proxy';
+
+// ═══════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════
+let apiKey = localStorage.getItem('lr_api_key') || '';
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+    buildWheel();
+    buildLegend();
+    updateKeyUI();
+
+    if (apiKey) {
+        document.getElementById('keyInput').value = apiKey;
+    }
+
+    // Scroll nav effect
+    window.addEventListener('scroll', () => {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Reveal on scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+});
+
+// ═══════════════════════════════════════
+//  BUILD WHEEL
+// ═══════════════════════════════════════
+function buildWheel() {
+    const container = document.getElementById('wheelContainer');
+    POSITIONS.forEach((pos, i) => {
+        const angle = (i * 60 - 90) * Math.PI / 180;
+        const r = 130;
+        const x = Math.cos(angle) * r;
+        const y = Math.sin(angle) * r;
+
+        const node = document.createElement('div');
+        node.className = 'pos-node';
+        node.id = `node-${i}`;
+        node.style.setProperty('--tx', x + 'px');
+        node.style.setProperty('--ty', y + 'px');
+        node.style.setProperty('--glow', pos.color);
+        node.style.transform = `translate(${x}px, ${y}px)`;
+        node.style.animationDelay = `${i * 0.08}s`;
+        node.innerHTML = `
+            <div class="pos-icon" style="border-color:${pos.color};color:${pos.color}">${pos.name[0]}</div>
+            <div class="pos-label">${pos.name}</div>
+            <div class="pos-element">${pos.element} · ${pos.fortune}</div>
+        `;
+        node.addEventListener('click', () => showPosDetail(i));
+        container.appendChild(node);
+    });
+}
+
+function buildLegend() {
+    const legend = document.getElementById('posLegend');
+    POSITIONS.forEach((pos, i) => {
+        const item = document.createElement('div');
+        item.className = 'pos-legend-item';
+        item.id = `legend-${i}`;
+        item.innerHTML = `
+            <span class="legend-dot" style="background:${pos.color}"></span>
+            <span class="legend-name">${pos.name} · ${pos.spirit}</span>
+        `;
+        item.addEventListener('click', () => showPosDetail(i));
+        legend.appendChild(item);
+    });
+}
+
+function showPosDetail(idx) {
+    const pos = POSITIONS[idx];
+    alert(`${pos.name}\n五行：${pos.element}  方位：${pos.dir}\n神煞：${pos.spirit}  吉凶：${pos.fortune}\n\n${pos.brief}`);
+}
+
+// ═══════════════════════════════════════
+//  API KEY MANAGEMENT
+// ═══════════════════════════════════════
+function saveKey() {
+    const input = document.getElementById('keyInput');
+    const key = input.value.trim();
+    if (!key) { input.focus(); return; }
+    apiKey = key;
+    localStorage.setItem('lr_api_key', key);
+    updateKeyUI();
+}
+
+function clearKey() {
+    apiKey = '';
+    localStorage.removeItem('lr_api_key');
+    document.getElementById('keyInput').value = '';
+    updateKeyUI();
+}
+
+function toggleVisibility() {
+    const input = document.getElementById('keyInput');
+    input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+function updateKeyUI() {
+    const status = document.getElementById('keyStatus');
+    if (apiKey) {
+        status.textContent = '已配置';
+        status.className = 'config-status status-ok';
+    } else {
+        status.textContent = '未配置';
+        status.className = 'config-status status-none';
+    }
+}
+
+// ═══════════════════════════════════════
+//  DIVINATION
+// ═══════════════════════════════════════
+async function castDivination() {
+    if (!apiKey) {
+        document.getElementById('keyInput').focus();
+        document.getElementById('config').scrollIntoView({ behavior: 'smooth' });
+        return;
+    }
+
+    const btn = document.getElementById('castBtn');
+    const loading = document.getElementById('loadingEl');
+    const results = document.getElementById('resultsEl');
+
+    btn.disabled = true;
+    results.classList.remove('show');
+    loading.classList.add('show');
+
+    // Clear previous highlights
+    clearHighlights();
+
+    try {
+        const res = await fetch(`${API_PROXY}?key=${encodeURIComponent(apiKey)}`);
+        const data = await res.json();
+
+        if (data.code !== 200) {
+            throw new Error(data.error || `接口返回异常 (code: ${data.code})`);
+        }
+
+        displayResults(data);
+    } catch (err) {
+        loading.classList.remove('show');
+        btn.disabled = false;
+        alert('起卦失败：' + err.message);
+    }
+}
+
+function clearHighlights() {
+    POSITIONS.forEach((_, i) => {
+        document.getElementById(`node-${i}`).classList.remove('active');
+        document.getElementById(`legend-${i}`).classList.remove('active');
+    });
+}
+
+function findPositionName(text) {
+    if (!text) return -1;
+    for (let i = 0; i < POSITIONS.length; i++) {
+        if (text.includes(POSITIONS[i].name)) return i;
+    }
+    return -1;
+}
+
+function displayResults(data) {
+    const loading = document.getElementById('loadingEl');
+    const results = document.getElementById('resultsEl');
+    const btn = document.getElementById('castBtn');
+
+    loading.classList.remove('show');
+
+    // Time
+    const timeStr = data.time || new Date().toLocaleString('zh-CN');
+    document.getElementById('resultTime').textContent = timeStr;
+
+    // Result cards
+    const cardsEl = document.getElementById('resultCards');
+    cardsEl.innerHTML = '';
+
+    const classes = [
+        { label: '月课', value: data.res && data.res.monthclass },
+        { label: '日课', value: data.res && data.res.dayclass },
+        { label: '时课', value: data.res && data.res.nowclass }
+    ];
+
+    const activeIndices = new Set();
+
+    classes.forEach((cls, ci) => {
+        const card = document.createElement('div');
+        card.className = 'result-card';
+
+        const posIdx = findPositionName(cls.value);
+        const pos = posIdx >= 0 ? POSITIONS[posIdx] : null;
+
+        if (posIdx >= 0) activeIndices.add(posIdx);
+
+        let html = `<div class="result-card-title">${cls.label}</div>`;
+
+        if (pos) {
+            html += `<div class="result-card-pos" style="color:${pos.color}">${pos.name}</div>`;
+            html += `<div class="result-card-element">${pos.element} · ${pos.spirit} · ${pos.dir}</div>`;
+            html += `<span class="result-card-fortune fortune-${pos.fortune}">${pos.fortune}</span>`;
+            html += `<div class="result-card-text">${pos.brief}</div>`;
+        } else if (cls.value) {
+            html += `<div class="result-card-pos" style="color:var(--text)">${cls.value}</div>`;
+        } else {
+            html += `<div class="result-card-pos" style="color:var(--text-muted)">—</div>`;
+        }
+
+        card.innerHTML = html;
+        cardsEl.appendChild(card);
+
+        // Stagger animation
+        requestAnimationFrame(() => {
+            setTimeout(() => card.classList.add('visible'), ci * 150);
+        });
+    });
+
+    // Highlight active positions on wheel
+    activeIndices.forEach(idx => {
+        document.getElementById(`node-${idx}`).classList.add('active');
+        document.getElementById(`legend-${idx}`).classList.add('active');
+    });
+
+    // Hourmsg
+    const hourmsgBody = document.getElementById('hourmsgBody');
+    const hourmsgCard = document.getElementById('hourmsgCard');
+
+    if (data.hourmsg) {
+        // Format: split by 。or ！for readability
+        const formatted = data.hourmsg
+            .replace(/。/g, '。<br>')
+            .replace(/！/g, '！<br>')
+            .replace(/<br>$/, '');
+        hourmsgBody.innerHTML = `<p>${formatted}</p>`;
+        hourmsgCard.style.display = 'block';
+        setTimeout(() => hourmsgCard.classList.add('visible'), 500);
+    } else {
+        hourmsgCard.style.display = 'none';
+    }
+
+    // Show results
+    results.classList.add('show');
+    setTimeout(() => {
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
+
+    btn.disabled = false;
+}
+</script>
+</body>
+</html>
