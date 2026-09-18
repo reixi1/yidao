@@ -6,6 +6,7 @@
     <title>易道 · YiDao — 小六壬 / 八字 / 雷诺曼</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+    <script src="config.js"></script>
     <style>
         /* ═══════════════════════════════════
            RESET & VARIABLES
@@ -279,7 +280,6 @@
     <div class="nav-inner">
         <a href="#" class="nav-logo">易道</a>
         <div class="nav-links">
-            <a href="#config">配置</a>
             <a href="#modules">小六壬</a>
             <a href="#modules">八字排盘</a>
             <a href="#modules">雷诺曼</a>
@@ -287,7 +287,6 @@
         <button class="nav-toggle" id="navToggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')">☰</button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
-        <a href="#config" onclick="closeMob()">配置</a>
         <a href="#modules" onclick="switchTab('lr');closeMob()">小六壬</a>
         <a href="#modules" onclick="switchTab('bz');closeMob()">八字排盘</a>
         <a href="#modules" onclick="switchTab('lnm');closeMob()">雷诺曼</a>
@@ -305,30 +304,6 @@
             <a href="#modules" class="hero-card" onclick="switchTab('lr')">小六壬神课</a>
             <a href="#modules" class="hero-card" onclick="switchTab('bz')">八字排盘</a>
             <a href="#modules" class="hero-card" onclick="switchTab('lnm')">雷诺曼占卜</a>
-        </div>
-    </div>
-</section>
-
-<!-- ═══ CONFIG ═══ -->
-<section class="section" id="config">
-    <div class="container">
-        <div class="section-title reveal">接口配置</div>
-        <div class="section-subtitle reveal">输入你的 API 密钥，三个模块共用同一个 Key</div>
-        <div class="divider reveal"></div>
-        <div class="config-card reveal">
-            <div class="config-header">
-                <h3>API Key</h3>
-                <span class="config-status" id="keyStatus">未配置</span>
-            </div>
-            <div class="key-row">
-                <input type="password" class="key-input" id="keyInput" placeholder="输入你的接口密钥…">
-                <button class="key-btn" onclick="saveKey()">保存</button>
-                <button class="key-btn sm" onclick="toggleVis()">👁</button>
-                <button class="key-btn sm danger" onclick="clearKey()">✕</button>
-            </div>
-            <p class="config-tip">
-                前往 <a href="https://api.t1qq.com" target="_blank" rel="noopener">api.t1qq.com</a> 注册并获取免费接口密钥。密钥仅保存在浏览器本地，通过 Netlify Function 代理请求，不会暴露给第三方。
-            </p>
         </div>
     </div>
 </section>
@@ -429,7 +404,7 @@
 // ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
-let apiKey = localStorage.getItem('yidao_key') || '';
+let apiKey = window.API_KEY || '';
 let lnmType = 5;
 
 // ═══════════════════════════════════════
@@ -458,12 +433,8 @@ function switchTab(tab) {
 // ═══════════════════════════════════════
 //  API KEY
 // ═══════════════════════════════════════
-function saveKey() { const v = document.getElementById('keyInput').value.trim(); if (!v) return; apiKey = v; localStorage.setItem('yidao_key', v); updateKeyUI(); }
-function clearKey() { apiKey = ''; localStorage.removeItem('yidao_key'); document.getElementById('keyInput').value = ''; updateKeyUI(); }
 function toggleVis() { const i = document.getElementById('keyInput'); i.type = i.type === 'password' ? 'text' : 'password'; }
-function updateKeyUI() { const s = document.getElementById('keyStatus'); if (apiKey) { s.textContent = '已配置'; s.className = 'config-status status-ok'; } else { s.textContent = '未配置'; s.className = 'config-status status-none'; } }
-function needKey() { if (!apiKey) { document.getElementById('keyInput').focus(); document.getElementById('config').scrollIntoView({ behavior: 'smooth' }); return true; } return false; }
-
+function needKey() { if (!apiKey) { alert('请在 config.js 中填写 API Key'); return true; } return false; }
 // ═══════════════════════════════════════
 //  LR: POSITIONS & WHEEL
 // ═══════════════════════════════════════

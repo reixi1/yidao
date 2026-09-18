@@ -1,0 +1,1 @@
+window.API_KEY = 'dG8GJxKtJ1pDyfFXA7GNA5JMln';
