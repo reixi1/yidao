@@ -1675,6 +1675,23 @@
                 flex-wrap: wrap;
             }
         }
+
+        .lnm-interp-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        @media (min-width: 600px) {
+            .lnm-interp-cards.cols-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .lnm-interp-cards.cols-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
     </style>
 </head>
 
@@ -2186,7 +2203,8 @@
 
             // Card-by-card interpretation
             if (hasCardDB) {
-                html += `<div class="lnm-interp-cards" style="grid-template-columns:repeat(${Math.min(lnmType, lnmType <= 3 ? 3 : (lnmType <= 5 ? 5 : (lnmType <= 7 ? 2 : 3)))},1fr);">`;
+                const colsClass = lnmType <= 1 ? '' : (lnmType <= 5 ? 'cols-3' : 'cols-2');
+                html += `<div class="lnm-interp-cards ${colsClass}">`;
                 resolvedCards.forEach(({ rawName, card, idx }) => {
                     if (!card) return;
                     const posLabel = spreadDef.pos[idx] || `第${idx + 1}位`;
@@ -2256,27 +2274,32 @@
             const validCards = cards.filter(c => c.card);
             if (!validCards.length) return '';
 
-            const names = validCards.map(c => c.card.name).join('、');
-            const positions = SPREAD_POS[type]?.pos || [];
+            const list = validCards.map(v => v.card);
 
             let summaryText = '';
 
-            if (type === 1) {
-                const c = validCards[0].card;
-                summaryText = `本次抽到<strong>${c.name}</strong>，${c.g}`;
-            } else if (type === 3) {
-                const [past, present, future] = validCards.map(v => v.card);
-                summaryText = `过去位的<strong>${past.name}</strong>提示你：${past.g.slice(0, 20)}…　`;
-                summaryText += `现在位的<strong>${present.name}</strong>表明：${present.g.slice(0, 20)}…　`;
-                summaryText += `未来位的<strong>${future.name}</strong>预示：${future.g.slice(0, 20)}…　`;
-                summaryText += `整体走势从「${past.name}」到「${present.name}」再到「${future.name}」，请结合各位置含义综合判断。`;
-            } else if (type === 5) {
-                const [p, now, f, advice, result] = validCards.map(v => v.card);
-                summaryText = `过去<strong>${p.name}</strong>奠定基础，当前<strong>${now.name}</strong>揭示现状，`;
-                summaryText += `未来<strong>${f.name}</strong>指明方向。建议：<strong>${advice.name}</strong>提醒你${advice.g.slice(0, 20)}…　`;
-                summaryText += `最终结果<strong>${result.name}</strong>预示${result.g.slice(0, 20)}…`;
-            } else {
-                summaryText = `本次${type}牌阵抽到：${names}。`;
+            if (type === 1 && list[0]) {
+                summaryText = `本次抽到<strong>${list[0].name}</strong>，${list[0].g}`;
+            }
+            else if (type === 3) {
+                const parts = [];
+                if (list[0]) parts.push(`过去位的<strong>${list[0].name}</strong>提示你：${list[0].g.slice(0, 25)}…`);
+                if (list[1]) parts.push(`现在位的<strong>${list[1].name}</strong>表明：${list[1].g.slice(0, 25)}…`);
+                if (list[2]) parts.push(`未来位的<strong>${list[2].name}</strong>预示：${list[2].g.slice(0, 25)}…`);
+                summaryText = parts.join('　') + `　请结合各位置含义综合判断。`;
+            }
+            else if (type === 5) {
+                const parts = [];
+                if (list[0]) parts.push(`过去<strong>${list[0].name}</strong>奠定基础`);
+                if (list[1]) parts.push(`当前<strong>${list[1].name}</strong>揭示现状`);
+                if (list[2]) parts.push(`未来<strong>${list[2].name}</strong>指明方向`);
+                if (list[3]) parts.push(`建议：<strong>${list[3].name}</strong>提醒你${list[3].g.slice(0, 20)}…`);
+                if (list[4]) parts.push(`结果<strong>${list[4].name}</strong>预示${list[4].g.slice(0, 20)}…`);
+                summaryText = parts.join('。') + '。';
+            }
+            else {
+                const positions = SPREAD_POS[type]?.pos || [];
+                summaryText = `本次${type}牌阵抽到：${list.map(c => c.name).join('、')}。`;
                 summaryText += `牌阵从${positions[0] || '起始'}到${positions[positions.length - 1] || '终结'}，`;
                 summaryText += `各张牌面含义丰富，请逐张查看详细解读，综合理解整体走势。`;
             }
