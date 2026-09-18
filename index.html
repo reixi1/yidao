@@ -1,706 +1,2289 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>易道 · YiDao — 小六壬 / 八字 / 雷诺曼</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap"
+        rel="stylesheet">
     <script src="config.js"></script>
     <style>
         /* ═══════════════════════════════════
            RESET & VARIABLES
            ═══════════════════════════════════ */
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
-            --bg: #08080e; --surface: #111119; --surface-2: #1a1a25; --surface-3: #242435;
-            --accent: #c9a24d; --accent-dim: #8b6914; --accent-glow: rgba(201,162,77,.15);
-            --text: #e8e0d0; --text-muted: #6e6760;
-            --red: #b84038; --green: #4a9e6e; --blue: #4a80b4;
+            --bg: #08080e;
+            --surface: #111119;
+            --surface-2: #1a1a25;
+            --surface-3: #242435;
+            --accent: #c9a24d;
+            --accent-dim: #8b6914;
+            --accent-glow: rgba(201, 162, 77, .15);
+            --text: #e8e0d0;
+            --text-muted: #6e6760;
+            --red: #b84038;
+            --green: #4a9e6e;
+            --blue: #4a80b4;
             --border: #2a2a3a;
             --font-display: 'Noto Serif SC', 'Songti SC', serif;
             --font-body: 'Noto Sans SC', 'PingFang SC', sans-serif;
             --font-en: 'Cormorant Garamond', serif;
         }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: var(--font-body); background: var(--bg); color: var(--text);
-            line-height: 1.7; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+
+        html {
+            scroll-behavior: smooth;
         }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
         body::before {
-            content: ''; position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
             opacity: .03;
         }
-        .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
 
         /* ═══ NAV ═══ */
-        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 0 24px; transition: background .4s, box-shadow .4s; }
-        .nav.scrolled { background: rgba(8,8,14,.92); backdrop-filter: blur(12px); box-shadow: 0 1px 0 var(--border); }
-        .nav-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
-        .nav-logo { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; color: var(--accent); text-decoration: none; letter-spacing: .08em; }
-        .nav-links { display: flex; gap: 28px; }
-        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: .85rem; transition: color .3s; position: relative; }
-        .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--accent); transition: width .3s; }
-        .nav-links a:hover { color: var(--text); }
-        .nav-links a:hover::after { width: 100%; }
-        .nav-toggle { display: none; background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; width: 40px; height: 40px; align-items: center; justify-content: center; }
-        .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(8,8,14,.96); backdrop-filter: blur(16px); padding: 24px; flex-direction: column; gap: 20px; border-bottom: 1px solid var(--border); }
-        .mobile-menu.open { display: flex; }
-        .mobile-menu a { color: var(--text); text-decoration: none; font-size: 1.1rem; padding: 8px 0; }
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 24px;
+            transition: background .4s, box-shadow .4s;
+        }
+
+        .nav.scrolled {
+            background: rgba(8, 8, 14, .92);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 1px 0 var(--border);
+        }
+
+        .nav-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: .08em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: .85rem;
+            transition: color .3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent);
+            transition: width .3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.4rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            background: rgba(8, 8, 14, .96);
+            backdrop-filter: blur(16px);
+            padding: 24px;
+            flex-direction: column;
+            gap: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mobile-menu.open {
+            display: flex;
+        }
+
+        .mobile-menu a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 0;
+        }
 
         /* ═══ HERO ═══ */
-        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-        .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 60%, rgba(201,162,77,.06) 0%, transparent 50%), radial-gradient(ellipse at 70% 30%, rgba(184,64,56,.04) 0%, transparent 50%); }
-        .hero-content { position: relative; z-index: 2; text-align: center; padding-top: 80px; }
-        .hero-symbol { font-size: 6rem; color: var(--accent); text-shadow: 0 0 60px var(--accent-glow), 0 0 120px rgba(201,162,77,.08); animation: pulse 4s ease-in-out infinite; margin-bottom: 24px; display: block; }
-        @keyframes pulse { 0%,100% { opacity: .8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.03); } }
-        .hero-content h1 { font-family: var(--font-display); font-size: clamp(2.5rem,7vw,4.5rem); font-weight: 900; letter-spacing: .15em; margin-bottom: 16px; opacity: 0; animation: fadeUp 1s ease .3s forwards; }
-        .hero-sub-en { font-family: var(--font-en); font-size: clamp(.9rem,2vw,1.1rem); color: var(--accent-dim); letter-spacing: .2em; margin-bottom: 12px; opacity: 0; animation: fadeUp 1s ease .5s forwards; }
-        .hero-content > p { font-size: clamp(.95rem,2.5vw,1.15rem); color: var(--text-muted); margin-bottom: 48px; opacity: 0; animation: fadeUp 1s ease .7s forwards; }
-        .hero-cards { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; opacity: 0; animation: fadeUp 1s ease .9s forwards; }
-        .hero-card { padding: 14px 32px; border: 1px solid var(--border); color: var(--text-muted); text-decoration: none; font-family: var(--font-display); font-size: .88rem; letter-spacing: .08em; transition: border-color .3s, color .3s, background .3s; }
-        .hero-card:hover { border-color: var(--accent); color: var(--accent); background: rgba(201,162,77,.05); }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 60%, rgba(201, 162, 77, .06) 0%, transparent 50%), radial-gradient(ellipse at 70% 30%, rgba(184, 64, 56, .04) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding-top: 80px;
+        }
+
+        .hero-symbol {
+            font-size: 6rem;
+            color: var(--accent);
+            text-shadow: 0 0 60px var(--accent-glow), 0 0 120px rgba(201, 162, 77, .08);
+            animation: pulse 4s ease-in-out infinite;
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: .8;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.03);
+            }
+        }
+
+        .hero-content h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 7vw, 4.5rem);
+            font-weight: 900;
+            letter-spacing: .15em;
+            margin-bottom: 16px;
+            opacity: 0;
+            animation: fadeUp 1s ease .3s forwards;
+        }
+
+        .hero-sub-en {
+            font-family: var(--font-en);
+            font-size: clamp(.9rem, 2vw, 1.1rem);
+            color: var(--accent-dim);
+            letter-spacing: .2em;
+            margin-bottom: 12px;
+            opacity: 0;
+            animation: fadeUp 1s ease .5s forwards;
+        }
+
+        .hero-content>p {
+            font-size: clamp(.95rem, 2.5vw, 1.15rem);
+            color: var(--text-muted);
+            margin-bottom: 48px;
+            opacity: 0;
+            animation: fadeUp 1s ease .7s forwards;
+        }
+
+        .hero-cards {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeUp 1s ease .9s forwards;
+        }
+
+        .hero-card {
+            padding: 14px 32px;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-family: var(--font-display);
+            font-size: .88rem;
+            letter-spacing: .08em;
+            transition: border-color .3s, color .3s, background .3s;
+        }
+
+        .hero-card:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(201, 162, 77, .05);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         /* ═══ SHARED ═══ */
-        .section { padding: 80px 0; }
-        .section-title { font-family: var(--font-display); font-size: clamp(1.6rem,4vw,2.2rem); font-weight: 700; text-align: center; margin-bottom: 12px; }
-        .section-subtitle { text-align: center; color: var(--text-muted); font-size: .9rem; margin-bottom: 40px; }
-        .divider { width: 40px; height: 2px; background: var(--accent); margin: 0 auto 40px; }
-        .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s, transform .7s; }
-        .reveal.in-view { opacity: 1; transform: translateY(0); }
-        .cast-btn { padding: 14px 56px; background: transparent; border: 1px solid var(--accent); color: var(--accent); font-family: var(--font-display); font-size: 1rem; letter-spacing: .18em; cursor: pointer; transition: background .4s, color .4s, letter-spacing .4s, transform .2s; }
-        .cast-btn:hover { background: var(--accent); color: var(--bg); letter-spacing: .28em; }
-        .cast-btn:active { transform: scale(.97); }
-        .cast-btn:disabled { opacity: .35; cursor: not-allowed; }
-        .cast-btn:disabled:hover { background: transparent; color: var(--accent); letter-spacing: .18em; }
-        .loading { display: none; flex-direction: column; align-items: center; gap: 16px; padding: 40px 0; }
-        .loading.show { display: flex; }
-        .loading-spinner { width: 36px; height: 36px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text { font-size: .85rem; color: var(--text-muted); font-family: var(--font-display); letter-spacing: .06em; }
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: .9rem;
+            margin-bottom: 40px;
+        }
+
+        .divider {
+            width: 40px;
+            height: 2px;
+            background: var(--accent);
+            margin: 0 auto 40px;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity .7s, transform .7s;
+        }
+
+        .reveal.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cast-btn {
+            padding: 14px 56px;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-family: var(--font-display);
+            font-size: 1rem;
+            letter-spacing: .18em;
+            cursor: pointer;
+            transition: background .4s, color .4s, letter-spacing .4s, transform .2s;
+        }
+
+        .cast-btn:hover {
+            background: var(--accent);
+            color: var(--bg);
+            letter-spacing: .28em;
+        }
+
+        .cast-btn:active {
+            transform: scale(.97);
+        }
+
+        .cast-btn:disabled {
+            opacity: .35;
+            cursor: not-allowed;
+        }
+
+        .cast-btn:disabled:hover {
+            background: transparent;
+            color: var(--accent);
+            letter-spacing: .18em;
+        }
+
+        .loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            padding: 40px 0;
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 36px;
+            height: 36px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            font-size: .85rem;
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            letter-spacing: .06em;
+        }
 
         /* ═══ CONFIG ═══ */
-        .config-card { max-width: 560px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); padding: 32px; }
-        .config-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-        .config-header h3 { font-family: var(--font-display); font-size: 1.05rem; }
-        .config-status { font-size: .75rem; padding: 3px 10px; border-radius: 2px; }
-        .status-ok { background: rgba(74,158,110,.15); color: var(--green); border: 1px solid rgba(74,158,110,.3); }
-        .status-none { background: rgba(110,103,96,.15); color: var(--text-muted); border: 1px solid rgba(110,103,96,.3); }
-        .key-row { display: flex; gap: 10px; }
-        .key-input { flex: 1; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 12px 16px; font-size: .92rem; font-family: var(--font-body); outline: none; transition: border-color .3s; }
-        .key-input:focus { border-color: var(--accent-dim); }
-        .key-input::placeholder { color: var(--text-muted); }
-        .key-btn { padding: 12px 20px; border: 1px solid var(--accent); background: transparent; color: var(--accent); font-family: var(--font-display); font-size: .85rem; letter-spacing: .06em; cursor: pointer; transition: background .3s, color .3s; white-space: nowrap; }
-        .key-btn:hover { background: var(--accent); color: var(--bg); }
-        .key-btn.sm { padding: 8px 14px; font-size: .78rem; }
-        .key-btn.danger { border-color: var(--red); color: var(--red); }
-        .key-btn.danger:hover { background: var(--red); color: var(--text); }
-        .config-tip { margin-top: 14px; font-size: .76rem; color: var(--text-muted); line-height: 1.6; }
-        .config-tip a { color: var(--accent-dim); text-decoration: none; }
+        .config-card {
+            max-width: 560px;
+            margin: 0 auto;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 32px;
+        }
+
+        .config-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .config-header h3 {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+        }
+
+        .config-status {
+            font-size: .75rem;
+            padding: 3px 10px;
+            border-radius: 2px;
+        }
+
+        .status-ok {
+            background: rgba(74, 158, 110, .15);
+            color: var(--green);
+            border: 1px solid rgba(74, 158, 110, .3);
+        }
+
+        .status-none {
+            background: rgba(110, 103, 96, .15);
+            color: var(--text-muted);
+            border: 1px solid rgba(110, 103, 96, .3);
+        }
+
+        .key-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .key-input {
+            flex: 1;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 16px;
+            font-size: .92rem;
+            font-family: var(--font-body);
+            outline: none;
+            transition: border-color .3s;
+        }
+
+        .key-input:focus {
+            border-color: var(--accent-dim);
+        }
+
+        .key-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .key-btn {
+            padding: 12px 20px;
+            border: 1px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            font-family: var(--font-display);
+            font-size: .85rem;
+            letter-spacing: .06em;
+            cursor: pointer;
+            transition: background .3s, color .3s;
+            white-space: nowrap;
+        }
+
+        .key-btn:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .key-btn.sm {
+            padding: 8px 14px;
+            font-size: .78rem;
+        }
+
+        .key-btn.danger {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .key-btn.danger:hover {
+            background: var(--red);
+            color: var(--text);
+        }
+
+        .config-tip {
+            margin-top: 14px;
+            font-size: .76rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .config-tip a {
+            color: var(--accent-dim);
+            text-decoration: none;
+        }
 
         /* ═══ TABS ═══ */
-        .module-tabs { display: flex; justify-content: center; gap: 4px; margin-bottom: 0; flex-wrap: wrap; }
-        .module-tab { padding: 12px 28px; background: transparent; border: 1px solid var(--border); border-bottom: none; color: var(--text-muted); font-family: var(--font-display); font-size: .88rem; letter-spacing: .06em; cursor: pointer; transition: all .3s; position: relative; }
-        .module-tab:hover { color: var(--text); }
-        .module-tab.active { color: var(--accent); border-color: var(--accent-dim); background: var(--surface); }
-        .module-tab.active::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 1px; background: var(--surface); }
-        .module-panel { display: none; }
-        .module-panel.active { display: block; }
+        .module-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 0;
+            flex-wrap: wrap;
+        }
+
+        .module-tab {
+            padding: 12px 28px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-bottom: none;
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            font-size: .88rem;
+            letter-spacing: .06em;
+            cursor: pointer;
+            transition: all .3s;
+            position: relative;
+        }
+
+        .module-tab:hover {
+            color: var(--text);
+        }
+
+        .module-tab.active {
+            color: var(--accent);
+            border-color: var(--accent-dim);
+            background: var(--surface);
+        }
+
+        .module-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--surface);
+        }
+
+        .module-panel {
+            display: none;
+        }
+
+        .module-panel.active {
+            display: block;
+        }
 
         /* ═══ LR: WHEEL & POSITIONS ═══ */
-        .wheel-container { position: relative; width: 320px; height: 320px; margin: 0 auto 40px; }
-        .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 88px; height: 88px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: var(--accent); background: var(--surface); }
-        .wheel-ring { position: absolute; inset: 0; border: 1px dashed var(--border); border-radius: 50%; opacity: .3; }
-        .pos-node { position: absolute; width: 72px; text-align: center; top: 50%; left: 50%; margin-left: -36px; margin-top: -32px; cursor: pointer; transition: transform .3s, filter .3s; }
-        .pos-node:hover { transform: translate(var(--tx),var(--ty)) scale(1.12)!important; filter: brightness(1.3); }
-        .pos-node.active { filter: brightness(1.5) drop-shadow(0 0 12px var(--glow)); }
-        .pos-node.active .pos-icon { animation: nodeGlow 1.5s ease-in-out infinite; }
-        @keyframes nodeGlow { 0%,100% { box-shadow: 0 0 8px var(--glow); } 50% { box-shadow: 0 0 24px var(--glow), 0 0 48px var(--glow); } }
-        .pos-icon { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-size: 1rem; font-family: var(--font-display); font-weight: 700; background: var(--surface); transition: border-color .3s, box-shadow .3s; }
-        .pos-label { font-size: .7rem; color: var(--text-muted); font-family: var(--font-display); }
-        .pos-element { font-size: .58rem; color: var(--text-muted); opacity: .5; }
-        .pos-legend { display: grid; grid-template-columns: repeat(6,1fr); gap: 6px; max-width: 560px; margin: 0 auto 40px; }
-        .pos-legend-item { display: flex; align-items: center; gap: 5px; padding: 6px 8px; background: var(--surface); border: 1px solid var(--border); cursor: pointer; transition: border-color .3s; }
-        .pos-legend-item.active { border-color: var(--accent-dim); }
-        .legend-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-        .legend-name { font-size: .68rem; font-family: var(--font-display); color: var(--text-muted); }
-        .cast-section { text-align: center; margin-bottom: 36px; }
+        .wheel-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 0 auto 40px;
+        }
+
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: var(--accent);
+            background: var(--surface);
+        }
+
+        .wheel-ring {
+            position: absolute;
+            inset: 0;
+            border: 1px dashed var(--border);
+            border-radius: 50%;
+            opacity: .3;
+        }
+
+        .pos-node {
+            position: absolute;
+            width: 72px;
+            text-align: center;
+            top: 50%;
+            left: 50%;
+            margin-left: -36px;
+            margin-top: -32px;
+            cursor: pointer;
+            transition: transform .3s, filter .3s;
+        }
+
+        .pos-node:hover {
+            transform: translate(var(--tx), var(--ty)) scale(1.12) !important;
+            filter: brightness(1.3);
+        }
+
+        .pos-node.active {
+            filter: brightness(1.5) drop-shadow(0 0 12px var(--glow));
+        }
+
+        .pos-node.active .pos-icon {
+            animation: nodeGlow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes nodeGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 8px var(--glow);
+            }
+
+            50% {
+                box-shadow: 0 0 24px var(--glow), 0 0 48px var(--glow);
+            }
+        }
+
+        .pos-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 5px;
+            font-size: 1rem;
+            font-family: var(--font-display);
+            font-weight: 700;
+            background: var(--surface);
+            transition: border-color .3s, box-shadow .3s;
+        }
+
+        .pos-label {
+            font-size: .7rem;
+            color: var(--text-muted);
+            font-family: var(--font-display);
+        }
+
+        .pos-element {
+            font-size: .58rem;
+            color: var(--text-muted);
+            opacity: .5;
+        }
+
+        .pos-legend {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+            max-width: 560px;
+            margin: 0 auto 40px;
+        }
+
+        .pos-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: border-color .3s;
+        }
+
+        .pos-legend-item.active {
+            border-color: var(--accent-dim);
+        }
+
+        .legend-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .legend-name {
+            font-size: .68rem;
+            font-family: var(--font-display);
+            color: var(--text-muted);
+        }
+
+        .cast-section {
+            text-align: center;
+            margin-bottom: 36px;
+        }
 
         /* LR Results */
-        .lr-results { display: none; animation: fadeUp .6s ease; }
-        .lr-results.show { display: block; }
-        .lr-time { text-align: center; font-family: var(--font-en); font-size: .95rem; color: var(--accent-dim); letter-spacing: .06em; margin-bottom: 28px; }
-        .lr-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 28px; }
-        .lr-card { background: var(--surface); border: 1px solid var(--border); padding: 22px; text-align: center; opacity: 0; transform: translateY(16px); transition: opacity .5s, transform .5s, border-color .3s; }
-        .lr-card.visible { opacity: 1; transform: translateY(0); }
-        .lr-card:nth-child(2).visible { transition-delay: .15s; }
-        .lr-card:nth-child(3).visible { transition-delay: .3s; }
-        .lr-card:hover { border-color: var(--accent-dim); }
-        .lr-card-title { font-size: .72rem; color: var(--text-muted); letter-spacing: .15em; margin-bottom: 10px; text-transform: uppercase; }
-        .lr-card-pos { font-family: var(--font-display); font-size: 1.6rem; font-weight: 900; margin-bottom: 4px; }
-        .lr-card-element { font-size: .78rem; color: var(--text-muted); margin-bottom: 10px; }
-        .lr-card-fortune { display: inline-block; padding: 2px 10px; font-size: .72rem; border-radius: 2px; }
-        .fortune-吉 { background: rgba(74,158,110,.12); color: var(--green); border: 1px solid rgba(74,158,110,.3); }
-        .fortune-凶 { background: rgba(184,64,56,.12); color: #d06050; border: 1px solid rgba(184,64,56,.3); }
-        .fortune-中 { background: rgba(201,162,77,.12); color: var(--accent); border: 1px solid rgba(201,162,77,.3); }
-        .lr-card-text { margin-top: 10px; font-size: .78rem; color: var(--text-muted); line-height: 1.7; text-align: left; }
-        .hourmsg-card { background: var(--surface); border: 1px solid var(--border); padding: 28px; opacity: 0; transform: translateY(16px); transition: opacity .5s, transform .5s; }
-        .hourmsg-card.visible { opacity: 1; transform: translateY(0); }
-        .hourmsg-title { font-family: var(--font-display); font-size: 1rem; color: var(--accent); margin-bottom: 14px; letter-spacing: .06em; display: flex; align-items: center; gap: 8px; }
-        .hourmsg-title::before { content: ''; width: 3px; height: 16px; background: var(--accent); display: block; }
-        .hourmsg-body { font-size: .88rem; line-height: 2; color: var(--text); }
-        .retry-section { text-align: center; margin-top: 28px; }
-        .retry-btn { padding: 10px 36px; background: transparent; border: 1px solid var(--border); color: var(--text-muted); font-family: var(--font-display); font-size: .88rem; letter-spacing: .06em; cursor: pointer; transition: border-color .3s, color .3s; }
-        .retry-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .lr-results {
+            display: none;
+            animation: fadeUp .6s ease;
+        }
+
+        .lr-results.show {
+            display: block;
+        }
+
+        .lr-time {
+            text-align: center;
+            font-family: var(--font-en);
+            font-size: .95rem;
+            color: var(--accent-dim);
+            letter-spacing: .06em;
+            margin-bottom: 28px;
+        }
+
+        .lr-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .lr-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 22px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity .5s, transform .5s, border-color .3s;
+        }
+
+        .lr-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .lr-card:nth-child(2).visible {
+            transition-delay: .15s;
+        }
+
+        .lr-card:nth-child(3).visible {
+            transition-delay: .3s;
+        }
+
+        .lr-card:hover {
+            border-color: var(--accent-dim);
+        }
+
+        .lr-card-title {
+            font-size: .72rem;
+            color: var(--text-muted);
+            letter-spacing: .15em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .lr-card-pos {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .lr-card-element {
+            font-size: .78rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .lr-card-fortune {
+            display: inline-block;
+            padding: 2px 10px;
+            font-size: .72rem;
+            border-radius: 2px;
+        }
+
+        .fortune-吉 {
+            background: rgba(74, 158, 110, .12);
+            color: var(--green);
+            border: 1px solid rgba(74, 158, 110, .3);
+        }
+
+        .fortune-凶 {
+            background: rgba(184, 64, 56, .12);
+            color: #d06050;
+            border: 1px solid rgba(184, 64, 56, .3);
+        }
+
+        .fortune-中 {
+            background: rgba(201, 162, 77, .12);
+            color: var(--accent);
+            border: 1px solid rgba(201, 162, 77, .3);
+        }
+
+        .lr-card-text {
+            margin-top: 10px;
+            font-size: .78rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            text-align: left;
+        }
+
+        .hourmsg-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 28px;
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity .5s, transform .5s;
+        }
+
+        .hourmsg-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hourmsg-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--accent);
+            margin-bottom: 14px;
+            letter-spacing: .06em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hourmsg-title::before {
+            content: '';
+            width: 3px;
+            height: 16px;
+            background: var(--accent);
+            display: block;
+        }
+
+        .hourmsg-body {
+            font-size: .88rem;
+            line-height: 2;
+            color: var(--text);
+        }
+
+        .retry-section {
+            text-align: center;
+            margin-top: 28px;
+        }
+
+        .retry-btn {
+            padding: 10px 36px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            font-size: .88rem;
+            letter-spacing: .06em;
+            cursor: pointer;
+            transition: border-color .3s, color .3s;
+        }
+
+        .retry-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
 
         /* ═══ BAZI ═══ */
-        .bazi-form { max-width: 600px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); padding: 36px; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        .form-group label { font-size: .78rem; color: var(--text-muted); letter-spacing: .04em; }
-        .form-group input, .form-group select { background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 11px 14px; font-size: .92rem; font-family: var(--font-body); outline: none; transition: border-color .3s; }
-        .form-group input:focus, .form-group select:focus { border-color: var(--accent-dim); }
-        .form-group select option { background: var(--surface); }
-        .form-actions { display: flex; gap: 12px; margin-top: 20px; }
-        .form-actions .cast-btn { flex: 1; }
-        .form-note { margin-top: 14px; font-size: .72rem; color: var(--text-muted); text-align: center; }
-        .bazi-results { display: none; animation: fadeUp .6s ease; }
-        .bazi-results.show { display: block; }
-        .pillar-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 24px; }
-        .pillar { background: var(--surface); border: 1px solid var(--border); padding: 20px 12px; text-align: center; transition: border-color .3s; }
-        .pillar:hover { border-color: var(--accent-dim); }
-        .pillar-label { font-size: .7rem; color: var(--text-muted); letter-spacing: .12em; margin-bottom: 10px; text-transform: uppercase; }
-        .pillar-stem { font-family: var(--font-display); font-size: 2rem; font-weight: 900; line-height: 1; color: var(--accent); }
-        .pillar-branch { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; line-height: 1; color: var(--text); margin: 6px 0 4px; }
-        .pillar-element { font-size: .72rem; color: var(--text-muted); margin-bottom: 6px; }
-        .pillar-hidden { font-size: .7rem; color: var(--accent-dim); opacity: .7; line-height: 1.5; }
-        .pillar-god { font-size: .7rem; color: var(--text-muted); margin-top: 4px; }
-        .info-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: 10px; margin-bottom: 24px; }
-        .info-item { background: var(--surface); border: 1px solid var(--border); padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
-        .info-item-label { font-size: .68rem; color: var(--text-muted); letter-spacing: .08em; }
-        .info-item-value { font-family: var(--font-display); font-size: .95rem; color: var(--text); font-weight: 700; }
-        .dayun-title { font-family: var(--font-display); font-size: 1.1rem; color: var(--accent); margin: 32px 0 16px; padding-left: 12px; border-left: 3px solid var(--accent); letter-spacing: .06em; }
-        .dayun-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(90px,1fr)); gap: 8px; margin-bottom: 24px; }
-        .dayun-card { background: var(--surface); border: 1px solid var(--border); padding: 12px 8px; text-align: center; transition: border-color .3s; }
-        .dayun-card:hover { border-color: var(--accent-dim); }
-        .dayun-card.active { border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
-        .dayun-age { font-size: .68rem; color: var(--text-muted); margin-bottom: 4px; }
-        .dayun-stems { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--accent); line-height: 1.3; }
-        .dayun-branch { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--text); line-height: 1.3; }
-        .dayun-12cs { font-size: .65rem; color: var(--accent-dim); margin-top: 4px; }
-        .qiyun-card { background: var(--surface); border: 1px solid var(--border); padding: 20px; margin-bottom: 24px; }
-        .qiyun-card h4 { font-family: var(--font-display); font-size: .9rem; color: var(--accent); margin-bottom: 10px; letter-spacing: .06em; }
-        .qiyun-card p { font-size: .85rem; color: var(--text); line-height: 1.8; }
-        .ln-title { font-family: var(--font-display); font-size: 1rem; color: var(--text); margin: 20px 0 12px; letter-spacing: .04em; }
-        .ln-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; -webkit-overflow-scrolling: touch; }
-        .ln-scroll::-webkit-scrollbar { height: 4px; }
-        .ln-scroll::-webkit-scrollbar-track { background: var(--surface); }
-        .ln-scroll::-webkit-scrollbar-thumb { background: var(--accent-dim); }
-        .ln-card { min-width: 56px; background: var(--surface-2); border: 1px solid var(--border); padding: 8px 6px; text-align: center; flex-shrink: 0; }
-        .ln-year { font-size: .6rem; color: var(--text-muted); margin-bottom: 2px; }
-        .ln-stem { font-family: var(--font-display); font-size: .88rem; font-weight: 700; color: var(--accent); }
-        .ln-age { font-size: .58rem; color: var(--text-muted); }
+        .bazi-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 36px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-size: .78rem;
+            color: var(--text-muted);
+            letter-spacing: .04em;
+        }
+
+        .form-group input,
+        .form-group select {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 11px 14px;
+            font-size: .92rem;
+            font-family: var(--font-body);
+            outline: none;
+            transition: border-color .3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--accent-dim);
+        }
+
+        .form-group select option {
+            background: var(--surface);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .form-actions .cast-btn {
+            flex: 1;
+        }
+
+        .form-note {
+            margin-top: 14px;
+            font-size: .72rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .bazi-results {
+            display: none;
+            animation: fadeUp .6s ease;
+        }
+
+        .bazi-results.show {
+            display: block;
+        }
+
+        .pillar-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .pillar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 20px 12px;
+            text-align: center;
+            transition: border-color .3s;
+        }
+
+        .pillar:hover {
+            border-color: var(--accent-dim);
+        }
+
+        .pillar-label {
+            font-size: .7rem;
+            color: var(--text-muted);
+            letter-spacing: .12em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .pillar-stem {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 900;
+            line-height: 1;
+            color: var(--accent);
+        }
+
+        .pillar-branch {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--text);
+            margin: 6px 0 4px;
+        }
+
+        .pillar-element {
+            font-size: .72rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .pillar-hidden {
+            font-size: .7rem;
+            color: var(--accent-dim);
+            opacity: .7;
+            line-height: 1.5;
+        }
+
+        .pillar-god {
+            font-size: .7rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .info-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-item-label {
+            font-size: .68rem;
+            color: var(--text-muted);
+            letter-spacing: .08em;
+        }
+
+        .info-item-value {
+            font-family: var(--font-display);
+            font-size: .95rem;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .dayun-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            color: var(--accent);
+            margin: 32px 0 16px;
+            padding-left: 12px;
+            border-left: 3px solid var(--accent);
+            letter-spacing: .06em;
+        }
+
+        .dayun-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .dayun-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 12px 8px;
+            text-align: center;
+            transition: border-color .3s;
+        }
+
+        .dayun-card:hover {
+            border-color: var(--accent-dim);
+        }
+
+        .dayun-card.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .dayun-age {
+            font-size: .68rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .dayun-stems {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1.3;
+        }
+
+        .dayun-branch {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.3;
+        }
+
+        .dayun-12cs {
+            font-size: .65rem;
+            color: var(--accent-dim);
+            margin-top: 4px;
+        }
+
+        .qiyun-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .qiyun-card h4 {
+            font-family: var(--font-display);
+            font-size: .9rem;
+            color: var(--accent);
+            margin-bottom: 10px;
+            letter-spacing: .06em;
+        }
+
+        .qiyun-card p {
+            font-size: .85rem;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .ln-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: var(--text);
+            margin: 20px 0 12px;
+            letter-spacing: .04em;
+        }
+
+        .ln-scroll {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .ln-scroll::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .ln-scroll::-webkit-scrollbar-track {
+            background: var(--surface);
+        }
+
+        .ln-scroll::-webkit-scrollbar-thumb {
+            background: var(--accent-dim);
+        }
+
+        .ln-card {
+            min-width: 56px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            padding: 8px 6px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .ln-year {
+            font-size: .6rem;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .ln-stem {
+            font-family: var(--font-display);
+            font-size: .88rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .ln-age {
+            font-size: .58rem;
+            color: var(--text-muted);
+        }
 
         /* ═══ LENORMAND ═══ */
-        .lnm-options { display: flex; justify-content: center; gap: 10px; margin-bottom: 32px; flex-wrap: wrap; }
-        .lnm-opt { padding: 10px 22px; background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); font-family: var(--font-display); font-size: .88rem; letter-spacing: .04em; cursor: pointer; transition: all .3s; }
-        .lnm-opt:hover { border-color: var(--accent-dim); color: var(--text); }
-        .lnm-opt.active { border-color: var(--accent); color: var(--accent); background: rgba(201,162,77,.06); }
-        .lnm-cast-section { text-align: center; margin-bottom: 40px; }
+        .lnm-options {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .lnm-opt {
+            padding: 10px 22px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            font-size: .88rem;
+            letter-spacing: .04em;
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+        .lnm-opt:hover {
+            border-color: var(--accent-dim);
+            color: var(--text);
+        }
+
+        .lnm-opt.active {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(201, 162, 77, .06);
+        }
+
+        .lnm-cast-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
         /* Card fan display */
-        .lnm-fan { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; margin-bottom: 32px; perspective: 800px; }
-        .lnm-card { width: 110px; height: 170px; position: relative; cursor: default; perspective: 600px; opacity: 0; transform: translateY(30px) rotateY(90deg); transition: opacity .5s, transform .6s; }
-        .lnm-card.visible { opacity: 1; transform: translateY(0) rotateY(0); }
-        .lnm-card-inner { width: 100%; height: 100%; position: relative; transition: transform .8s cubic-bezier(.4,0,.2,1); transform-style: preserve-3d; }
-        .lnm-card.flipped .lnm-card-inner { transform: rotateY(180deg); }
-        .lnm-card-front, .lnm-card-back { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 8px; }
-        .lnm-card-front { background: linear-gradient(145deg, #1e1e30, #12121e); border: 1px solid var(--accent-dim); }
-        .lnm-card-front-pattern { position: absolute; inset: 8px; border: 1px solid rgba(201,162,77,.15); border-radius: 4px; }
-        .lnm-card-front .card-back-symbol { font-size: 2.2rem; color: var(--accent); opacity: .4; }
-        .lnm-card-front .card-back-text { font-size: .55rem; color: var(--accent-dim); opacity: .3; margin-top: 4px; font-family: var(--font-display); letter-spacing: .1em; }
-        .lnm-card-back { background: linear-gradient(145deg, #1a1a2a, #10101a); border: 1px solid var(--border); transform: rotateY(180deg); text-align: center; }
-        .lnm-card-idx { position: absolute; top: 6px; left: 8px; font-size: .6rem; color: var(--accent-dim); font-family: var(--font-en); }
-        .lnm-card-icon { font-size: 2.8rem; margin-bottom: 6px; line-height: 1; }
-        .lnm-card-name { font-family: var(--font-display); font-size: .92rem; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
-        .lnm-card-keywords { font-size: .62rem; color: var(--text-muted); line-height: 1.4; }
+        .lnm-fan {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 32px;
+            perspective: 800px;
+        }
+
+        .lnm-card {
+            width: 110px;
+            height: 170px;
+            position: relative;
+            cursor: default;
+            perspective: 600px;
+            opacity: 0;
+            transform: translateY(30px) rotateY(90deg);
+            transition: opacity .5s, transform .6s;
+        }
+
+        .lnm-card.visible {
+            opacity: 1;
+            transform: translateY(0) rotateY(0);
+        }
+
+        .lnm-card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform .8s cubic-bezier(.4, 0, .2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .lnm-card.flipped .lnm-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .lnm-card-front,
+        .lnm-card-back {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 8px;
+        }
+
+        .lnm-card-front {
+            background: linear-gradient(145deg, #1e1e30, #12121e);
+            border: 1px solid var(--accent-dim);
+        }
+
+        .lnm-card-front-pattern {
+            position: absolute;
+            inset: 8px;
+            border: 1px solid rgba(201, 162, 77, .15);
+            border-radius: 4px;
+        }
+
+        .lnm-card-front .card-back-symbol {
+            font-size: 2.2rem;
+            color: var(--accent);
+            opacity: .4;
+        }
+
+        .lnm-card-front .card-back-text {
+            font-size: .55rem;
+            color: var(--accent-dim);
+            opacity: .3;
+            margin-top: 4px;
+            font-family: var(--font-display);
+            letter-spacing: .1em;
+        }
+
+        .lnm-card-back {
+            background: linear-gradient(145deg, #1a1a2a, #10101a);
+            border: 1px solid var(--border);
+            transform: rotateY(180deg);
+            text-align: center;
+        }
+
+        .lnm-card-idx {
+            position: absolute;
+            top: 6px;
+            left: 8px;
+            font-size: .6rem;
+            color: var(--accent-dim);
+            font-family: var(--font-en);
+        }
+
+        .lnm-card-icon {
+            font-size: 2.8rem;
+            margin-bottom: 6px;
+            line-height: 1;
+        }
+
+        .lnm-card-name {
+            font-family: var(--font-display);
+            font-size: .92rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .lnm-card-keywords {
+            font-size: .62rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
 
         /* LNM result text */
-        .lnm-result-box { display: none; max-width: 680px; margin: 0 auto; background: var(--surface); border: 1px solid var(--border); padding: 32px; animation: fadeUp .5s ease; }
-        .lnm-result-box.show { display: block; }
-        .lnm-result-time { font-family: var(--font-en); font-size: .88rem; color: var(--accent-dim); margin-bottom: 20px; text-align: center; letter-spacing: .06em; }
-        .lnm-result-data { font-size: .92rem; color: var(--text); line-height: 2; }
-        .lnm-result-data p { margin-bottom: 12px; }
-        .lnm-result-data strong { color: var(--accent); }
+        .lnm-result-box {
+            display: none;
+            max-width: 680px;
+            margin: 0 auto;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 32px;
+            animation: fadeUp .5s ease;
+        }
+
+        .lnm-result-box.show {
+            display: block;
+        }
+
+        .lnm-result-time {
+            font-family: var(--font-en);
+            font-size: .88rem;
+            color: var(--accent-dim);
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: .06em;
+        }
+
+        .lnm-result-data {
+            font-size: .92rem;
+            color: var(--text);
+            line-height: 2;
+        }
+
+        .lnm-result-data p {
+            margin-bottom: 12px;
+        }
+
+        .lnm-result-data strong {
+            color: var(--accent);
+        }
 
         /* ═══ FOOTER ═══ */
-        .footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--border); }
-        .footer-logo { font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; letter-spacing: .06em; }
-        .footer p { font-size: .75rem; color: var(--text-muted); line-height: 1.6; }
+        .footer {
+            padding: 40px 24px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-logo {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 8px;
+            letter-spacing: .06em;
+        }
+
+        .footer p {
+            font-size: .75rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
 
         /* ═══ RESPONSIVE ═══ */
         @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .nav-toggle { display: flex; }
-            .hero-symbol { font-size: 4rem; }
-            .hero-cards { flex-direction: column; align-items: center; }
-            .hero-card { width: 220px; text-align: center; }
-            .wheel-container { width: 260px; height: 260px; }
-            .wheel-center { width: 70px; height: 70px; font-size: 1.3rem; }
-            .pos-icon { width: 36px; height: 36px; font-size: .85rem; }
-            .pos-node { width: 56px; margin-left: -28px; }
-            .pos-legend { grid-template-columns: repeat(3,1fr); }
-            .lr-cards { grid-template-columns: 1fr; }
-            .pillar-row { grid-template-columns: repeat(2,1fr); }
-            .form-grid { grid-template-columns: 1fr; }
-            .form-actions { flex-direction: column; }
-            .dayun-grid { grid-template-columns: repeat(auto-fill,minmax(75px,1fr)); }
-            .module-tab { padding: 10px 18px; font-size: .8rem; }
-            .config-card, .bazi-form { padding: 20px; }
-            .key-row { flex-direction: column; }
-            .lnm-card { width: 90px; height: 140px; }
-            .lnm-card-icon { font-size: 2rem; }
-            .lnm-card-name { font-size: .78rem; }
-            .lnm-card-keywords { font-size: .55rem; }
+            .nav-links {
+                display: none;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .hero-symbol {
+                font-size: 4rem;
+            }
+
+            .hero-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-card {
+                width: 220px;
+                text-align: center;
+            }
+
+            .wheel-container {
+                width: 260px;
+                height: 260px;
+            }
+
+            .wheel-center {
+                width: 70px;
+                height: 70px;
+                font-size: 1.3rem;
+            }
+
+            .pos-icon {
+                width: 36px;
+                height: 36px;
+                font-size: .85rem;
+            }
+
+            .pos-node {
+                width: 56px;
+                margin-left: -28px;
+            }
+
+            .pos-legend {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .lr-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .pillar-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .dayun-grid {
+                grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+            }
+
+            .module-tab {
+                padding: 10px 18px;
+                font-size: .8rem;
+            }
+
+            .config-card,
+            .bazi-form {
+                padding: 20px;
+            }
+
+            .key-row {
+                flex-direction: column;
+            }
+
+            .lnm-card {
+                width: 90px;
+                height: 140px;
+            }
+
+            .lnm-card-icon {
+                font-size: 2rem;
+            }
+
+            .lnm-card-name {
+                font-size: .78rem;
+            }
+
+            .lnm-card-keywords {
+                font-size: .55rem;
+            }
         }
+
         @media (max-width: 480px) {
-            .wheel-container { width: 220px; height: 220px; }
-            .pos-legend { grid-template-columns: repeat(2,1fr); }
-            .lnm-card { width: 80px; height: 125px; }
-            .lnm-fan { gap: 8px; }
+            .wheel-container {
+                width: 220px;
+                height: 220px;
+            }
+
+            .pos-legend {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .lnm-card {
+                width: 80px;
+                height: 125px;
+            }
+
+            .lnm-fan {
+                gap: 8px;
+            }
+        }
+
+        /* ═══ LNM INTERPRETATION ═══ */
+        .lnm-interp {
+            display: none;
+            max-width: 780px;
+            margin: 0 auto;
+            animation: fadeUp .6s ease;
+        }
+
+        .lnm-interp.show {
+            display: block;
+        }
+
+        .lnm-interp-head {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .lnm-interp-head h3 {
+            font-family: var(--font-display);
+            font-size: 1.15rem;
+            color: var(--accent);
+            letter-spacing: .1em;
+            margin-bottom: 6px;
+        }
+
+        .lnm-interp-head span {
+            font-family: var(--font-en);
+            font-size: .88rem;
+            color: var(--text-muted);
+        }
+
+        .lnm-interp-cards {
+            display: grid;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .lnm-interp-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 20px 24px;
+            display: flex;
+            gap: 18px;
+            transition: border-color .3s;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity .5s, transform .5s, border-color .3s;
+        }
+
+        .lnm-interp-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .lnm-interp-card:hover {
+            border-color: var(--accent-dim);
+        }
+
+        .interp-card-left {
+            flex-shrink: 0;
+            width: 72px;
+            text-align: center;
+        }
+
+        .interp-card-pos {
+            font-size: .62rem;
+            color: var(--accent-dim);
+            letter-spacing: .08em;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .interp-card-icon {
+            font-size: 2.2rem;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .interp-card-name {
+            font-family: var(--font-display);
+            font-size: .88rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .interp-card-right {
+            flex: 1;
+        }
+
+        .interp-kw {
+            font-size: .72rem;
+            color: var(--accent-dim);
+            margin-bottom: 10px;
+            letter-spacing: .04em;
+        }
+
+        .interp-tabs {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 10px;
+        }
+
+        .interp-tab {
+            padding: 4px 12px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: .68rem;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .interp-tab:hover {
+            color: var(--text);
+        }
+
+        .interp-tab.active {
+            color: var(--accent);
+            border-color: var(--accent-dim);
+            background: rgba(201, 162, 77, .06);
+        }
+
+        .interp-text {
+            font-size: .88rem;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .lnm-summary {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+            padding: 24px 28px;
+            margin-bottom: 24px;
+        }
+
+        .lnm-summary h4 {
+            font-family: var(--font-display);
+            font-size: .95rem;
+            color: var(--accent);
+            margin-bottom: 12px;
+            letter-spacing: .06em;
+        }
+
+        .lnm-summary p {
+            font-size: .88rem;
+            color: var(--text);
+            line-height: 1.9;
+        }
+
+        .lnm-interp .retry-section {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .lnm-interp-card {
+                flex-direction: column;
+                gap: 10px;
+                padding: 16px;
+            }
+
+            .interp-card-left {
+                width: auto;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .interp-card-pos {
+                margin-bottom: 0;
+            }
+
+            .interp-tabs {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
+
 <body>
 
-<!-- ═══ NAV ═══ -->
-<nav class="nav" id="nav">
-    <div class="nav-inner">
-        <a href="#" class="nav-logo">易道</a>
-        <div class="nav-links">
-            <a href="#modules">小六壬</a>
-            <a href="#modules">八字排盘</a>
-            <a href="#modules">雷诺曼</a>
+    <!-- ═══ NAV ═══ -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">易道</a>
+            <div class="nav-links">
+                <a href="#modules">小六壬</a>
+                <a href="#modules">八字排盘</a>
+                <a href="#modules">雷诺曼</a>
+            </div>
+            <button class="nav-toggle" id="navToggle"
+                onclick="document.getElementById('mobileMenu').classList.toggle('open')">☰</button>
         </div>
-        <button class="nav-toggle" id="navToggle" onclick="document.getElementById('mobileMenu').classList.toggle('open')">☰</button>
-    </div>
-    <div class="mobile-menu" id="mobileMenu">
-        <a href="#modules" onclick="switchTab('lr');closeMob()">小六壬</a>
-        <a href="#modules" onclick="switchTab('bz');closeMob()">八字排盘</a>
-        <a href="#modules" onclick="switchTab('lnm');closeMob()">雷诺曼</a>
-    </div>
-</nav>
-
-<!-- ═══ HERO ═══ -->
-<section class="hero">
-    <div class="hero-content">
-        <span class="hero-symbol">☯</span>
-        <h1>易 道</h1>
-        <div class="hero-sub-en">YIDAO · CHINESE DIVINATION</div>
-        <p>掐指一算，洞察天机 · 趋吉避凶，智慧人生</p>
-        <div class="hero-cards">
-            <a href="#modules" class="hero-card" onclick="switchTab('lr')">小六壬神课</a>
-            <a href="#modules" class="hero-card" onclick="switchTab('bz')">八字排盘</a>
-            <a href="#modules" class="hero-card" onclick="switchTab('lnm')">雷诺曼占卜</a>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#modules" onclick="switchTab('lr');closeMob()">小六壬</a>
+            <a href="#modules" onclick="switchTab('bz');closeMob()">八字排盘</a>
+            <a href="#modules" onclick="switchTab('lnm');closeMob()">雷诺曼</a>
         </div>
-    </div>
-</section>
+    </nav>
 
-<!-- ═══ MODULES ═══ -->
-<section class="section" id="modules" style="background:var(--surface);">
-    <div class="container">
-        <div class="module-tabs reveal">
-            <button class="module-tab active" data-tab="lr" onclick="switchTab('lr')">小六壬神课</button>
-            <button class="module-tab" data-tab="bz" onclick="switchTab('bz')">八字排盘</button>
-            <button class="module-tab" data-tab="lnm" onclick="switchTab('lnm')">雷诺曼占卜</button>
-        </div>
-
-        <!-- ════════════ LR PANEL ════════════ -->
-        <div class="module-panel active" id="panel-lr" style="background:var(--bg);border:1px solid var(--border);border-top:none;padding:40px 24px;">
-            <div class="section-title" style="margin-top:0">小六壬 · 起卦</div>
-            <div class="section-subtitle">心中默念所问之事，按下方按钮依时起卦</div>
-            <div class="divider"></div>
-            <div class="wheel-container" id="wheelContainer"><div class="wheel-ring"></div><div class="wheel-center">☰</div></div>
-            <div class="pos-legend" id="posLegend"></div>
-            <div class="cast-section"><button class="cast-btn" id="lrCastBtn" onclick="castLR()">起 卦</button></div>
-            <div class="loading" id="lrLoading"><div class="loading-spinner"></div><span class="loading-text">掐指推算中…</span></div>
-            <div class="lr-results" id="lrResults">
-                <div class="lr-time" id="lrTime"></div>
-                <div class="lr-cards" id="lrCards"></div>
-                <div class="hourmsg-card" id="hourmsgCard"><div class="hourmsg-title">时辰注解</div><div class="hourmsg-body" id="hourmsgBody"></div></div>
-                <div class="retry-section"><button class="retry-btn" onclick="castLR()">重新起卦</button></div>
+    <!-- ═══ HERO ═══ -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-symbol">☯</span>
+            <h1>易 道</h1>
+            <div class="hero-sub-en">YIDAO · CHINESE DIVINATION</div>
+            <p>掐指一算，洞察天机 · 趋吉避凶，智慧人生</p>
+            <div class="hero-cards">
+                <a href="#modules" class="hero-card" onclick="switchTab('lr')">小六壬神课</a>
+                <a href="#modules" class="hero-card" onclick="switchTab('bz')">八字排盘</a>
+                <a href="#modules" class="hero-card" onclick="switchTab('lnm')">雷诺曼占卜</a>
             </div>
         </div>
+    </section>
 
-        <!-- ════════════ BZ PANEL ════════════ -->
-        <div class="module-panel" id="panel-bz" style="background:var(--bg);border:1px solid var(--border);border-top:none;padding:40px 24px;">
-            <div class="section-title" style="margin-top:0">八字排盘</div>
-            <div class="section-subtitle">输入出生信息，自动排出四柱八字与大运流年</div>
-            <div class="divider"></div>
-            <div class="bazi-form">
-                <div class="form-grid">
-                    <div class="form-group"><label>出生年份</label><input type="number" id="bzYear" placeholder="如 1990" min="1900" max="2100"></div>
-                    <div class="form-group"><label>出生月份</label>
-                        <select id="bzMonth"><option value="">选择月份</option><option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option></select>
-                    </div>
-                    <div class="form-group"><label>出生日期</label><input type="number" id="bzDay" placeholder="如 15" min="1" max="31"></div>
-                    <div class="form-group"><label>出生时辰（小时）</label>
-                        <select id="bzHour"><option value="">选择时辰</option><option value="00">子时 23:00-01:00</option><option value="01">丑时 01:00-03:00</option><option value="03">寅时 03:00-05:00</option><option value="05">卯时 05:00-07:00</option><option value="07">辰时 07:00-09:00</option><option value="09">巳时 09:00-11:00</option><option value="11">午时 11:00-13:00</option><option value="13">未时 13:00-15:00</option><option value="15">申时 15:00-17:00</option><option value="17">酉时 17:00-19:00</option><option value="19">戌时 19:00-21:00</option><option value="21">亥时 21:00-23:00</option></select>
-                    </div>
-                    <div class="form-group"><label>出生分钟</label><input type="number" id="bzMinute" placeholder="如 30" min="0" max="59"></div>
-                    <div class="form-group"><label>性别</label>
-                        <select id="bzGender"><option value="0">男（乾造）</option><option value="1">女（坤造）</option></select>
-                    </div>
+    <!-- ═══ MODULES ═══ -->
+    <section class="section" id="modules" style="background:var(--surface);">
+        <div class="container">
+            <div class="module-tabs reveal">
+                <button class="module-tab active" data-tab="lr" onclick="switchTab('lr')">小六壬神课</button>
+                <button class="module-tab" data-tab="bz" onclick="switchTab('bz')">八字排盘</button>
+                <button class="module-tab" data-tab="lnm" onclick="switchTab('lnm')">雷诺曼占卜</button>
+            </div>
+
+            <!-- ════════════ LR PANEL ════════════ -->
+            <div class="module-panel active" id="panel-lr"
+                style="background:var(--bg);border:1px solid var(--border);border-top:none;padding:40px 24px;">
+                <div class="section-title" style="margin-top:0">小六壬 · 起卦</div>
+                <div class="section-subtitle">心中默念所问之事，按下方按钮依时起卦</div>
+                <div class="divider"></div>
+                <div class="wheel-container" id="wheelContainer">
+                    <div class="wheel-ring"></div>
+                    <div class="wheel-center">☰</div>
                 </div>
-                <div class="form-actions"><button class="cast-btn" id="bzCastBtn" onclick="castBZ()">排 盘</button></div>
-                <div class="form-note">※ 精确排盘建议使用真太阳时校验</div>
-            </div>
-            <div class="loading" id="bzLoading"><div class="loading-spinner"></div><span class="loading-text">排盘计算中…</span></div>
-            <div class="bazi-results" id="bzResults"></div>
-        </div>
-
-        <!-- ════════════ LNM PANEL ════════════ -->
-        <div class="module-panel" id="panel-lnm" style="background:var(--bg);border:1px solid var(--border);border-top:none;padding:40px 24px;">
-            <div class="section-title" style="margin-top:0">雷诺曼 · 占卜</div>
-            <div class="section-subtitle">选择牌阵，点击抽牌，翻转查看命运指引</div>
-            <div class="divider"></div>
-
-            <div class="lnm-options" id="lnmOptions">
-                <button class="lnm-opt" data-type="1" onclick="setLnmType(1)">单牌</button>
-                <button class="lnm-opt" data-type="3" onclick="setLnmType(3)">三牌</button>
-                <button class="lnm-opt active" data-type="5" onclick="setLnmType(5)">五牌</button>
-                <button class="lnm-opt" data-type="7" onclick="setLnmType(7)">七牌</button>
-                <button class="lnm-opt" data-type="9" onclick="setLnmType(9)">九牌</button>
-            </div>
-
-            <div class="lnm-cast-section">
-                <button class="cast-btn" id="lnmCastBtn" onclick="castLNM()">抽 牌</button>
-            </div>
-
-            <div class="loading" id="lnmLoading"><div class="loading-spinner"></div><span class="loading-text">命运之牌翻开中…</span></div>
-
-            <div class="lnm-fan" id="lnmFan"></div>
-
-            <div class="lnm-result-box" id="lnmResultBox">
-                <div class="lnm-result-time" id="lnmResultTime"></div>
-                <div class="lnm-result-data" id="lnmResultData"></div>
-                <div class="retry-section" style="margin-top:24px;">
-                    <button class="retry-btn" onclick="castLNM()">重新抽牌</button>
+                <div class="pos-legend" id="posLegend"></div>
+                <div class="cast-section"><button class="cast-btn" id="lrCastBtn" onclick="castLR()">起 卦</button></div>
+                <div class="loading" id="lrLoading">
+                    <div class="loading-spinner"></div><span class="loading-text">掐指推算中…</span>
+                </div>
+                <div class="lr-results" id="lrResults">
+                    <div class="lr-time" id="lrTime"></div>
+                    <div class="lr-cards" id="lrCards"></div>
+                    <div class="hourmsg-card" id="hourmsgCard">
+                        <div class="hourmsg-title">时辰注解</div>
+                        <div class="hourmsg-body" id="hourmsgBody"></div>
+                    </div>
+                    <div class="retry-section"><button class="retry-btn" onclick="castLR()">重新起卦</button></div>
                 </div>
             </div>
+
+            <!-- ════════════ BZ PANEL ════════════ -->
+            <div class="module-panel" id="panel-bz"
+                style="background:var(--bg);border:1px solid var(--border);border-top:none;padding:40px 24px;">
+                <div class="section-title" style="margin-top:0">八字排盘</div>
+                <div class="section-subtitle">输入出生信息，自动排出四柱八字与大运流年</div>
+                <div class="divider"></div>
+                <div class="bazi-form">
+                    <div class="form-grid">
+                        <div class="form-group"><label>出生年份</label><input type="number" id="bzYear" placeholder="如 1990"
+                                min="1900" max="2100"></div>
+                        <div class="form-group"><label>出生月份</label>
+                            <select id="bzMonth">
+                                <option value="">选择月份</option>
+                                <option value="1">1月</option>
+                                <option value="2">2月</option>
+                                <option value="3">3月</option>
+                                <option value="4">4月</option>
+                                <option value="5">5月</option>
+                                <option value="6">6月</option>
+                                <option value="7">7月</option>
+                                <option value="8">8月</option>
+                                <option value="9">9月</option>
+                                <option value="10">10月</option>
+                                <option value="11">11月</option>
+                                <option value="12">12月</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>出生日期</label><input type="number" id="bzDay" placeholder="如 15"
+                                min="1" max="31"></div>
+                        <div class="form-group"><label>出生时辰（小时）</label>
+                            <select id="bzHour">
+                                <option value="">选择时辰</option>
+                                <option value="00">子时 23:00-01:00</option>
+                                <option value="01">丑时 01:00-03:00</option>
+                                <option value="03">寅时 03:00-05:00</option>
+                                <option value="05">卯时 05:00-07:00</option>
+                                <option value="07">辰时 07:00-09:00</option>
+                                <option value="09">巳时 09:00-11:00</option>
+                                <option value="11">午时 11:00-13:00</option>
+                                <option value="13">未时 13:00-15:00</option>
+                                <option value="15">申时 15:00-17:00</option>
+                                <option value="17">酉时 17:00-19:00</option>
+                                <option value="19">戌时 19:00-21:00</option>
+                                <option value="21">亥时 21:00-23:00</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>出生分钟</label><input type="number" id="bzMinute" placeholder="如 30"
+                                min="0" max="59"></div>
+                        <div class="form-group"><label>性别</label>
+                            <select id="bzGender">
+                                <option value="0">男（乾造）</option>
+                                <option value="1">女（坤造）</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-actions"><button class="cast-btn" id="bzCastBtn" onclick="castBZ()">排 盘</button>
+                    </div>
+                    <div class="form-note">※ 精确排盘建议使用真太阳时校验</div>
+                </div>
+                <div class="loading" id="bzLoading">
+                    <div class="loading-spinner"></div><span class="loading-text">排盘计算中…</span>
+                </div>
+                <div class="bazi-results" id="bzResults"></div>
+            </div>
+
+            <!-- ════════════ LNM PANEL ════════════ -->
+            <div class="module-panel" id="panel-lnm"
+                style="background:var(--bg);border:1px solid var(--border);border-top:none;padding:40px 24px;">
+                <div class="section-title" style="margin-top:0">雷诺曼 · 占卜</div>
+                <div class="section-subtitle">选择牌阵，点击抽牌，翻转查看命运指引与详细解读</div>
+                <div class="divider"></div>
+
+                <div class="lnm-options" id="lnmOptions">
+                    <button class="lnm-opt" data-type="1" onclick="setLnmType(1)">单牌</button>
+                    <button class="lnm-opt" data-type="3" onclick="setLnmType(3)">三牌</button>
+                    <button class="lnm-opt active" data-type="5" onclick="setLnmType(5)">五牌</button>
+                    <button class="lnm-opt" data-type="7" onclick="setLnmType(7)">七牌</button>
+                    <button class="lnm-opt" data-type="9" onclick="setLnmType(9)">九牌</button>
+                </div>
+
+                <div class="lnm-cast-section">
+                    <button class="cast-btn" id="lnmCastBtn" onclick="castLNM()">抽 牌</button>
+                </div>
+
+                <div class="loading" id="lnmLoading">
+                    <div class="loading-spinner"></div><span class="loading-text">命运之牌翻开中…</span>
+                </div>
+                <div class="lnm-fan" id="lnmFan"></div>
+                <div class="lnm-interp" id="lnmInterp"></div>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- ═══ FOOTER ═══ -->
-<footer class="footer">
-    <div class="footer-logo">易道 · YiDao</div>
-    <p>传统文化仅供学习参考，不作为决策依据<br>数据来源：t1qq.com 免费易学 API</p>
-</footer>
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="footer">
+        <div class="footer-logo">易道 · YiDao</div>
+        <p>传统文化仅供学习参考，不作为决策依据<br>数据来源：t1qq.com 免费易学 API</p>
+    </footer>
 
-<script>
-// ═══════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════
-let apiKey = window.API_KEY || '';
-let lnmType = 5;
+    <script>
+        // ═══════════════════════════════════════
+        //  STATE
+        // ═══════════════════════════════════════
+        let apiKey = window.API_KEY || '';
+        let lnmType = 5;
 
-// ═══════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
-    buildWheel(); buildLegend(); updateKeyUI();
-    if (apiKey) document.getElementById('keyInput').value = apiKey;
-    window.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40));
-    new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); }), { threshold: 0.1 })
-        .observe && document.querySelectorAll('.reveal').forEach(el => {
-        new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); }), { threshold: 0.1 }).observe(el);
-    });
-});
-
-function closeMob() { document.getElementById('mobileMenu').classList.remove('open'); }
-
-// ═══════════════════════════════════════
-//  TABS
-// ═══════════════════════════════════════
-function switchTab(tab) {
-    document.querySelectorAll('.module-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
-    document.querySelectorAll('.module-panel').forEach(p => p.classList.toggle('active', p.id === `panel-${tab}`));
-}
-
-// ═══════════════════════════════════════
-//  API KEY
-// ═══════════════════════════════════════
-function toggleVis() { const i = document.getElementById('keyInput'); i.type = i.type === 'password' ? 'text' : 'password'; }
-function needKey() { if (!apiKey) { alert('请在 config.js 中填写 API Key'); return true; } return false; }
-// ═══════════════════════════════════════
-//  LR: POSITIONS & WHEEL
-// ═══════════════════════════════════════
-const POSITIONS = [
-    { name:'大安', color:'#4a9e6e', element:'木', dir:'东方', spirit:'青龙', fortune:'吉', brief:'身不动时，凡事安稳，所求皆遂。' },
-    { name:'留连', color:'#8b7355', element:'土', dir:'中央', spirit:'玄武', fortune:'凶', brief:'卜者逢之，事情拖延，暗昧不明。' },
-    { name:'速喜', color:'#c94040', element:'火', dir:'南方', spirit:'朱雀', fortune:'吉', brief:'喜即至，求财向南，有好消息。' },
-    { name:'赤口', color:'#b0b0b0', element:'金', dir:'西方', spirit:'白虎', fortune:'凶', brief:'口舌多，多争吵，宜守不宜动。' },
-    { name:'小吉', color:'#4a80b4', element:'水', dir:'北方', spirit:'六合', fortune:'吉', brief:'最吉昌，诸事可为，贵人相助。' },
-    { name:'空亡', color:'#5a5a5a', element:'土', dir:'中央', spirit:'勾陈', fortune:'凶', brief:'事不详，求财无益，暗中多阻。' }
-];
-
-function buildWheel() {
-    const c = document.getElementById('wheelContainer');
-    POSITIONS.forEach((pos, i) => {
-        const a = (i * 60 - 90) * Math.PI / 180, r = 120;
-        const x = Math.cos(a) * r, y = Math.sin(a) * r;
-        const n = document.createElement('div');
-        n.className = 'pos-node'; n.id = `node-${i}`;
-        n.style.cssText = `--tx:${x}px;--ty:${y}px;--glow:${pos.color};transform:translate(${x}px,${y}px)`;
-        n.innerHTML = `<div class="pos-icon" style="border-color:${pos.color};color:${pos.color}">${pos.name[0]}</div><div class="pos-label">${pos.name}</div><div class="pos-element">${pos.element} · ${pos.fortune}</div>`;
-        n.onclick = () => alert(`${pos.name}\n五行：${pos.element}  方位：${pos.dir}\n神煞：${pos.spirit}  吉凶：${pos.fortune}\n\n${pos.brief}`);
-        c.appendChild(n);
-    });
-}
-function buildLegend() {
-    const l = document.getElementById('posLegend');
-    POSITIONS.forEach((pos, i) => {
-        const d = document.createElement('div');
-        d.className = 'pos-legend-item'; d.id = `legend-${i}`;
-        d.innerHTML = `<span class="legend-dot" style="background:${pos.color}"></span><span class="legend-name">${pos.name} · ${pos.spirit}</span>`;
-        l.appendChild(d);
-    });
-}
-function clearHL() { POSITIONS.forEach((_, i) => { document.getElementById(`node-${i}`).classList.remove('active'); document.getElementById(`legend-${i}`).classList.remove('active'); }); }
-function findPosIdx(t) { if (!t) return -1; for (let i = 0; i < POSITIONS.length; i++) if (t.includes(POSITIONS[i].name)) return i; return -1; }
-
-// ═══════════════════════════════════════
-//  LR: CAST
-// ═══════════════════════════════════════
-async function castLR() {
-    if (needKey()) return;
-    const btn = document.getElementById('lrCastBtn'); btn.disabled = true;
-    document.getElementById('lrResults').classList.remove('show');
-    document.getElementById('lrLoading').classList.add('show'); clearHL();
-    try {
-        const res = await fetch(`/.netlify/functions/lr-proxy?key=${encodeURIComponent(apiKey)}`);
-        const data = await res.json();
-        if (data.code !== 200) throw new Error(data.error || `接口异常 code: ${data.code}`);
-        displayLR(data);
-    } catch (e) { alert('起卦失败：' + e.message); }
-    finally { document.getElementById('lrLoading').classList.remove('show'); btn.disabled = false; }
-}
-
-function displayLR(data) {
-    document.getElementById('lrTime').textContent = data.time || new Date().toLocaleString('zh-CN');
-    const cardsEl = document.getElementById('lrCards'); cardsEl.innerHTML = '';
-    const cls = [{ label:'月课', value: data.res?.monthclass }, { label:'日课', value: data.res?.dayclass }, { label:'时课', value: data.res?.nowclass }];
-    const active = new Set();
-    cls.forEach((c, ci) => {
-        const idx = findPosIdx(c.value); if (idx >= 0) active.add(idx);
-        const pos = idx >= 0 ? POSITIONS[idx] : null;
-        const card = document.createElement('div'); card.className = 'lr-card';
-        let h = `<div class="lr-card-title">${c.label}</div>`;
-        if (pos) { h += `<div class="lr-card-pos" style="color:${pos.color}">${pos.name}</div><div class="lr-card-element">${pos.element} · ${pos.spirit} · ${pos.dir}</div><span class="lr-card-fortune fortune-${pos.fortune}">${pos.fortune}</span><div class="lr-card-text">${pos.brief}</div>`; }
-        else { h += `<div class="lr-card-pos">${c.value || '—'}</div>`; }
-        card.innerHTML = h; cardsEl.appendChild(card);
-        requestAnimationFrame(() => setTimeout(() => card.classList.add('visible'), ci * 150));
-    });
-    active.forEach(i => { document.getElementById(`node-${i}`).classList.add('active'); document.getElementById(`legend-${i}`).classList.add('active'); });
-    const hmCard = document.getElementById('hourmsgCard'), hmBody = document.getElementById('hourmsgBody');
-    if (data.hourmsg) { hmBody.innerHTML = `<p>${data.hourmsg.replace(/。/g, '。<br>').replace(/！/g, '！<br>').replace(/<br>$/, '')}</p>`; hmCard.style.display = 'block'; setTimeout(() => hmCard.classList.add('visible'), 400); }
-    else { hmCard.style.display = 'none'; }
-    document.getElementById('lrResults').classList.add('show');
-    setTimeout(() => document.getElementById('lrResults').scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
-}
-
-// ═══════════════════════════════════════
-//  BZ: CAST
-// ═══════════════════════════════════════
-async function castBZ() {
-    if (needKey()) return;
-    const year = document.getElementById('bzYear').value, month = document.getElementById('bzMonth').value, day = document.getElementById('bzDay').value, hour = document.getElementById('bzHour').value, minute = document.getElementById('bzMinute').value || '0', gender = document.getElementById('bzGender').value;
-    if (!year || !month || !day || hour === '') { alert('请填写完整的出生信息'); return; }
-    const btn = document.getElementById('bzCastBtn'); btn.disabled = true;
-    document.getElementById('bzResults').classList.remove('show'); document.getElementById('bzLoading').classList.add('show');
-    try {
-        const qs = new URLSearchParams({ key: apiKey, x: gender, y: year, m: month, d: day, h: hour, i: minute, s: '0' });
-        const res = await fetch(`/.netlify/functions/bz-proxy?${qs}`);
-        const data = await res.json();
-        if (data.code !== 200) throw new Error(data.msg || `接口异常 code: ${data.code}`);
-        displayBZ(data);
-    } catch (e) { alert('排盘失败：' + e.message); }
-    finally { document.getElementById('bzLoading').classList.remove('show'); btn.disabled = false; }
-}
-
-function displayBZ(data) {
-    const d = data.data, el = document.getElementById('bzResults');
-    let html = '';
-    // Info grid
-    html += `<div class="info-grid">`;
-    const infoItems = [
-        { label:'命造', value: d.mz || '—' }, { label:'性别', value: d.xb || '—' }, { label:'生肖', value: d.sx || '—' }, { label:'星座', value: d.xz || '—' },
-        { label:'公历', value: (Array.isArray(d.gl) ? d.gl.join(' ') : (d.gl || '—')) },
-        { label:'农历', value: (typeof d.nl === 'object' && d.nl?.gz ? d.nl.gz : (Array.isArray(d.nl) ? d.nl.join(' ') : (d.nl || '—'))) },
-        { label:'日干阴阳', value: d.cyy || '—' }, { label:'起运', value: d.qyy_desc || '—' }
-    ];
-    infoItems.forEach(it => { html += `<div class="info-item"><span class="info-item-label">${it.label}</span><span class="info-item-value">${it.value}</span></div>`; });
-    html += `</div>`;
-    // Pillars
-    const ctg = Array.isArray(d.ctg) ? d.ctg : [], cdz = Array.isArray(d.cdz) ? d.cdz : [], ewxtg = Array.isArray(d.ewxtg) ? d.ewxtg : [], ewxdz = Array.isArray(d.ewxdz) ? d.ewxdz : [];
-    const labels = ['年柱','月柱','日柱','时柱'];
-    const branchOrder = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-    const branchToIdx = {}; branchOrder.forEach((b, i) => branchToIdx[b] = i);
-    const bctg = Array.isArray(d.bctg) ? d.bctg : [], bzcg = Array.isArray(d.bzcg) ? d.bzcg : [];
-    html += `<div class="pillar-row">`;
-    for (let i = 0; i < 4; i++) {
-        const stem = ctg[i] || '—', branch = cdz[i] || '—';
-        const bi = branchToIdx[branch];
-        const hStems = []; if (bi !== undefined) { const h = bctg[bi]; if (h && h !== '') hStems.push(h); }
-        const tenGod = (i === 2) ? '日主' : (bi !== undefined ? (bzcg[bi] || '') : '');
-        html += `<div class="pillar"><div class="pillar-label">${labels[i]}</div><div class="pillar-stem">${stem}</div><div class="pillar-branch">${branch}</div><div class="pillar-element">${ewxtg[i] || ''} · ${ewxdz[i] || ''}</div>${hStems.length ? `<div class="pillar-hidden">藏：${hStems.join(' ')}</div>` : ''}${tenGod ? `<div class="pillar-god">${tenGod}</div>` : ''}</div>`;
-    }
-    html += `</div>`;
-    // QiYun
-    if (d.qyy_desc || d.qyy) { html += `<div class="qiyun-card"><h4>起运信息</h4><p>${d.qyy_desc || ''}</p>${d.qyy ? `<p>起运公历：<strong>${d.qyy}</strong> 年</p>` : ''}</div>`; }
-    // DaYun
-    const dy = Array.isArray(d.dy) ? d.dy : [];
-    if (dy.length) {
-        html += `<div class="dayun-title">大运排布</div><div class="dayun-grid">`;
-        dy.forEach((yun, yi) => {
-            html += `<div class="dayun-card ${yi === 0 ? 'active' : ''}"><div class="dayun-age">${yun.zqage || ''}~${yun.zboz || ''}岁</div><div class="dayun-stems">${yun.zfma || '?'}</div><div class="dayun-branch">${yun.zfmb || '?'}</div>${yun.nzsc ? `<div class="dayun-12cs">${yun.nzsc}</div>` : ''}</div>`;
+        // ═══════════════════════════════════════
+        //  INIT
+        // ═══════════════════════════════════════
+        document.addEventListener('DOMContentLoaded', () => {
+            buildWheel(); buildLegend(); updateKeyUI();
+            if (apiKey) document.getElementById('keyInput').value = apiKey;
+            window.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40));
+            new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); }), { threshold: 0.1 })
+                .observe && document.querySelectorAll('.reveal').forEach(el => {
+                    new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); }), { threshold: 0.1 }).observe(el);
+                });
         });
-        html += `</div>`;
-        // LiuNian for first DaYun
-        dy.forEach(yun => {
-            const ly = Array.isArray(yun.ly) ? yun.ly : [];
-            if (ly.length) {
-                html += `<div class="ln-title">${yun.zfma || ''}${yun.zfmb || ''}运 · 流年（${yun.zqage || ''}~${yun.zboz || ''}岁）</div><div class="ln-scroll">`;
-                ly.forEach(ln => { html += `<div class="ln-card"><div class="ln-year">${ln.year || ''}</div><div class="ln-stem">${ln.lye || ''}</div><div class="ln-age">${ln.age || ''}岁</div></div>`; });
-                html += `</div>`;
+
+        function closeMob() { document.getElementById('mobileMenu').classList.remove('open'); }
+
+        // ═══════════════════════════════════════
+        //  TABS
+        // ═══════════════════════════════════════
+        function switchTab(tab) {
+            document.querySelectorAll('.module-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+            document.querySelectorAll('.module-panel').forEach(p => p.classList.toggle('active', p.id === `panel-${tab}`));
+        }
+
+        // ═══════════════════════════════════════
+        //  API KEY
+        // ═══════════════════════════════════════
+        function toggleVis() { const i = document.getElementById('keyInput'); i.type = i.type === 'password' ? 'text' : 'password'; }
+        function needKey() { if (!apiKey) { alert('请在 config.js 中填写 API Key'); return true; } return false; }
+        // ═══════════════════════════════════════
+        //  LR: POSITIONS & WHEEL
+        // ═══════════════════════════════════════
+        const POSITIONS = [
+            { name: '大安', color: '#4a9e6e', element: '木', dir: '东方', spirit: '青龙', fortune: '吉', brief: '身不动时，凡事安稳，所求皆遂。' },
+            { name: '留连', color: '#8b7355', element: '土', dir: '中央', spirit: '玄武', fortune: '凶', brief: '卜者逢之，事情拖延，暗昧不明。' },
+            { name: '速喜', color: '#c94040', element: '火', dir: '南方', spirit: '朱雀', fortune: '吉', brief: '喜即至，求财向南，有好消息。' },
+            { name: '赤口', color: '#b0b0b0', element: '金', dir: '西方', spirit: '白虎', fortune: '凶', brief: '口舌多，多争吵，宜守不宜动。' },
+            { name: '小吉', color: '#4a80b4', element: '水', dir: '北方', spirit: '六合', fortune: '吉', brief: '最吉昌，诸事可为，贵人相助。' },
+            { name: '空亡', color: '#5a5a5a', element: '土', dir: '中央', spirit: '勾陈', fortune: '凶', brief: '事不详，求财无益，暗中多阻。' }
+        ];
+
+        function buildWheel() {
+            const c = document.getElementById('wheelContainer');
+            POSITIONS.forEach((pos, i) => {
+                const a = (i * 60 - 90) * Math.PI / 180, r = 120;
+                const x = Math.cos(a) * r, y = Math.sin(a) * r;
+                const n = document.createElement('div');
+                n.className = 'pos-node'; n.id = `node-${i}`;
+                n.style.cssText = `--tx:${x}px;--ty:${y}px;--glow:${pos.color};transform:translate(${x}px,${y}px)`;
+                n.innerHTML = `<div class="pos-icon" style="border-color:${pos.color};color:${pos.color}">${pos.name[0]}</div><div class="pos-label">${pos.name}</div><div class="pos-element">${pos.element} · ${pos.fortune}</div>`;
+                n.onclick = () => alert(`${pos.name}\n五行：${pos.element}  方位：${pos.dir}\n神煞：${pos.spirit}  吉凶：${pos.fortune}\n\n${pos.brief}`);
+                c.appendChild(n);
+            });
+        }
+        function buildLegend() {
+            const l = document.getElementById('posLegend');
+            POSITIONS.forEach((pos, i) => {
+                const d = document.createElement('div');
+                d.className = 'pos-legend-item'; d.id = `legend-${i}`;
+                d.innerHTML = `<span class="legend-dot" style="background:${pos.color}"></span><span class="legend-name">${pos.name} · ${pos.spirit}</span>`;
+                l.appendChild(d);
+            });
+        }
+        function clearHL() { POSITIONS.forEach((_, i) => { document.getElementById(`node-${i}`).classList.remove('active'); document.getElementById(`legend-${i}`).classList.remove('active'); }); }
+        function findPosIdx(t) { if (!t) return -1; for (let i = 0; i < POSITIONS.length; i++) if (t.includes(POSITIONS[i].name)) return i; return -1; }
+
+        // ═══════════════════════════════════════
+        //  LR: CAST
+        // ═══════════════════════════════════════
+        async function castLR() {
+            if (needKey()) return;
+            const btn = document.getElementById('lrCastBtn'); btn.disabled = true;
+            document.getElementById('lrResults').classList.remove('show');
+            document.getElementById('lrLoading').classList.add('show'); clearHL();
+            try {
+                const res = await fetch(`/.netlify/functions/lr-proxy?key=${encodeURIComponent(apiKey)}`);
+                const data = await res.json();
+                if (data.code !== 200) throw new Error(data.error || `接口异常 code: ${data.code}`);
+                displayLR(data);
+            } catch (e) { alert('起卦失败：' + e.message); }
+            finally { document.getElementById('lrLoading').classList.remove('show'); btn.disabled = false; }
+        }
+
+        function displayLR(data) {
+            document.getElementById('lrTime').textContent = data.time || new Date().toLocaleString('zh-CN');
+            const cardsEl = document.getElementById('lrCards'); cardsEl.innerHTML = '';
+            const cls = [{ label: '月课', value: data.res?.monthclass }, { label: '日课', value: data.res?.dayclass }, { label: '时课', value: data.res?.nowclass }];
+            const active = new Set();
+            cls.forEach((c, ci) => {
+                const idx = findPosIdx(c.value); if (idx >= 0) active.add(idx);
+                const pos = idx >= 0 ? POSITIONS[idx] : null;
+                const card = document.createElement('div'); card.className = 'lr-card';
+                let h = `<div class="lr-card-title">${c.label}</div>`;
+                if (pos) { h += `<div class="lr-card-pos" style="color:${pos.color}">${pos.name}</div><div class="lr-card-element">${pos.element} · ${pos.spirit} · ${pos.dir}</div><span class="lr-card-fortune fortune-${pos.fortune}">${pos.fortune}</span><div class="lr-card-text">${pos.brief}</div>`; }
+                else { h += `<div class="lr-card-pos">${c.value || '—'}</div>`; }
+                card.innerHTML = h; cardsEl.appendChild(card);
+                requestAnimationFrame(() => setTimeout(() => card.classList.add('visible'), ci * 150));
+            });
+            active.forEach(i => { document.getElementById(`node-${i}`).classList.add('active'); document.getElementById(`legend-${i}`).classList.add('active'); });
+            const hmCard = document.getElementById('hourmsgCard'), hmBody = document.getElementById('hourmsgBody');
+            if (data.hourmsg) { hmBody.innerHTML = `<p>${data.hourmsg.replace(/。/g, '。<br>').replace(/！/g, '！<br>').replace(/<br>$/, '')}</p>`; hmCard.style.display = 'block'; setTimeout(() => hmCard.classList.add('visible'), 400); }
+            else { hmCard.style.display = 'none'; }
+            document.getElementById('lrResults').classList.add('show');
+            setTimeout(() => document.getElementById('lrResults').scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
+        }
+
+        // ═══════════════════════════════════════
+        //  BZ: CAST
+        // ═══════════════════════════════════════
+        async function castBZ() {
+            if (needKey()) return;
+            const year = document.getElementById('bzYear').value, month = document.getElementById('bzMonth').value, day = document.getElementById('bzDay').value, hour = document.getElementById('bzHour').value, minute = document.getElementById('bzMinute').value || '0', gender = document.getElementById('bzGender').value;
+            if (!year || !month || !day || hour === '') { alert('请填写完整的出生信息'); return; }
+            const btn = document.getElementById('bzCastBtn'); btn.disabled = true;
+            document.getElementById('bzResults').classList.remove('show'); document.getElementById('bzLoading').classList.add('show');
+            try {
+                const qs = new URLSearchParams({ key: apiKey, x: gender, y: year, m: month, d: day, h: hour, i: minute, s: '0' });
+                const res = await fetch(`/.netlify/functions/bz-proxy?${qs}`);
+                const data = await res.json();
+                if (data.code !== 200) throw new Error(data.msg || `接口异常 code: ${data.code}`);
+                displayBZ(data);
+            } catch (e) { alert('排盘失败：' + e.message); }
+            finally { document.getElementById('bzLoading').classList.remove('show'); btn.disabled = false; }
+        }
+
+        function displayBZ(data) {
+            const d = data.data, el = document.getElementById('bzResults');
+            let html = '';
+            // Info grid
+            html += `<div class="info-grid">`;
+            const infoItems = [
+                { label: '命造', value: d.mz || '—' }, { label: '性别', value: d.xb || '—' }, { label: '生肖', value: d.sx || '—' }, { label: '星座', value: d.xz || '—' },
+                { label: '公历', value: (Array.isArray(d.gl) ? d.gl.join(' ') : (d.gl || '—')) },
+                { label: '农历', value: (typeof d.nl === 'object' && d.nl?.gz ? d.nl.gz : (Array.isArray(d.nl) ? d.nl.join(' ') : (d.nl || '—'))) },
+                { label: '日干阴阳', value: d.cyy || '—' }, { label: '起运', value: d.qyy_desc || '—' }
+            ];
+            infoItems.forEach(it => { html += `<div class="info-item"><span class="info-item-label">${it.label}</span><span class="info-item-value">${it.value}</span></div>`; });
+            html += `</div>`;
+            // Pillars
+            const ctg = Array.isArray(d.ctg) ? d.ctg : [], cdz = Array.isArray(d.cdz) ? d.cdz : [], ewxtg = Array.isArray(d.ewxtg) ? d.ewxtg : [], ewxdz = Array.isArray(d.ewxdz) ? d.ewxdz : [];
+            const labels = ['年柱', '月柱', '日柱', '时柱'];
+            const branchOrder = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+            const branchToIdx = {}; branchOrder.forEach((b, i) => branchToIdx[b] = i);
+            const bctg = Array.isArray(d.bctg) ? d.bctg : [], bzcg = Array.isArray(d.bzcg) ? d.bzcg : [];
+            html += `<div class="pillar-row">`;
+            for (let i = 0; i < 4; i++) {
+                const stem = ctg[i] || '—', branch = cdz[i] || '—';
+                const bi = branchToIdx[branch];
+                const hStems = []; if (bi !== undefined) { const h = bctg[bi]; if (h && h !== '') hStems.push(h); }
+                const tenGod = (i === 2) ? '日主' : (bi !== undefined ? (bzcg[bi] || '') : '');
+                html += `<div class="pillar"><div class="pillar-label">${labels[i]}</div><div class="pillar-stem">${stem}</div><div class="pillar-branch">${branch}</div><div class="pillar-element">${ewxtg[i] || ''} · ${ewxdz[i] || ''}</div>${hStems.length ? `<div class="pillar-hidden">藏：${hStems.join(' ')}</div>` : ''}${tenGod ? `<div class="pillar-god">${tenGod}</div>` : ''}</div>`;
             }
+            html += `</div>`;
+            // QiYun
+            if (d.qyy_desc || d.qyy) { html += `<div class="qiyun-card"><h4>起运信息</h4><p>${d.qyy_desc || ''}</p>${d.qyy ? `<p>起运公历：<strong>${d.qyy}</strong> 年</p>` : ''}</div>`; }
+            // DaYun
+            const dy = Array.isArray(d.dy) ? d.dy : [];
+            if (dy.length) {
+                html += `<div class="dayun-title">大运排布</div><div class="dayun-grid">`;
+                dy.forEach((yun, yi) => {
+                    html += `<div class="dayun-card ${yi === 0 ? 'active' : ''}"><div class="dayun-age">${yun.zqage || ''}~${yun.zboz || ''}岁</div><div class="dayun-stems">${yun.zfma || '?'}</div><div class="dayun-branch">${yun.zfmb || '?'}</div>${yun.nzsc ? `<div class="dayun-12cs">${yun.nzsc}</div>` : ''}</div>`;
+                });
+                html += `</div>`;
+                // LiuNian for first DaYun
+                dy.forEach(yun => {
+                    const ly = Array.isArray(yun.ly) ? yun.ly : [];
+                    if (ly.length) {
+                        html += `<div class="ln-title">${yun.zfma || ''}${yun.zfmb || ''}运 · 流年（${yun.zqage || ''}~${yun.zboz || ''}岁）</div><div class="ln-scroll">`;
+                        ly.forEach(ln => { html += `<div class="ln-card"><div class="ln-year">${ln.year || ''}</div><div class="ln-stem">${ln.lye || ''}</div><div class="ln-age">${ln.age || ''}岁</div></div>`; });
+                        html += `</div>`;
+                    }
+                });
+            }
+            el.innerHTML = html; el.classList.add('show');
+            setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
+        }
+
+        // ═══════════════════════════════════════
+        //  LNM: LENORMAND
+        // ═══════════════════════════════════════
+        // Lenormand card name/icon lookup (36 cards)
+        // Card icon lookup
+        const LNM_ICONS = {
+            '骑手': '🏇', '三叶草': '🍀', '船': '⛵', '房子': '🏠', '树': '🌳', '云': '☁️',
+            '蛇': '🐍', '棺材': '⚰️', '花束': '💐', '镰刀': '🔪', '鞭子': '🪶', '鸟': '🐦',
+            '孩子': '👶', '狐狸': '🦊', '熊': '🐻', '星星': '⭐', '鹳': '🦅', '狗': '🐕',
+            '塔': '🗼', '花园': '🌿', '山': '⛰️', '十字路口': '🛤️', '老鼠': '🐭', '心': '❤️',
+            '戒指': '💍', '书': '📖', '信件': '✉️', '男人': '👨', '女人': '👩', '百合': '🌺',
+            '太阳': '☀️', '月亮': '🌙', '钥匙': '🔑', '鱼': '🐟', '锚': '⚓', '十字架': '✝️'
+        };
+
+        // Full 36-card database: g=general, l=love, c=career, h=health
+        const _LDB = [
+/* 1  */['骑手', '🏇', '消息、到来、新机遇', '有新的消息或变化即将到来，保持警觉并积极把握眼前的机会。', '可能出现新的追求者或收到意外的表白，感情生活迎来新鲜感。', '新的工作机会或合作项目正在靠近，宜主动出击把握良机。', '精力充沛，身体恢复力强，适合开启新的运动计划。'],
+/* 2  */['三叶草', '🍀', '幸运、小确幸、轻松', '小幸运正在降临，生活中有轻松愉快的事情发生，知足常乐。', '感情中出现小惊喜，一次约会或甜蜜互动让你心情愉悦。', '工作中小有收获，虽不是大成就但足以鼓舞士气。', '身心轻松，精神状态良好，保持积极乐观即可。'],
+/* 3  */['船', '⛵', '旅行、远方、启航', '远方的召唤正在响起，适合出行或开启新的征程，收获将来自远方。', '远距离恋情或与外地人结缘的可能性增大，感情跨越地域。', '涉及海外、外贸或跨区域的业务有良好发展。', '适合旅行休养，换一个环境对身心都有益处。'],
+/* 4  */['房子', '🏠', '家庭、安稳、根基', '家庭事务是当前重心，安稳和归属感是你需要珍惜的。', '感情走向稳定，可能涉及见家长、同居或装修爱巢。', '与家庭相关的事业或家族产业有好运，居家办公也适宜。', '在家休息调养最佳，注意家居环境对健康的影响。'],
+/* 5  */['树', '🌳', '健康、成长、生命力', '整体运势像大树般稳步生长，健康和精神都处于上升期。', '感情需要耐心培育，像树木一样慢慢扎根才能长久。', '事业正在稳步成长中，不求快但求稳，厚积薄发。', '这是最重要的健康信号牌，关注身体状况，养生为上。'],
+/* 6  */['云', '☁️', '困惑、模糊、犹豫', '前方形势不明朗，有迷雾笼罩之感，不宜仓促决定。', '感情中存在暧昧或猜疑，对方的真实想法尚不明确。', '工作中面临方向不清晰的局面，需要更多信息再做判断。', '注意呼吸系统和情绪波动，焦虑可能影响睡眠。'],
+/* 7  */['蛇', '🐍', '智慧、复杂、陷阱', '事情比表面看起来复杂，需要运用智慧辨别真伪，小心暗中阻碍。', '感情中可能出现第三者或复杂的三角关系，需保持警觉。', '职场中存在暗流，有人可能在背后算计，谨慎行事。', '注意慢性疾病和妇科/泌尿系统问题，定期体检。'],
+/* 8  */['棺材', '⚰️', '结束、转化、重生', '一个阶段正在结束，虽然令人不舍但这是新生的必经之路。', '旧的感情模式需要终结，才能迎来更健康的关系。', '旧项目结束或职位变动，表面的失去实则为新的开始。', '需要注意身体的重大转变，旧疾可能反复但终将好转。'],
+/* 9  */['花束', '💐', '美好、礼物、赞美', '美好的事物正在向你走来，可能会收到礼物或受到赞美。', '感情甜蜜如花，对方可能给你惊喜或浪漫的表白。', '工作得到认可和赞赏，客户或同事对你好评如潮。', '心情愉悦带动身体健康，笑容是最好的良药。'],
+/* 10 */['镰刀', '🔪', '决断、突然、割舍', '必须做出果断的决定，不要犹豫，该断则断才能避免更大损失。', '可能面临突然的分手或感情上的重大决断，需要勇气面对。', '工作中可能有突然的变动或裁员风险，做好心理准备。', '注意外伤和手术风险，使用锋利器具时格外小心。'],
+/* 11 */['鞭子', '🪶', '冲突、争论、反复', '口舌之争频繁，同一问题反复出现，需要找到根源才能解决。', '感情中争吵增多，同样的矛盾反复出现，需要冷静沟通。', '工作中与同事或上级意见不合，争执消耗精力。', '注意炎症、头痛和反复发作的老毛病。'],
+/* 12 */['鸟', '🐦', '沟通、焦虑、闲话', '消息纷飞，可能因过多信息而焦虑，也需注意闲言碎语。', '感情中需要更多坦诚的沟通，不要被外界的评价所影响。', '会议和谈判频繁，注意言辞表达，避免被人断章取义。', '神经紧张导致失眠或焦虑，适合冥想和深呼吸练习。'],
+/* 13 */['孩子', '👶', '新生、纯真、开始', '全新的开始正在展开，以孩童般纯真的心态面对世界。', '新的恋情萌芽，或者感情进入纯真美好的新阶段。', '新项目、新岗位或创业初期，一切都是新的开始。', '生育方面的好消息，或需要像孩子一样简单地照顾自己。'],
+/* 14 */['狐狸', '🦊', '机智、警惕、工作', '需要运用机智应对当前局面，不要轻信表面现象，职场是重点。', '感情中可能有隐瞒或不够坦诚的情况，需要多观察。', '工作运强劲但需要策略，运用你的聪明才智脱颖而出。', '注意眼睛疲劳和久坐带来的问题，工作再忙也要休息。'],
+/* 15 */['熊', '🐻', '力量、财富、保护', '强大的力量和财运正在守护你，可能涉及长辈或贵人的帮助。', '感情中有强烈的保护欲，可能是你也可能是对方太过强势。', '财运旺盛，涉及投资理财或与权力人物的合作。', '体魄强健，但注意饮食过量和体重管理。'],
+/* 16 */['星星', '⭐', '希望、灵感、指引', '星光照亮前路，充满希望和灵感，你的梦想正在被宇宙回应。', '感情中出现命中注定的感觉，灵魂层面的连接和共鸣。', '创意和灵感迸发，适合从事艺术、设计或策划类工作。', '精神状态极佳，冥想和灵性修行对你特别有益。'],
+/* 17 */['鹳', '🦅', '变化、提升、改善', '积极的变化正在发生，生活向更好的方向转变，拥抱改变。', '感情关系提升到新层次，可能从暧昧走向确定或订婚。', '岗位调动或升迁机会出现，变化带来更好的发展空间。', '健康状况明显改善，之前的不适正在好转。'],
+/* 18 */['狗', '🐕', '忠诚、友情、信赖', '忠诚的朋友或可靠的伙伴是你当前最大的财富，珍惜身边人。', '感情中忠诚和信任是最重要的，你或对方是可靠的伴侣。', '有值得信赖的合作伙伴或同事，团队协作顺利。', '朋友推荐的养生方法或医生值得尝试。'],
+/* 19 */['塔', '🗼', '权威、孤独、远见', '你正站在高处审视全局，可能有孤独感但也是获得远见的时刻。', '感情中可能因距离或身份差异产生隔阂，需要耐心化解。', '与大型机构、政府部门或权威人士有关的事务有利。', '注意骨骼和脊椎问题，久坐工作者需特别关注。'],
+/* 20 */['花园', '🌿', '社交、公开、人气', '社交活动频繁，在公共场合展现自我的好时机，人脉大开。', '可能在社交场合遇到心仪的人，或感情关系公开化。', '参加行业会议、展会或社交活动对事业有帮助。', '户外活动和社交聚会对身心健康都有益处。'],
+/* 21 */['山', '⛰️', '阻碍、延迟、挑战', '前方有障碍需要克服，事情可能延迟但并非不可能，耐心是关键。', '感情中遇到阻力，可能是家庭反对或异地等客观困难。', '工作中遇到瓶颈或强劲竞争对手，需要坚持不懈。', '注意关节、骨骼和背部问题，避免过度劳累。'],
+/* 22 */['十字路口', '🛤️', '选择、分离、多元', '你正面临重要的选择，多条道路摆在面前，需要做出决定。', '感情中面临抉择，可能有多位追求者或需要决定关系走向。', '职业方向的选择摆在面前，可能涉及跳槽或转行。', '不同治疗方案需要你做出选择，多听取专业意见。'],
+/* 23 */['老鼠', '🐭', '损耗、担忧、侵蚀', '有细小但持续的损耗在发生，注意财物的流失和精力的消耗。', '感情中可能有小三或外界因素在慢慢侵蚀你们的关系。', '工作中有持续的小麻烦不断消耗你的精力和资源。', '注意免疫力下降和小病不断，及时补充营养和休息。'],
+/* 24 */['心', '❤️', '爱情、真心、热情', '内心充满了爱和热情，真心对待一切，爱的能量正在流动。', '桃花运旺盛，真挚的爱情就在身边，大胆表达你的感情。', '对工作充满热情，用心做事必有回报。', '心脏健康良好，保持愉悦心情是最好的养生。'],
+/* 25 */['戒指', '💍', '承诺、契约、结合', '承诺和约定的能量很强，适合签订合同、做出承诺或订婚。', '感情走向承诺阶段，可能订婚、结婚或复合。', '签订重要合同或合作协议，商业伙伴关系确立。', '定期体检和健康承诺，与自己约定好的养生计划要坚持。'],
+/* 26 */['书', '📖', '知识、秘密、学习', '有尚未揭开的秘密或需要深入学习的领域，知识就是力量。', '感情中有隐藏的信息，可能对方有未说出的心事。', '学习新技能或深造对事业发展至关重要，考证也适宜。', '了解自己的身体状况，做一次全面体检。'],
+/* 27 */['信件', '✉️', '消息、文书、通讯', '重要的消息或文件即将到来，密切关注通讯和邮件。', '可能收到表白信、消息或通过网络认识新的对象。', '涉及合同、报告或书面沟通的事务进展顺利。', '体检报告或医疗文件会带来重要的健康信息。'],
+/* 28 */['男人', '👨', '阳性能量、理性、行动', '一位重要的男性可能出现在你的生活中，或你需要展现果断的行动力。', '如果有男性伴侣，他目前的状态对关系影响很大。', '男性上司或同事对你的工作有重要影响。', '注意男性长辈的健康状况，或自身的阳性能量平衡。'],
+/* 29 */['女人', '👩', '阴性能量、直觉、关怀', '一位重要的女性可能出现在你的生活中，或你需要更多关注内心感受。', '如果有女性伴侣，她目前的状态对关系影响很大。', '女性贵人在职场中可能给你带来帮助。', '注意女性长辈的健康，或自身的内分泌系统。'],
+/* 30 */['百合', '🌺', '耐心、成熟、纯洁', '以成熟和耐心面对当前局势，时间会给你最好的答案。', '感情中需要耐心和包容，成熟稳重的态度最有吸引力。', '经验和资历是你最大的优势，不急于求成。', '注意保暖和季节性疾病，养生重在持之以恒。'],
+/* 31 */['太阳', '☀️', '成功、喜悦、光明', '阳光普照，运势大好！成功和喜悦正在向你走来，尽情绽放。', '感情明朗而温暖，单身者遇到阳光般的恋人，情侣感情升温。', '事业迎来高光时刻，努力得到丰厚回报，名利双收。', '身体充满活力，免疫力强，精力旺盛。'],
+/* 32 */['月亮', '🌙', '直觉、情感、认可', '你的直觉非常准确，跟随内心的声音，情感世界丰富多彩。', '浪漫氛围浓厚，月光下的邂逅或深层的情感交流令人难忘。', '创意和直觉助力工作，可能获得公众认可或好评。', '注意情绪波动和睡眠质量，月圆之夜适合放松冥想。'],
+/* 33 */['钥匙', '🔑', '答案、突破、开启', '关键的突破即将到来，你将找到解决问题的答案，一切豁然开朗。', '感情中的困惑将得到解答，关键的对话或表白带来突破。', '难题迎刃而解，关键的资源或人脉帮你打开新局面。', '找到治愈的关键方法，之前的健康困扰将得到解决。'],
+/* 34 */['鱼', '🐟', '财富、丰盛、商业', '财运亨通，物质丰盛，商业投资或交易有丰厚回报。', '感情中可能遇到经济条件优越的对象，或共同投资理财。', '商业运势极佳，投资、创业或大额交易适宜进行。', '注意饮食丰富带来的消化问题，丰盛也要适度。'],
+/* 35 */['锚', '⚓', '稳定、安全、坚持', '稳定和安全感是当前最重要的，坚守阵地，持续努力终有收获。', '感情稳定而持久，彼此是对方安全的港湾。', '工作稳定，坚持当前方向终会达到目标，不宜频繁跳槽。', '身体底子扎实，坚持规律的作息和锻炼是健康基石。'],
+/* 36 */['十字架', '✝️', '考验、命运、觉悟', '命运的考验降临，虽然辛苦但这是灵魂成长的必经之路。', '感情中可能经历痛苦和考验，但经过磨炼的关系更加坚固。', '工作压力巨大或承担沉重的责任，需要坚强面对。', '注意慢性疼痛和精神压力对身体的影响，寻求心灵慰藉。']
+        ];
+
+        // Build lookup object
+        const LNM_DB = {};
+        _LDB.forEach((c, i) => {
+            LNM_DB[c[0]] = { n: i + 1, ic: c[1], kw: c[2], g: c[3], l: c[4], c: c[5], h: c[6] };
         });
-    }
-    el.innerHTML = html; el.classList.add('show');
-    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
-}
 
-// ═══════════════════════════════════════
-//  LNM: LENORMAND
-// ═══════════════════════════════════════
-// Lenormand card name/icon lookup (36 cards)
-const LNM_CARDS = {
-    '骑手': '🏇', '三叶草': '🍀', '船': '⛵', '房子': '🏠', '树': '🌳',
-    '云': '☁️', '蛇': '🐍', '棺材': '⚰️', '花束': '💐', '镰刀': '🔪',
-    '鞭子': '🪶', '鸟': '🐦', '孩子': '👶', '狐狸': '🦊', '熊': '🐻',
-    '星星': '⭐', '鹳': '🦅', '狗': '🐕', '塔': '🗼', '花园': '🌿',
-    '山': '⛰️', '十字路口': '🛤️', '老鼠': '🐭', '心': '❤️', '戒指': '💍',
-    '书': '📖', '信件': '✉️', '男人': '👨', '女人': '👩', '百合': '🌺',
-    '太阳': '☀️', '月亮': '🌙', '钥匙': '🔑', '鱼': '🐟', '锚': '⚓',
-    '十字架': '✝️'
-};
+        // Spread position definitions
+        const SPREAD_POS = {
+            1: { label: '单牌指引', pos: ['当前指引'] },
+            3: { label: '三牌 · 过去 / 现在 / 未来', pos: ['过去', '现在', '未来'] },
+            5: { label: '五牌 · 完整指引', pos: ['过去', '现在', '未来', '建议', '结果'] },
+            7: { label: '七牌 · 全面洞察', pos: ['过去', '当前', '近期', '挑战', '环境', '建议', '结果'] },
+            9: { label: '九牌 · 深度解读', pos: ['过去', '潜意识', '近期', '障碍', '核心', '助力', '建议', '希望', '结果'] }
+        };
 
-function getCardIcon(name) {
-    if (!name) return '🃏';
-    for (const [k, v] of Object.entries(LNM_CARDS)) { if (name.includes(k)) return v; }
-    return '🃏';
-}
+        // Find card in DB with fuzzy matching
+        function findCard(name) {
+            if (!name) return null;
+            for (const [key, card] of Object.entries(LNM_DB)) {
+                if (name.includes(key) || key.includes(name)) return { ...card, name: key };
+            }
+            // Fallback: try icon match
+            for (const [key, icon] of Object.entries(LNM_ICONS)) {
+                if (name.includes(key)) return LNM_DB[key] ? { ...LNM_DB[key], name: key } : null;
+            }
+            return null;
+        }
 
-function setLnmType(type) {
-    lnmType = type;
-    document.querySelectorAll('.lnm-opt').forEach(b => b.classList.toggle('active', parseInt(b.dataset.type) === type));
-}
+        function getCardIcon(name) {
+            if (!name) return '🃏';
+            for (const [k, v] of Object.entries(LNM_ICONS)) if (name.includes(k)) return v;
+            return '🃏';
+        }
 
-async function castLNM() {
-    if (needKey()) return;
-    const btn = document.getElementById('lnmCastBtn'); btn.disabled = true;
-    document.getElementById('lnmResultBox').classList.remove('show');
-    document.getElementById('lnmFan').innerHTML = '';
-    document.getElementById('lnmLoading').classList.add('show');
+        function setLnmType(type) {
+            lnmType = type;
+            document.querySelectorAll('.lnm-opt').forEach(b => b.classList.toggle('active', parseInt(b.dataset.type) === type));
+        }
 
-    try {
-        const qs = new URLSearchParams({ key: apiKey, type: String(lnmType) });
-        const res = await fetch(`/.netlify/functions/lnm-proxy?${qs}`);
-        const data = await res.json();
-        if (data.code !== 200) throw new Error(data.msg || data.error || `接口异常 code: ${data.code}`);
-        displayLNM(data);
-    } catch (e) { alert('抽牌失败：' + e.message); }
-    finally { document.getElementById('lnmLoading').classList.remove('show'); btn.disabled = false; }
-}
+        async function castLNM() {
+            if (needKey()) return;
+            const btn = document.getElementById('lnmCastBtn'); btn.disabled = true;
+            document.getElementById('lnmInterp').classList.remove('show');
+            document.getElementById('lnmInterp').innerHTML = '';
+            document.getElementById('lnmFan').innerHTML = '';
+            document.getElementById('lnmLoading').classList.add('show');
 
-function displayLNM(data) {
-    const fan = document.getElementById('lnmFan');
-    fan.innerHTML = '';
+            try {
+                const qs = new URLSearchParams({ key: apiKey, type: String(lnmType) });
+                const res = await fetch(`/.netlify/functions/lnm-proxy?${qs}`);
+                const data = await res.json();
+                if (data.code !== 200) throw new Error(data.msg || data.error || `接口异常 code: ${data.code}`);
+                displayLNM(data);
+            } catch (e) { alert('抽牌失败：' + e.message); }
+            finally { document.getElementById('lnmLoading').classList.remove('show'); btn.disabled = false; }
+        }
 
-    // Parse card data — API returns card names in data field
-    // data.data might be a string like "心,钥匙,太阳,月亮,星星" or could be structured
-    let cards = [];
-    const raw = data.data || '';
+        function displayLNM(data) {
+            const fan = document.getElementById('lnmFan');
+            fan.innerHTML = '';
 
-    if (typeof raw === 'string') {
-        // Try comma / 、 / space / newline separated
-        cards = raw.split(/[,，、\n\r]+/).map(s => s.trim()).filter(Boolean);
-    } else if (Array.isArray(raw)) {
-        cards = raw.map(c => typeof c === 'object' ? (c.name || c.title || JSON.stringify(c)) : String(c));
-    }
+            // Parse card names
+            let cardNames = [];
+            const raw = data.data || '';
+            if (typeof raw === 'string') cardNames = raw.split(/[,，、\n\r|｜]+/).map(s => s.trim()).filter(Boolean);
+            else if (Array.isArray(raw)) cardNames = raw.map(c => typeof c === 'object' ? (c.name || c.title || JSON.stringify(c)) : String(c));
+            if (!cardNames.length && raw) cardNames = [String(raw)];
 
-    if (!cards.length && raw) cards = [String(raw)];
+            // Resolve cards
+            const resolvedCards = cardNames.map((name, i) => {
+                const card = findCard(name);
+                return { rawName: name, card, idx: i };
+            });
 
-    // Create card elements
-    cards.forEach((cardName, i) => {
-        const card = document.createElement('div');
-        card.className = 'lnm-card';
-        card.style.transitionDelay = `${i * 0.12}s`;
-
-        const icon = getCardIcon(cardName);
-
-        card.innerHTML = `
+            // ── Card Fan ──
+            resolvedCards.forEach(({ rawName, card, idx }) => {
+                const el = document.createElement('div');
+                el.className = 'lnm-card';
+                el.style.transitionDelay = `${idx * 0.12}s`;
+                const icon = card ? card.ic : getCardIcon(rawName);
+                const displayName = card ? card.name : rawName;
+                el.innerHTML = `
             <div class="lnm-card-inner">
-                <div class="lnm-card-front">
-                    <div class="lnm-card-front-pattern"></div>
-                    <span class="card-back-symbol">✦</span>
-                    <span class="card-back-text">LENORMAND</span>
-                </div>
-                <div class="lnm-card-back">
-                    <span class="lnm-card-idx">${i + 1}</span>
-                    <div class="lnm-card-icon">${icon}</div>
-                    <div class="lnm-card-name">${cardName}</div>
-                </div>
-            </div>
-        `;
+                <div class="lnm-card-front"><div class="lnm-card-front-pattern"></div><span class="card-back-symbol">✦</span><span class="card-back-text">LENORMAND</span></div>
+                <div class="lnm-card-back"><span class="lnm-card-idx">${idx + 1}</span><div class="lnm-card-icon">${icon}</div><div class="lnm-card-name">${displayName}</div></div>
+            </div>`;
+                fan.appendChild(el);
+                requestAnimationFrame(() => setTimeout(() => { el.classList.add('visible'); setTimeout(() => el.classList.add('flipped'), 400 + idx * 100); }, idx * 150));
+            });
 
-        fan.appendChild(card);
+            // ── Interpretation Section ──
+            const interp = document.getElementById('lnmInterp');
+            const spreadDef = SPREAD_POS[lnmType] || SPREAD_POS[5];
+            const timeStr = data.time || new Date().toLocaleString('zh-CN');
+            const hasCardDB = resolvedCards.some(r => r.card);
 
-        // Stagger: appear → then flip
-        requestAnimationFrame(() => {
-            setTimeout(() => {
-                card.classList.add('visible');
-                setTimeout(() => card.classList.add('flipped'), 400 + i * 100);
-            }, i * 150);
-        });
-    });
+            let html = '';
+            html += `<div class="lnm-interp-head"><h3>${spreadDef.label}</h3><span>${timeStr}</span></div>`;
 
-    // Show result text
-    setTimeout(() => {
-        const box = document.getElementById('lnmResultBox');
-        const timeEl = document.getElementById('lnmResultTime');
-        const dataEl = document.getElementById('lnmResultData');
+            // Card-by-card interpretation
+            if (hasCardDB) {
+                html += `<div class="lnm-interp-cards" style="grid-template-columns:repeat(${Math.min(lnmType, lnmType <= 3 ? 3 : (lnmType <= 5 ? 5 : (lnmType <= 7 ? 2 : 3)))},1fr);">`;
+                resolvedCards.forEach(({ rawName, card, idx }) => {
+                    if (!card) return;
+                    const posLabel = spreadDef.pos[idx] || `第${idx + 1}位`;
+                    const uid = `ic${idx}`;
+                    html += `
+                <div class="lnm-interp-card" id="interp-${idx}">
+                    <div class="interp-card-left">
+                        <div class="interp-card-pos">${posLabel}</div>
+                        <div class="interp-card-icon">${card.ic}</div>
+                        <div class="interp-card-name">${card.name}</div>
+                    </div>
+                    <div class="interp-card-right">
+                        <div class="interp-kw">${card.kw}</div>
+                        <div class="interp-tabs">
+                            <button class="interp-tab active" onclick="switchInterpTab('${uid}','g',this)">总论</button>
+                            <button class="interp-tab" onclick="switchInterpTab('${uid}','l',this)">感情</button>
+                            <button class="interp-tab" onclick="switchInterpTab('${uid}','c',this)">事业</button>
+                            <button class="interp-tab" onclick="switchInterpTab('${uid}','h',this)">健康</button>
+                        </div>
+                        <div class="interp-text" id="interp-text-${uid}">${card.g}</div>
+                    </div>
+                </div>`;
+                });
+                html += `</div>`;
 
-        timeEl.textContent = data.time || new Date().toLocaleString('zh-CN');
+                // Overall summary
+                html += buildSummary(resolvedCards, lnmType);
+            } else {
+                // Fallback: just show card names
+                html += `<div class="lnm-summary"><h4>牌面</h4><p>${cardNames.map((n, i) => `<strong>${spreadDef.pos[i] || (i + 1) + '号'}</strong>：${n}`).join('；')}</p></div>`;
+                if (data.msg && data.msg !== 'success') html += `<div class="lnm-summary"><h4>解读</h4><p>${data.msg}</p></div>`;
+            }
 
-        let html = '';
-        if (cards.length) {
-            html += `<p><strong>抽取牌面：</strong>${cards.map((c, i) => `<strong>${c}</strong>`).join('、')}</p>`;
+            html += `<div class="retry-section"><button class="retry-btn" onclick="castLNM()">重新抽牌</button></div>`;
+
+            interp.innerHTML = html;
+            interp.classList.add('show');
+
+            // Stagger card animations
+            resolvedCards.forEach((_, i) => {
+                setTimeout(() => {
+                    const el = document.getElementById(`interp-${i}`);
+                    if (el) el.classList.add('visible');
+                }, resolvedCards.length * 200 + i * 120);
+            });
+
+            setTimeout(() => interp.scrollIntoView({ behavior: 'smooth', block: 'start' }), resolvedCards.length * 250 + 400);
         }
-        // If API returns additional interpretation text
-        if (data.msg && data.msg !== 'success') {
-            html += `<p>${data.msg}</p>`;
-        }
-        if (!html) html = '<p>牌已翻开，请根据牌面进行解读。</p>';
 
-        dataEl.innerHTML = html;
-        box.classList.add('show');
-        setTimeout(() => box.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
-    }, cards.length * 250 + 800);
-}
-</script>
+        // Switch between 总论/感情/事业/健康 tabs on a card
+        function switchInterpTab(uid, type, btnEl) {
+            const textEl = document.getElementById(`interp-text-${uid}`);
+            if (!textEl) return;
+            // Find the card data from the text content
+            const cardEl = btnEl.closest('.lnm-interp-card');
+            const cardName = cardEl.querySelector('.interp-card-name')?.textContent;
+            const card = cardName ? LNM_DB[cardName] : null;
+            if (!card) return;
+            textEl.textContent = card[type] || card.g;
+            // Update active tab
+            cardEl.querySelectorAll('.interp-tab').forEach(t => t.classList.remove('active'));
+            btnEl.classList.add('active');
+        }
+
+        // Build overall summary
+        function buildSummary(cards, type) {
+            const validCards = cards.filter(c => c.card);
+            if (!validCards.length) return '';
+
+            const names = validCards.map(c => c.card.name).join('、');
+            const positions = SPREAD_POS[type]?.pos || [];
+
+            let summaryText = '';
+
+            if (type === 1) {
+                const c = validCards[0].card;
+                summaryText = `本次抽到<strong>${c.name}</strong>，${c.g}`;
+            } else if (type === 3) {
+                const [past, present, future] = validCards.map(v => v.card);
+                summaryText = `过去位的<strong>${past.name}</strong>提示你：${past.g.slice(0, 20)}…　`;
+                summaryText += `现在位的<strong>${present.name}</strong>表明：${present.g.slice(0, 20)}…　`;
+                summaryText += `未来位的<strong>${future.name}</strong>预示：${future.g.slice(0, 20)}…　`;
+                summaryText += `整体走势从「${past.name}」到「${present.name}」再到「${future.name}」，请结合各位置含义综合判断。`;
+            } else if (type === 5) {
+                const [p, now, f, advice, result] = validCards.map(v => v.card);
+                summaryText = `过去<strong>${p.name}</strong>奠定基础，当前<strong>${now.name}</strong>揭示现状，`;
+                summaryText += `未来<strong>${f.name}</strong>指明方向。建议：<strong>${advice.name}</strong>提醒你${advice.g.slice(0, 20)}…　`;
+                summaryText += `最终结果<strong>${result.name}</strong>预示${result.g.slice(0, 20)}…`;
+            } else {
+                summaryText = `本次${type}牌阵抽到：${names}。`;
+                summaryText += `牌阵从${positions[0] || '起始'}到${positions[positions.length - 1] || '终结'}，`;
+                summaryText += `各张牌面含义丰富，请逐张查看详细解读，综合理解整体走势。`;
+            }
+
+            return `<div class="lnm-summary"><h4>综合解读</h4><p>${summaryText}</p></div>`;
+        }
+    </script>
 </body>
+
 </html>
