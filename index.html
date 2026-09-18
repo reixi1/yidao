@@ -1,2312 +1,893 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>易道 · YiDao — 小六壬 / 八字 / 雷诺曼</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap"
-        rel="stylesheet">
-    <script src="config.js"></script>
-    <style>
-        /* ═══════════════════════════════════
-           RESET & VARIABLES
-           ═══════════════════════════════════ */
-        *,
-        *::before,
-        *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg: #08080e;
-            --surface: #111119;
-            --surface-2: #1a1a25;
-            --surface-3: #242435;
-            --accent: #c9a24d;
-            --accent-dim: #8b6914;
-            --accent-glow: rgba(201, 162, 77, .15);
-            --text: #e8e0d0;
-            --text-muted: #6e6760;
-            --red: #b84038;
-            --green: #4a9e6e;
-            --blue: #4a80b4;
-            --border: #2a2a3a;
-            --font-display: 'Noto Serif SC', 'Songti SC', serif;
-            --font-body: 'Noto Sans SC', 'PingFang SC', sans-serif;
-            --font-en: 'Cormorant Garamond', serif;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: var(--font-body);
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.7;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-            opacity: .03;
-        }
-
-        .container {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        /* ═══ NAV ═══ */
-        .nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            padding: 0 24px;
-            transition: background .4s, box-shadow .4s;
-        }
-
-        .nav.scrolled {
-            background: rgba(8, 8, 14, .92);
-            backdrop-filter: blur(12px);
-            box-shadow: 0 1px 0 var(--border);
-        }
-
-        .nav-inner {
-            max-width: 960px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 64px;
-        }
-
-        .nav-logo {
-            font-family: var(--font-display);
-            font-size: 1.4rem;
-            font-weight: 900;
-            color: var(--accent);
-            text-decoration: none;
-            letter-spacing: .08em;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 28px;
-        }
-
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: .85rem;
-            transition: color .3s;
-            position: relative;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--accent);
-            transition: width .3s;
-        }
-
-        .nav-links a:hover {
-            color: var(--text);
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        .nav-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.4rem;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 64px;
-            left: 0;
-            right: 0;
-            background: rgba(8, 8, 14, .96);
-            backdrop-filter: blur(16px);
-            padding: 24px;
-            flex-direction: column;
-            gap: 20px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .mobile-menu.open {
-            display: flex;
-        }
-
-        .mobile-menu a {
-            color: var(--text);
-            text-decoration: none;
-            font-size: 1.1rem;
-            padding: 8px 0;
-        }
-
-        /* ═══ HERO ═══ */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at 30% 60%, rgba(201, 162, 77, .06) 0%, transparent 50%), radial-gradient(ellipse at 70% 30%, rgba(184, 64, 56, .04) 0%, transparent 50%);
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            padding-top: 80px;
-        }
-
-        .hero-symbol {
-            font-size: 6rem;
-            color: var(--accent);
-            text-shadow: 0 0 60px var(--accent-glow), 0 0 120px rgba(201, 162, 77, .08);
-            animation: pulse 4s ease-in-out infinite;
-            margin-bottom: 24px;
-            display: block;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: .8;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 1;
-                transform: scale(1.03);
-            }
-        }
-
-        .hero-content h1 {
-            font-family: var(--font-display);
-            font-size: clamp(2.5rem, 7vw, 4.5rem);
-            font-weight: 900;
-            letter-spacing: .15em;
-            margin-bottom: 16px;
-            opacity: 0;
-            animation: fadeUp 1s ease .3s forwards;
-        }
-
-        .hero-sub-en {
-            font-family: var(--font-en);
-            font-size: clamp(.9rem, 2vw, 1.1rem);
-            color: var(--accent-dim);
-            letter-spacing: .2em;
-            margin-bottom: 12px;
-            opacity: 0;
-            animation: fadeUp 1s ease .5s forwards;
-        }
-
-        .hero-content>p {
-            font-size: clamp(.95rem, 2.5vw, 1.15rem);
-            color: var(--text-muted);
-            margin-bottom: 48px;
-            opacity: 0;
-            animation: fadeUp 1s ease .7s forwards;
-        }
-
-        .hero-cards {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-            opacity: 0;
-            animation: fadeUp 1s ease .9s forwards;
-        }
-
-        .hero-card {
-            padding: 14px 32px;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            text-decoration: none;
-            font-family: var(--font-display);
-            font-size: .88rem;
-            letter-spacing: .08em;
-            transition: border-color .3s, color .3s, background .3s;
-        }
-
-        .hero-card:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-            background: rgba(201, 162, 77, .05);
-        }
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(24px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ═══ SHARED ═══ */
-        .section {
-            padding: 80px 0;
-        }
-
-        .section-title {
-            font-family: var(--font-display);
-            font-size: clamp(1.6rem, 4vw, 2.2rem);
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 12px;
-        }
-
-        .section-subtitle {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: .9rem;
-            margin-bottom: 40px;
-        }
-
-        .divider {
-            width: 40px;
-            height: 2px;
-            background: var(--accent);
-            margin: 0 auto 40px;
-        }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(24px);
-            transition: opacity .7s, transform .7s;
-        }
-
-        .reveal.in-view {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .cast-btn {
-            padding: 14px 56px;
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            font-family: var(--font-display);
-            font-size: 1rem;
-            letter-spacing: .18em;
-            cursor: pointer;
-            transition: background .4s, color .4s, letter-spacing .4s, transform .2s;
-        }
-
-        .cast-btn:hover {
-            background: var(--accent);
-            color: var(--bg);
-            letter-spacing: .28em;
-        }
-
-        .cast-btn:active {
-            transform: scale(.97);
-        }
-
-        .cast-btn:disabled {
-            opacity: .35;
-            cursor: not-allowed;
-        }
-
-        .cast-btn:disabled:hover {
-            background: transparent;
-            color: var(--accent);
-            letter-spacing: .18em;
-        }
-
-        .loading {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            padding: 40px 0;
-        }
-
-        .loading.show {
-            display: flex;
-        }
-
-        .loading-spinner {
-            width: 36px;
-            height: 36px;
-            border: 2px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin .8s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .loading-text {
-            font-size: .85rem;
-            color: var(--text-muted);
-            font-family: var(--font-display);
-            letter-spacing: .06em;
-        }
-
-        /* ═══ CONFIG ═══ */
-        .config-card {
-            max-width: 560px;
-            margin: 0 auto;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 32px;
-        }
-
-        .config-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .config-header h3 {
-            font-family: var(--font-display);
-            font-size: 1.05rem;
-        }
-
-        .config-status {
-            font-size: .75rem;
-            padding: 3px 10px;
-            border-radius: 2px;
-        }
-
-        .status-ok {
-            background: rgba(74, 158, 110, .15);
-            color: var(--green);
-            border: 1px solid rgba(74, 158, 110, .3);
-        }
-
-        .status-none {
-            background: rgba(110, 103, 96, .15);
-            color: var(--text-muted);
-            border: 1px solid rgba(110, 103, 96, .3);
-        }
-
-        .key-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        .key-input {
-            flex: 1;
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 12px 16px;
-            font-size: .92rem;
-            font-family: var(--font-body);
-            outline: none;
-            transition: border-color .3s;
-        }
-
-        .key-input:focus {
-            border-color: var(--accent-dim);
-        }
-
-        .key-input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .key-btn {
-            padding: 12px 20px;
-            border: 1px solid var(--accent);
-            background: transparent;
-            color: var(--accent);
-            font-family: var(--font-display);
-            font-size: .85rem;
-            letter-spacing: .06em;
-            cursor: pointer;
-            transition: background .3s, color .3s;
-            white-space: nowrap;
-        }
-
-        .key-btn:hover {
-            background: var(--accent);
-            color: var(--bg);
-        }
-
-        .key-btn.sm {
-            padding: 8px 14px;
-            font-size: .78rem;
-        }
-
-        .key-btn.danger {
-            border-color: var(--red);
-            color: var(--red);
-        }
-
-        .key-btn.danger:hover {
-            background: var(--red);
-            color: var(--text);
-        }
-
-        .config-tip {
-            margin-top: 14px;
-            font-size: .76rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
-        .config-tip a {
-            color: var(--accent-dim);
-            text-decoration: none;
-        }
-
-        /* ═══ TABS ═══ */
-        .module-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 4px;
-            margin-bottom: 0;
-            flex-wrap: wrap;
-        }
-
-        .module-tab {
-            padding: 12px 28px;
-            background: transparent;
-            border: 1px solid var(--border);
-            border-bottom: none;
-            color: var(--text-muted);
-            font-family: var(--font-display);
-            font-size: .88rem;
-            letter-spacing: .06em;
-            cursor: pointer;
-            transition: all .3s;
-            position: relative;
-        }
-
-        .module-tab:hover {
-            color: var(--text);
-        }
-
-        .module-tab.active {
-            color: var(--accent);
-            border-color: var(--accent-dim);
-            background: var(--surface);
-        }
-
-        .module-tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: var(--surface);
-        }
-
-        .module-panel {
-            display: none;
-        }
-
-        .module-panel.active {
-            display: block;
-        }
-
-        /* ═══ LR: WHEEL & POSITIONS ═══ */
-        .wheel-container {
-            position: relative;
-            width: 320px;
-            height: 320px;
-            margin: 0 auto 40px;
-        }
-
-        .wheel-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 88px;
-            height: 88px;
-            border-radius: 50%;
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            color: var(--accent);
-            background: var(--surface);
-        }
-
-        .wheel-ring {
-            position: absolute;
-            inset: 0;
-            border: 1px dashed var(--border);
-            border-radius: 50%;
-            opacity: .3;
-        }
-
-        .pos-node {
-            position: absolute;
-            width: 72px;
-            text-align: center;
-            top: 50%;
-            left: 50%;
-            margin-left: -36px;
-            margin-top: -32px;
-            cursor: pointer;
-            transition: transform .3s, filter .3s;
-        }
-
-        .pos-node:hover {
-            transform: translate(var(--tx), var(--ty)) scale(1.12) !important;
-            filter: brightness(1.3);
-        }
-
-        .pos-node.active {
-            filter: brightness(1.5) drop-shadow(0 0 12px var(--glow));
-        }
-
-        .pos-node.active .pos-icon {
-            animation: nodeGlow 1.5s ease-in-out infinite;
-        }
-
-        @keyframes nodeGlow {
-
-            0%,
-            100% {
-                box-shadow: 0 0 8px var(--glow);
-            }
-
-            50% {
-                box-shadow: 0 0 24px var(--glow), 0 0 48px var(--glow);
-            }
-        }
-
-        .pos-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 5px;
-            font-size: 1rem;
-            font-family: var(--font-display);
-            font-weight: 700;
-            background: var(--surface);
-            transition: border-color .3s, box-shadow .3s;
-        }
-
-        .pos-label {
-            font-size: .7rem;
-            color: var(--text-muted);
-            font-family: var(--font-display);
-        }
-
-        .pos-element {
-            font-size: .58rem;
-            color: var(--text-muted);
-            opacity: .5;
-        }
-
-        .pos-legend {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 6px;
-            max-width: 560px;
-            margin: 0 auto 40px;
-        }
-
-        .pos-legend-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 6px 8px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: border-color .3s;
-        }
-
-        .pos-legend-item.active {
-            border-color: var(--accent-dim);
-        }
-
-        .legend-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-
-        .legend-name {
-            font-size: .68rem;
-            font-family: var(--font-display);
-            color: var(--text-muted);
-        }
-
-        .cast-section {
-            text-align: center;
-            margin-bottom: 36px;
-        }
-
-        /* LR Results */
-        .lr-results {
-            display: none;
-            animation: fadeUp .6s ease;
-        }
-
-        .lr-results.show {
-            display: block;
-        }
-
-        .lr-time {
-            text-align: center;
-            font-family: var(--font-en);
-            font-size: .95rem;
-            color: var(--accent-dim);
-            letter-spacing: .06em;
-            margin-bottom: 28px;
-        }
-
-        .lr-cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-            margin-bottom: 28px;
-        }
-
-        .lr-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 22px;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(16px);
-            transition: opacity .5s, transform .5s, border-color .3s;
-        }
-
-        .lr-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .lr-card:nth-child(2).visible {
-            transition-delay: .15s;
-        }
-
-        .lr-card:nth-child(3).visible {
-            transition-delay: .3s;
-        }
-
-        .lr-card:hover {
-            border-color: var(--accent-dim);
-        }
-
-        .lr-card-title {
-            font-size: .72rem;
-            color: var(--text-muted);
-            letter-spacing: .15em;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-
-        .lr-card-pos {
-            font-family: var(--font-display);
-            font-size: 1.6rem;
-            font-weight: 900;
-            margin-bottom: 4px;
-        }
-
-        .lr-card-element {
-            font-size: .78rem;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-        }
-
-        .lr-card-fortune {
-            display: inline-block;
-            padding: 2px 10px;
-            font-size: .72rem;
-            border-radius: 2px;
-        }
-
-        .fortune-吉 {
-            background: rgba(74, 158, 110, .12);
-            color: var(--green);
-            border: 1px solid rgba(74, 158, 110, .3);
-        }
-
-        .fortune-凶 {
-            background: rgba(184, 64, 56, .12);
-            color: #d06050;
-            border: 1px solid rgba(184, 64, 56, .3);
-        }
-
-        .fortune-中 {
-            background: rgba(201, 162, 77, .12);
-            color: var(--accent);
-            border: 1px solid rgba(201, 162, 77, .3);
-        }
-
-        .lr-card-text {
-            margin-top: 10px;
-            font-size: .78rem;
-            color: var(--text-muted);
-            line-height: 1.7;
-            text-align: left;
-        }
-
-        .hourmsg-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 28px;
-            opacity: 0;
-            transform: translateY(16px);
-            transition: opacity .5s, transform .5s;
-        }
-
-        .hourmsg-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .hourmsg-title {
-            font-family: var(--font-display);
-            font-size: 1rem;
-            color: var(--accent);
-            margin-bottom: 14px;
-            letter-spacing: .06em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .hourmsg-title::before {
-            content: '';
-            width: 3px;
-            height: 16px;
-            background: var(--accent);
-            display: block;
-        }
-
-        .hourmsg-body {
-            font-size: .88rem;
-            line-height: 2;
-            color: var(--text);
-        }
-
-        .retry-section {
-            text-align: center;
-            margin-top: 28px;
-        }
-
-        .retry-btn {
-            padding: 10px 36px;
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            font-family: var(--font-display);
-            font-size: .88rem;
-            letter-spacing: .06em;
-            cursor: pointer;
-            transition: border-color .3s, color .3s;
-        }
-
-        .retry-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* ═══ BAZI ═══ */
-        .bazi-form {
-            max-width: 600px;
-            margin: 0 auto;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 36px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .form-group label {
-            font-size: .78rem;
-            color: var(--text-muted);
-            letter-spacing: .04em;
-        }
-
-        .form-group input,
-        .form-group select {
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 11px 14px;
-            font-size: .92rem;
-            font-family: var(--font-body);
-            outline: none;
-            transition: border-color .3s;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: var(--accent-dim);
-        }
-
-        .form-group select option {
-            background: var(--surface);
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .form-actions .cast-btn {
-            flex: 1;
-        }
-
-        .form-note {
-            margin-top: 14px;
-            font-size: .72rem;
-            color: var(--text-muted);
-            text-align: center;
-        }
-
-        .bazi-results {
-            display: none;
-            animation: fadeUp .6s ease;
-        }
-
-        .bazi-results.show {
-            display: block;
-        }
-
-        .pillar-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .pillar {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 20px 12px;
-            text-align: center;
-            transition: border-color .3s;
-        }
-
-        .pillar:hover {
-            border-color: var(--accent-dim);
-        }
-
-        .pillar-label {
-            font-size: .7rem;
-            color: var(--text-muted);
-            letter-spacing: .12em;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-
-        .pillar-stem {
-            font-family: var(--font-display);
-            font-size: 2rem;
-            font-weight: 900;
-            line-height: 1;
-            color: var(--accent);
-        }
-
-        .pillar-branch {
-            font-family: var(--font-display);
-            font-size: 1.6rem;
-            font-weight: 700;
-            line-height: 1;
-            color: var(--text);
-            margin: 6px 0 4px;
-        }
-
-        .pillar-element {
-            font-size: .72rem;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
-
-        .pillar-hidden {
-            font-size: .7rem;
-            color: var(--accent-dim);
-            opacity: .7;
-            line-height: 1.5;
-        }
-
-        .pillar-god {
-            font-size: .7rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 10px;
-            margin-bottom: 24px;
-        }
-
-        .info-item {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 14px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .info-item-label {
-            font-size: .68rem;
-            color: var(--text-muted);
-            letter-spacing: .08em;
-        }
-
-        .info-item-value {
-            font-family: var(--font-display);
-            font-size: .95rem;
-            color: var(--text);
-            font-weight: 700;
-        }
-
-        .dayun-title {
-            font-family: var(--font-display);
-            font-size: 1.1rem;
-            color: var(--accent);
-            margin: 32px 0 16px;
-            padding-left: 12px;
-            border-left: 3px solid var(--accent);
-            letter-spacing: .06em;
-        }
-
-        .dayun-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-            gap: 8px;
-            margin-bottom: 24px;
-        }
-
-        .dayun-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 12px 8px;
-            text-align: center;
-            transition: border-color .3s;
-        }
-
-        .dayun-card:hover {
-            border-color: var(--accent-dim);
-        }
-
-        .dayun-card.active {
-            border-color: var(--accent);
-            box-shadow: 0 0 12px var(--accent-glow);
-        }
-
-        .dayun-age {
-            font-size: .68rem;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-
-        .dayun-stems {
-            font-family: var(--font-display);
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--accent);
-            line-height: 1.3;
-        }
-
-        .dayun-branch {
-            font-family: var(--font-display);
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text);
-            line-height: 1.3;
-        }
-
-        .dayun-12cs {
-            font-size: .65rem;
-            color: var(--accent-dim);
-            margin-top: 4px;
-        }
-
-        .qiyun-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-
-        .qiyun-card h4 {
-            font-family: var(--font-display);
-            font-size: .9rem;
-            color: var(--accent);
-            margin-bottom: 10px;
-            letter-spacing: .06em;
-        }
-
-        .qiyun-card p {
-            font-size: .85rem;
-            color: var(--text);
-            line-height: 1.8;
-        }
-
-        .ln-title {
-            font-family: var(--font-display);
-            font-size: 1rem;
-            color: var(--text);
-            margin: 20px 0 12px;
-            letter-spacing: .04em;
-        }
-
-        .ln-scroll {
-            display: flex;
-            gap: 6px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .ln-scroll::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .ln-scroll::-webkit-scrollbar-track {
-            background: var(--surface);
-        }
-
-        .ln-scroll::-webkit-scrollbar-thumb {
-            background: var(--accent-dim);
-        }
-
-        .ln-card {
-            min-width: 56px;
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            padding: 8px 6px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .ln-year {
-            font-size: .6rem;
-            color: var(--text-muted);
-            margin-bottom: 2px;
-        }
-
-        .ln-stem {
-            font-family: var(--font-display);
-            font-size: .88rem;
-            font-weight: 700;
-            color: var(--accent);
-        }
-
-        .ln-age {
-            font-size: .58rem;
-            color: var(--text-muted);
-        }
-
-        /* ═══ LENORMAND ═══ */
-        .lnm-options {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 32px;
-            flex-wrap: wrap;
-        }
-
-        .lnm-opt {
-            padding: 10px 22px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            font-family: var(--font-display);
-            font-size: .88rem;
-            letter-spacing: .04em;
-            cursor: pointer;
-            transition: all .3s;
-        }
-
-        .lnm-opt:hover {
-            border-color: var(--accent-dim);
-            color: var(--text);
-        }
-
-        .lnm-opt.active {
-            border-color: var(--accent);
-            color: var(--accent);
-            background: rgba(201, 162, 77, .06);
-        }
-
-        .lnm-cast-section {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        /* Card fan display */
-        .lnm-fan {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 14px;
-            margin-bottom: 32px;
-            perspective: 800px;
-        }
-
-        .lnm-card {
-            width: 110px;
-            height: 170px;
-            position: relative;
-            cursor: default;
-            perspective: 600px;
-            opacity: 0;
-            transform: translateY(30px) rotateY(90deg);
-            transition: opacity .5s, transform .6s;
-        }
-
-        .lnm-card.visible {
-            opacity: 1;
-            transform: translateY(0) rotateY(0);
-        }
-
-        .lnm-card-inner {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transition: transform .8s cubic-bezier(.4, 0, .2, 1);
-            transform-style: preserve-3d;
-        }
-
-        .lnm-card.flipped .lnm-card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .lnm-card-front,
-        .lnm-card-back {
-            position: absolute;
-            inset: 0;
-            backface-visibility: hidden;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 8px;
-        }
-
-        .lnm-card-front {
-            background: linear-gradient(145deg, #1e1e30, #12121e);
-            border: 1px solid var(--accent-dim);
-        }
-
-        .lnm-card-front-pattern {
-            position: absolute;
-            inset: 8px;
-            border: 1px solid rgba(201, 162, 77, .15);
-            border-radius: 4px;
-        }
-
-        .lnm-card-front .card-back-symbol {
-            font-size: 2.2rem;
-            color: var(--accent);
-            opacity: .4;
-        }
-
-        .lnm-card-front .card-back-text {
-            font-size: .55rem;
-            color: var(--accent-dim);
-            opacity: .3;
-            margin-top: 4px;
-            font-family: var(--font-display);
-            letter-spacing: .1em;
-        }
-
-        .lnm-card-back {
-            background: linear-gradient(145deg, #1a1a2a, #10101a);
-            border: 1px solid var(--border);
-            transform: rotateY(180deg);
-            text-align: center;
-        }
-
-        .lnm-card-idx {
-            position: absolute;
-            top: 6px;
-            left: 8px;
-            font-size: .6rem;
-            color: var(--accent-dim);
-            font-family: var(--font-en);
-        }
-
-        .lnm-card-icon {
-            font-size: 2.8rem;
-            margin-bottom: 6px;
-            line-height: 1;
-        }
-
-        .lnm-card-name {
-            font-family: var(--font-display);
-            font-size: .92rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 4px;
-        }
-
-        .lnm-card-keywords {
-            font-size: .62rem;
-            color: var(--text-muted);
-            line-height: 1.4;
-        }
-
-        /* LNM result text */
-        .lnm-result-box {
-            display: none;
-            max-width: 680px;
-            margin: 0 auto;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 32px;
-            animation: fadeUp .5s ease;
-        }
-
-        .lnm-result-box.show {
-            display: block;
-        }
-
-        .lnm-result-time {
-            font-family: var(--font-en);
-            font-size: .88rem;
-            color: var(--accent-dim);
-            margin-bottom: 20px;
-            text-align: center;
-            letter-spacing: .06em;
-        }
-
-        .lnm-result-data {
-            font-size: .92rem;
-            color: var(--text);
-            line-height: 2;
-        }
-
-        .lnm-result-data p {
-            margin-bottom: 12px;
-        }
-
-        .lnm-result-data strong {
-            color: var(--accent);
-        }
-
-        /* ═══ FOOTER ═══ */
-        .footer {
-            padding: 40px 24px;
-            text-align: center;
-            border-top: 1px solid var(--border);
-        }
-
-        .footer-logo {
-            font-family: var(--font-display);
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 8px;
-            letter-spacing: .06em;
-        }
-
-        .footer p {
-            font-size: .75rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
-        /* ═══ RESPONSIVE ═══ */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .nav-toggle {
-                display: flex;
-            }
-
-            .hero-symbol {
-                font-size: 4rem;
-            }
-
-            .hero-cards {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .hero-card {
-                width: 220px;
-                text-align: center;
-            }
-
-            .wheel-container {
-                width: 260px;
-                height: 260px;
-            }
-
-            .wheel-center {
-                width: 70px;
-                height: 70px;
-                font-size: 1.3rem;
-            }
-
-            .pos-icon {
-                width: 36px;
-                height: 36px;
-                font-size: .85rem;
-            }
-
-            .pos-node {
-                width: 56px;
-                margin-left: -28px;
-            }
-
-            .pos-legend {
-                grid-template-columns: repeat(3, 1fr);
-            }
-
-            .lr-cards {
-                grid-template-columns: 1fr;
-            }
-
-            .pillar-row {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-actions {
-                flex-direction: column;
-            }
-
-            .dayun-grid {
-                grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-            }
-
-            .module-tab {
-                padding: 10px 18px;
-                font-size: .8rem;
-            }
-
-            .config-card,
-            .bazi-form {
-                padding: 20px;
-            }
-
-            .key-row {
-                flex-direction: column;
-            }
-
-            .lnm-card {
-                width: 90px;
-                height: 140px;
-            }
-
-            .lnm-card-icon {
-                font-size: 2rem;
-            }
-
-            .lnm-card-name {
-                font-size: .78rem;
-            }
-
-            .lnm-card-keywords {
-                font-size: .55rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .wheel-container {
-                width: 220px;
-                height: 220px;
-            }
-
-            .pos-legend {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .lnm-card {
-                width: 80px;
-                height: 125px;
-            }
-
-            .lnm-fan {
-                gap: 8px;
-            }
-        }
-
-        /* ═══ LNM INTERPRETATION ═══ */
-        .lnm-interp {
-            display: none;
-            max-width: 780px;
-            margin: 0 auto;
-            animation: fadeUp .6s ease;
-        }
-
-        .lnm-interp.show {
-            display: block;
-        }
-
-        .lnm-interp-head {
-            text-align: center;
-            margin-bottom: 28px;
-        }
-
-        .lnm-interp-head h3 {
-            font-family: var(--font-display);
-            font-size: 1.15rem;
-            color: var(--accent);
-            letter-spacing: .1em;
-            margin-bottom: 6px;
-        }
-
-        .lnm-interp-head span {
-            font-family: var(--font-en);
-            font-size: .88rem;
-            color: var(--text-muted);
-        }
-
-        .lnm-interp-cards {
-            display: grid;
-            gap: 14px;
-            margin-bottom: 28px;
-        }
-
-        .lnm-interp-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 20px 24px;
-            display: flex;
-            gap: 18px;
-            transition: border-color .3s;
-            opacity: 0;
-            transform: translateY(12px);
-            transition: opacity .5s, transform .5s, border-color .3s;
-        }
-
-        .lnm-interp-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .lnm-interp-card:hover {
-            border-color: var(--accent-dim);
-        }
-
-        .interp-card-left {
-            flex-shrink: 0;
-            width: 72px;
-            text-align: center;
-        }
-
-        .interp-card-pos {
-            font-size: .62rem;
-            color: var(--accent-dim);
-            letter-spacing: .08em;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-        }
-
-        .interp-card-icon {
-            font-size: 2.2rem;
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-
-        .interp-card-name {
-            font-family: var(--font-display);
-            font-size: .88rem;
-            font-weight: 700;
-            color: var(--accent);
-        }
-
-        .interp-card-right {
-            flex: 1;
-        }
-
-        .interp-kw {
-            font-size: .72rem;
-            color: var(--accent-dim);
-            margin-bottom: 10px;
-            letter-spacing: .04em;
-        }
-
-        .interp-tabs {
-            display: flex;
-            gap: 2px;
-            margin-bottom: 10px;
-        }
-
-        .interp-tab {
-            padding: 4px 12px;
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            font-size: .68rem;
-            cursor: pointer;
-            transition: all .2s;
-        }
-
-        .interp-tab:hover {
-            color: var(--text);
-        }
-
-        .interp-tab.active {
-            color: var(--accent);
-            border-color: var(--accent-dim);
-            background: rgba(201, 162, 77, .06);
-        }
-
-        .interp-text {
-            font-size: .88rem;
-            color: var(--text);
-            line-height: 1.8;
-        }
-
-        .lnm-summary {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-left: 3px solid var(--accent);
-            padding: 24px 28px;
-            margin-bottom: 24px;
-        }
-
-        .lnm-summary h4 {
-            font-family: var(--font-display);
-            font-size: .95rem;
-            color: var(--accent);
-            margin-bottom: 12px;
-            letter-spacing: .06em;
-        }
-
-        .lnm-summary p {
-            font-size: .88rem;
-            color: var(--text);
-            line-height: 1.9;
-        }
-
-        .lnm-interp .retry-section {
-            text-align: center;
-            margin-top: 24px;
-        }
-
-        @media (max-width: 768px) {
-            .lnm-interp-card {
-                flex-direction: column;
-                gap: 10px;
-                padding: 16px;
-            }
-
-            .interp-card-left {
-                width: auto;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-
-            .interp-card-pos {
-                margin-bottom: 0;
-            }
-
-            .interp-tabs {
-                flex-wrap: wrap;
-            }
-        }
-
-        .lnm-interp-cards {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 14px;
-            margin-bottom: 28px;
-        }
-
-        @media (min-width: 600px) {
-            .lnm-interp-cards.cols-2 {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .lnm-interp-cards.cols-3 {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>易道 · YiDao — 十一大占卜系统</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#08080e;--surface:#111119;--s2:#1a1a25;--s3:#242435;
+--accent:#c9a24d;--accent-dim:#8b6914;--accent-glow:rgba(201,162,77,.15);
+--text:#e8e0d0;--muted:#6e6760;--red:#b84038;--green:#4a9e6e;--blue:#4a80b4;
+--border:#2a2a3a;
+--f1:'Noto Serif SC','Songti SC',serif;
+--f2:'Noto Sans SC','PingFang SC',sans-serif;
+--f3:'Cormorant Garamond',serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--f2);background:var(--bg);color:var(--text);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.03}
+.container{max-width:1000px;margin:0 auto;padding:0 20px}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 20px;transition:background .4s}
+.nav.scrolled{background:rgba(8,8,14,.92);backdrop-filter:blur(12px);box-shadow:0 1px 0 var(--border)}
+.nav-in{max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.nav-logo{font-family:var(--f1);font-size:1.3rem;font-weight:900;color:var(--accent);text-decoration:none;letter-spacing:.08em}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;text-align:center}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,rgba(201,162,77,.06),transparent 50%),radial-gradient(ellipse at 70% 30%,rgba(184,64,56,.04),transparent 50%)}
+.hero-c{position:relative;z-index:2;padding-top:56px}
+.hero-sym{font-size:5rem;color:var(--accent);text-shadow:0 0 60px var(--accent-glow);animation:pulse 4s ease-in-out infinite;display:block;margin-bottom:20px}
+@keyframes pulse{0%,100%{opacity:.8;transform:scale(1)}50%{opacity:1;transform:scale(1.03)}}
+.hero h1{font-family:var(--f1);font-size:clamp(2.2rem,7vw,4rem);font-weight:900;letter-spacing:.15em;margin-bottom:12px;opacity:0;animation:fu 1s .3s forwards}
+.hero-sub{font-family:var(--f3);font-size:clamp(.85rem,2vw,1rem);color:var(--accent-dim);letter-spacing:.2em;margin-bottom:10px;opacity:0;animation:fu 1s .5s forwards}
+.hero p{color:var(--muted);margin-bottom:40px;opacity:0;animation:fu 1s .7s forwards}
+.hero-cta{display:inline-block;padding:12px 40px;border:1px solid var(--accent);color:var(--accent);text-decoration:none;font-family:var(--f1);letter-spacing:.12em;transition:background .3s,color .3s;opacity:0;animation:fu 1s .9s forwards}
+.hero-cta:hover{background:var(--accent);color:var(--bg)}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* SECTION */
+.sec{padding:72px 0}
+.sec-t{font-family:var(--f1);font-size:clamp(1.4rem,3.5vw,2rem);font-weight:700;text-align:center;margin-bottom:10px}
+.sec-sub{text-align:center;color:var(--muted);font-size:.88rem;margin-bottom:36px}
+.divider{width:36px;height:2px;background:var(--accent);margin:0 auto 36px}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s,transform .7s}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* TABS */
+.tabs{display:flex;gap:3px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;justify-content:center;flex-wrap:wrap;margin-bottom:0}
+.tabs::-webkit-scrollbar{height:3px}
+.tabs::-webkit-scrollbar-thumb{background:var(--accent-dim)}
+.tab{padding:10px 18px;background:transparent;border:1px solid var(--border);border-bottom:none;color:var(--muted);font-family:var(--f1);font-size:.82rem;cursor:pointer;transition:all .3s;white-space:nowrap;position:relative;letter-spacing:.03em}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-color:var(--accent-dim);background:var(--surface)}
+.tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:var(--surface)}
+.panel{display:none;background:var(--bg);border:1px solid var(--border);border-top:none;padding:32px 24px}
+.panel.active{display:block}
+
+/* FORM */
+.form-wrap{max-width:600px;margin:0 auto}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.fi{display:flex;flex-direction:column;gap:4px}
+.fi label{font-size:.75rem;color:var(--muted);letter-spacing:.04em}
+.fi input,.fi select{background:var(--s2);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-size:.9rem;font-family:var(--f2);outline:none;transition:border-color .3s}
+.fi input:focus,.fi select:focus{border-color:var(--accent-dim)}
+.fi select option{background:var(--surface)}
+.act{display:flex;gap:10px;margin-top:18px}
+.act-btn{flex:1;padding:13px;background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:var(--f1);font-size:.95rem;letter-spacing:.15em;cursor:pointer;transition:background .3s,color .3s,transform .15s}
+.act-btn:hover{background:var(--accent);color:var(--bg)}
+.act-btn:active{transform:.97}
+.act-btn:disabled{opacity:.35;cursor:not-allowed}
+.act-btn:disabled:hover{background:transparent;color:var(--accent)}
+
+/* LOADING */
+.ld{display:none;flex-direction:column;align-items:center;gap:14px;padding:36px 0}
+.ld.show{display:flex}
+.ld-s{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld-t{font-size:.82rem;color:var(--muted);font-family:var(--f1)}
+
+/* GENERIC RESULT */
+.res{display:none;max-width:780px;margin:0 auto;animation:fu .5s ease}
+.res.show{display:block}
+.res-hd{font-family:var(--f3);font-size:.88rem;color:var(--accent-dim);text-align:center;margin-bottom:20px;letter-spacing:.05em}
+.res-body{background:var(--surface);border:1px solid var(--border);padding:24px;line-height:1.9;font-size:.88rem}
+.res-body p{margin-bottom:10px}
+.res-body strong{color:var(--accent)}
+.res-body .dk{color:var(--accent);font-weight:700;font-size:.82rem;margin-bottom:6px;display:block;letter-spacing:.04em}
+.res-body .dv{padding-left:12px;margin-bottom:8px}
+.res-body .arr{padding-left:8px;margin-bottom:6px}
+.retry{text-align:center;margin-top:24px}
+.retry-btn{padding:8px 32px;background:transparent;border:1px solid var(--border);color:var(--muted);font-family:var(--f1);font-size:.85rem;cursor:pointer;transition:border-color .3s,color .3s}
+.retry-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* BAZI PILLARS */
+.pillar-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.pillar{background:var(--surface);border:1px solid var(--border);padding:16px 8px;text-align:center}
+.pillar-lb{font-size:.68rem;color:var(--muted);letter-spacing:.1em;margin-bottom:8px}
+.pillar-stem{font-family:var(--f1);font-size:1.8rem;font-weight:900;color:var(--accent);line-height:1}
+.pillar-branch{font-family:var(--f1);font-size:1.4rem;font-weight:700;line-height:1;margin:4px 0 3px}
+.pillar-el{font-size:.7rem;color:var(--muted)}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:20px}
+.info-it{background:var(--surface);border:1px solid var(--border);padding:12px;display:flex;flex-direction:column;gap:3px}
+.info-it .il{font-size:.65rem;color:var(--muted);letter-spacing:.06em}
+.info-it .iv{font-family:var(--f1);font-size:.9rem;font-weight:700}
+
+/* LR WHEEL */
+.wheel{position:relative;width:280px;height:280px;margin:0 auto 28px}
+.wheel-ctr{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--accent);background:var(--surface)}
+.wheel-ring{position:absolute;inset:0;border:1px dashed var(--border);border-radius:50%;opacity:.3}
+.pn{position:absolute;width:64px;text-align:center;top:50%;left:50%;margin-left:-32px;margin-top:-28px;cursor:pointer;transition:transform .3s,filter .3s}
+.pn:hover{transform:translate(var(--tx),var(--ty)) scale(1.12)!important;filter:brightness(1.3)}
+.pn.act{filter:brightness(1.4) drop-shadow(0 0 10px var(--gw))}
+.pn-ic{width:40px;height:40px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 4px;font-size:.9rem;font-family:var(--f1);font-weight:700;background:var(--surface)}
+.pn-lb{font-size:.65rem;color:var(--muted);font-family:var(--f1)}
+.lr-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.lr-card{background:var(--surface);border:1px solid var(--border);padding:18px;text-align:center}
+.lr-card:hover{border-color:var(--accent-dim)}
+.lr-card-t{font-size:.7rem;color:var(--muted);letter-spacing:.12em;margin-bottom:8px}
+.lr-card-n{font-family:var(--f1);font-size:1.4rem;font-weight:900;margin-bottom:3px}
+.lr-card-e{font-size:.75rem;color:var(--muted);margin-bottom:8px}
+.lr-card-f{display:inline-block;padding:2px 8px;font-size:.7rem;border-radius:2px}
+.f-g{background:rgba(74,158,110,.12);color:var(--green);border:1px solid rgba(74,158,110,.3)}
+.f-b{background:rgba(184,64,56,.12);color:#d06050;border:1px solid rgba(184,64,56,.3)}
+.f-n{background:rgba(201,162,77,.12);color:var(--accent);border:1px solid rgba(201,162,77,.3)}
+.hm-card{background:var(--surface);border:1px solid var(--border);padding:20px}
+.hm-card h4{font-family:var(--f1);font-size:.92rem;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.hm-card h4::before{content:'';width:3px;height:14px;background:var(--accent)}
+.hm-card p{font-size:.85rem;line-height:1.9}
+
+/* CARD FAN */
+.card-fan{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin:0 auto 28px;perspective:800px}
+.cd{width:105px;height:160px;perspective:500px;opacity:0;transform:translateY(24px) rotateY(90deg);transition:opacity .5s,transform .6s}
+.cd.vis{opacity:1;transform:translateY(0) rotateY(0)}
+.cd-inner{width:100%;height:100%;transition:transform .8s cubic-bezier(.4,0,.2,1);transform-style:preserve-3d;position:relative}
+.cd.fl .cd-inner{transform:rotateY(180deg)}
+.cd-f,.cd-b{position:absolute;inset:0;backface-visibility:hidden;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 6px}
+.cd-f{background:linear-gradient(145deg,#1e1e30,#12121e);border:1px solid var(--accent-dim)}
+.cd-f-pat{position:absolute;inset:6px;border:1px solid rgba(201,162,77,.12);border-radius:3px}
+.cd-f .cb-sym{font-size:2rem;color:var(--accent);opacity:.4}
+.cd-f .cb-txt{font-size:.5rem;color:var(--accent-dim);opacity:.3;margin-top:3px;font-family:var(--f1);letter-spacing:.1em}
+.cd-b{background:linear-gradient(145deg,#1a1a2a,#10101a);border:1px solid var(--border);transform:rotateY(180deg);text-align:center}
+.cd-idx{position:absolute;top:5px;left:7px;font-size:.58rem;color:var(--accent-dim);font-family:var(--f3)}
+.cd-icon{font-size:2.4rem;margin-bottom:4px;line-height:1}
+.cd-name{font-family:var(--f1);font-size:.82rem;font-weight:700;color:var(--accent);margin-bottom:2px}
+.cd-kw{font-size:.58rem;color:var(--muted);line-height:1.3}
+
+/* INTERP */
+.interp{display:none;max-width:780px;margin:0 auto;animation:fu .5s ease}
+.interp.show{display:block}
+.interp-hd{text-align:center;margin-bottom:24px}
+.interp-hd h3{font-family:var(--f1);font-size:1.1rem;color:var(--accent);letter-spacing:.08em;margin-bottom:4px}
+.interp-hd span{font-family:var(--f3);font-size:.85rem;color:var(--muted)}
+.ic-grid{display:grid;gap:12px;margin-bottom:24px}
+.ic-card{background:var(--surface);border:1px solid var(--border);padding:18px 20px;display:flex;gap:14px;opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s,border-color .3s}
+.ic-card.vis{opacity:1;transform:translateY(0)}
+.ic-card:hover{border-color:var(--accent-dim)}
+.ic-l{flex-shrink:0;width:66px;text-align:center}
+.ic-l .ip{font-size:.6rem;color:var(--accent-dim);letter-spacing:.06em;margin-bottom:5px}
+.ic-l .ii{font-size:2rem;line-height:1;margin-bottom:3px}
+.ic-l .in{font-family:var(--f1);font-size:.82rem;font-weight:700;color:var(--accent)}
+.ic-r{flex:1}
+.ic-r .ik{font-size:.7rem;color:var(--accent-dim);margin-bottom:8px}
+.itabs{display:flex;gap:2px;margin-bottom:8px;flex-wrap:wrap}
+.itab{padding:3px 10px;background:var(--s2);border:1px solid var(--border);color:var(--muted);font-size:.65rem;cursor:pointer;transition:all .2s}
+.itab:hover{color:var(--text)}
+.itab.on{color:var(--accent);border-color:var(--accent-dim);background:rgba(201,162,77,.05)}
+.itxt{font-size:.85rem;color:var(--text);line-height:1.8}
+.summary{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);padding:20px 24px;margin-bottom:20px}
+.summary h4{font-family:var(--f1);font-size:.9rem;color:var(--accent);margin-bottom:10px;letter-spacing:.05em}
+.summary p{font-size:.85rem;line-height:1.9}
+
+/* LOTS */
+.lot-box{text-align:center;padding:32px}
+.lot-icon{font-size:4rem;margin-bottom:12px}
+.lot-title{font-family:var(--f1);font-size:1.6rem;font-weight:900;color:var(--accent);margin-bottom:4px}
+.lot-sub{font-size:.88rem;color:var(--muted);margin-bottom:16px}
+
+/* FOOTER */
+.footer{padding:36px 20px;text-align:center;border-top:1px solid var(--border)}
+.footer-logo{font-family:var(--f1);font-size:.95rem;font-weight:700;color:var(--accent);margin-bottom:6px;letter-spacing:.06em}
+.footer p{font-size:.72rem;color:var(--muted);line-height:1.6}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+.fg{grid-template-columns:1fr}
+.pillar-row{grid-template-columns:repeat(2,1fr)}
+.lr-cards{grid-template-columns:1fr}
+.cd{width:88px;height:135px}
+.cd-icon{font-size:1.8rem}
+.cd-name{font-size:.72rem}
+.cd-kw{font-size:.52rem}
+.wheel{width:240px;height:240px}
+.wheel-ctr{width:60px;height:60px;font-size:1.1rem}
+.pn{width:52px;margin-left:-26px}
+.pn-ic{width:34px;height:34px;font-size:.78rem}
+.panel{padding:24px 16px}
+.tab{padding:8px 12px;font-size:.75rem}
+.ic-card{flex-direction:column;gap:8px;padding:14px}
+.ic-l{width:auto;display:flex;align-items:center;gap:8px}
+}
+@media(max-width:480px){
+.wheel{width:200px;height:200px}
+.cd{width:76px;height:118px;gap:6px}
+}
+</style>
 </head>
-
 <body>
 
-    <!-- ═══ NAV ═══ -->
-    <nav class="nav" id="nav">
-        <div class="nav-inner">
-            <a href="#" class="nav-logo">易道</a>
-            <div class="nav-links">
-                <a href="#modules">小六壬</a>
-                <a href="#modules">八字排盘</a>
-                <a href="#modules">雷诺曼</a>
-            </div>
-            <button class="nav-toggle" id="navToggle"
-                onclick="document.getElementById('mobileMenu').classList.toggle('open')">☰</button>
-        </div>
-        <div class="mobile-menu" id="mobileMenu">
-            <a href="#modules" onclick="switchTab('lr');closeMob()">小六壬</a>
-            <a href="#modules" onclick="switchTab('bz');closeMob()">八字排盘</a>
-            <a href="#modules" onclick="switchTab('lnm');closeMob()">雷诺曼</a>
-        </div>
-    </nav>
+<nav class="nav" id="nav"><div class="nav-in"><a href="#" class="nav-logo">易道 · YiDao</a></div></nav>
 
-    <!-- ═══ HERO ═══ -->
-    <section class="hero">
-        <div class="hero-content">
-            <span class="hero-symbol">☯</span>
-            <h1>易 道</h1>
-            <div class="hero-sub-en">YIDAO · CHINESE DIVINATION</div>
-            <p>掐指一算，洞察天机 · 趋吉避凶，智慧人生</p>
-            <div class="hero-cards">
-                <a href="#modules" class="hero-card" onclick="switchTab('lr')">小六壬神课</a>
-                <a href="#modules" class="hero-card" onclick="switchTab('bz')">八字排盘</a>
-                <a href="#modules" class="hero-card" onclick="switchTab('lnm')">雷诺曼占卜</a>
-            </div>
-        </div>
-    </section>
+<section class="hero" id="hero">
+<div class="hero-c">
+<span class="hero-sym">☯</span>
+<h1>易 道</h1>
+<div class="hero-sub">YIDAO · ELEVEN DIVINATION SYSTEMS</div>
+<p>八字 · 紫微 · 星盘 · 六爻 · 梅花 · 奇门 · 大六壬 · 小六壬 · 塔罗 · 雷诺曼 · 灵签</p>
+<a href="#modules" class="hero-cta">开始探索</a>
+</div>
+</section>
 
-    <!-- ═══ MODULES ═══ -->
-    <section class="section" id="modules" style="background:var(--surface);">
-        <div class="container">
-            <div class="module-tabs reveal">
-                <button class="module-tab active" data-tab="lr" onclick="switchTab('lr')">小六壬神课</button>
-                <button class="module-tab" data-tab="bz" onclick="switchTab('bz')">八字排盘</button>
-                <button class="module-tab" data-tab="lnm" onclick="switchTab('lnm')">雷诺曼占卜</button>
-            </div>
+<section class="sec" id="modules" style="background:var(--surface)">
+<div class="container">
+<div class="tabs reveal" id="tabs"></div>
+<div id="panels"></div>
+</div>
+</section>
 
-            <!-- ════════════ LR PANEL ════════════ -->
-            <div class="module-panel active" id="panel-lr"
-                style="background:var(--bg);border:1px solid var(--border);border-top:none;padding:40px 24px;">
-                <div class="section-title" style="margin-top:0">小六壬 · 起卦</div>
-                <div class="section-subtitle">心中默念所问之事，按下方按钮依时起卦</div>
-                <div class="divider"></div>
-                <div class="wheel-container" id="wheelContainer">
-                    <div class="wheel-ring"></div>
-                    <div class="wheel-center">☰</div>
-                </div>
-                <div class="pos-legend" id="posLegend"></div>
-                <div class="cast-section"><button class="cast-btn" id="lrCastBtn" onclick="castLR()">起 卦</button></div>
-                <div class="loading" id="lrLoading">
-                    <div class="loading-spinner"></div><span class="loading-text">掐指推算中…</span>
-                </div>
-                <div class="lr-results" id="lrResults">
-                    <div class="lr-time" id="lrTime"></div>
-                    <div class="lr-cards" id="lrCards"></div>
-                    <div class="hourmsg-card" id="hourmsgCard">
-                        <div class="hourmsg-title">时辰注解</div>
-                        <div class="hourmsg-body" id="hourmsgBody"></div>
-                    </div>
-                    <div class="retry-section"><button class="retry-btn" onclick="castLR()">重新起卦</button></div>
-                </div>
-            </div>
+<footer class="footer">
+<div class="footer-logo">易道 · YiDao</div>
+<p>传统文化仅供学习参考，不作为决策依据<br>数据来源：t1qq.com 易学 API &middot; 如遇接口路径问题请在 MODULES 配置中修改 api 字段</p>
+</footer>
 
-            <!-- ════════════ BZ PANEL ════════════ -->
-            <div class="module-panel" id="panel-bz"
-                style="background:var(--bg);border:1px solid var(--border);border-top:none;padding:40px 24px;">
-                <div class="section-title" style="margin-top:0">八字排盘</div>
-                <div class="section-subtitle">输入出生信息，自动排出四柱八字与大运流年</div>
-                <div class="divider"></div>
-                <div class="bazi-form">
-                    <div class="form-grid">
-                        <div class="form-group"><label>出生年份</label><input type="number" id="bzYear" placeholder="如 1990"
-                                min="1900" max="2100"></div>
-                        <div class="form-group"><label>出生月份</label>
-                            <select id="bzMonth">
-                                <option value="">选择月份</option>
-                                <option value="1">1月</option>
-                                <option value="2">2月</option>
-                                <option value="3">3月</option>
-                                <option value="4">4月</option>
-                                <option value="5">5月</option>
-                                <option value="6">6月</option>
-                                <option value="7">7月</option>
-                                <option value="8">8月</option>
-                                <option value="9">9月</option>
-                                <option value="10">10月</option>
-                                <option value="11">11月</option>
-                                <option value="12">12月</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label>出生日期</label><input type="number" id="bzDay" placeholder="如 15"
-                                min="1" max="31"></div>
-                        <div class="form-group"><label>出生时辰（小时）</label>
-                            <select id="bzHour">
-                                <option value="">选择时辰</option>
-                                <option value="00">子时 23:00-01:00</option>
-                                <option value="01">丑时 01:00-03:00</option>
-                                <option value="03">寅时 03:00-05:00</option>
-                                <option value="05">卯时 05:00-07:00</option>
-                                <option value="07">辰时 07:00-09:00</option>
-                                <option value="09">巳时 09:00-11:00</option>
-                                <option value="11">午时 11:00-13:00</option>
-                                <option value="13">未时 13:00-15:00</option>
-                                <option value="15">申时 15:00-17:00</option>
-                                <option value="17">酉时 17:00-19:00</option>
-                                <option value="19">戌时 19:00-21:00</option>
-                                <option value="21">亥时 21:00-23:00</option>
-                            </select>
-                        </div>
-                        <div class="form-group"><label>出生分钟</label><input type="number" id="bzMinute" placeholder="如 30"
-                                min="0" max="59"></div>
-                        <div class="form-group"><label>性别</label>
-                            <select id="bzGender">
-                                <option value="0">男（乾造）</option>
-                                <option value="1">女（坤造）</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-actions"><button class="cast-btn" id="bzCastBtn" onclick="castBZ()">排 盘</button>
-                    </div>
-                    <div class="form-note">※ 精确排盘建议使用真太阳时校验</div>
-                </div>
-                <div class="loading" id="bzLoading">
-                    <div class="loading-spinner"></div><span class="loading-text">排盘计算中…</span>
-                </div>
-                <div class="bazi-results" id="bzResults"></div>
-            </div>
+<script>
+// ═══════════════════════════════════
+//  STATE
+// ═══════════════════════════════════
+const K = window.API_KEY || '';
+let cur = 'bz';
 
-            <!-- ════════════ LNM PANEL ════════════ -->
-            <div class="module-panel" id="panel-lnm"
-                style="background:var(--bg);border:1px solid var(--border);border-top:none;padding:40px 24px;">
-                <div class="section-title" style="margin-top:0">雷诺曼 · 占卜</div>
-                <div class="section-subtitle">选择牌阵，点击抽牌，翻转查看命运指引与详细解读</div>
-                <div class="divider"></div>
+// ═══════════════════════════════════
+//  OPTIONS HELPERS
+// ═══════════════════════════════════
+const monthOpts = Array.from({length:12},(_,i)=>({v:i+1,l:`${i+1}月`}));
+const dayOpts = Array.from({length:31},(_,i)=>({v:i+1,l:`${i+1}日`}));
+const hourOpts = [
+{v:'00',l:'子时 23-01'},{v:'01',l:'丑时 01-03'},{v:'03',l:'寅时 03-05'},{v:'05',l:'卯时 05-07'},
+{v:'07',l:'辰时 07-09'},{v:'09',l:'巳时 09-11'},{v:'11',l:'午时 11-13'},{v:'13',l:'未时 13-15'},
+{v:'15',l:'申时 15-17'},{v:'17',l:'酉时 17-19'},{v:'19',l:'戌时 19-21'},{v:'21',l:'亥时 21-23'}
+];
+const genderOpts = [{v:'0',l:'男（乾造）'},{v:'1',l:'女（坤造）'}];
+const spread13579 = [{v:'1',l:'单牌'},{v:'3',l:'三牌'},{v:'5',l:'五牌'},{v:'7',l:'七牌'},{v:'9',l:'九牌'}];
+const spread135 = [{v:'1',l:'单牌'},{v:'3',l:'三牌'},{v:'5',l:'五牌'}];
 
-                <div class="lnm-options" id="lnmOptions">
-                    <button class="lnm-opt" data-type="1" onclick="setLnmType(1)">单牌</button>
-                    <button class="lnm-opt" data-type="3" onclick="setLnmType(3)">三牌</button>
-                    <button class="lnm-opt active" data-type="5" onclick="setLnmType(5)">五牌</button>
-                    <button class="lnm-opt" data-type="7" onclick="setLnmType(7)">七牌</button>
-                    <button class="lnm-opt" data-type="9" onclick="setLnmType(9)">九牌</button>
-                </div>
+function sOpts(arr){return arr.map(o=>`<option value="${o.v}">${o.l}</option>`).join('')}
+const YF = {id:'y',label:'年份',type:'number',ph:'1990'};
+const MF = {id:'m',label:'月份',type:'select',opts:monthOpts,req:1};
+const DF = {id:'d',label:'日期',type:'number',ph:'15',req:1};
+const HF = {id:'h',label:'时辰',type:'select',opts:hourOpts,req:1};
+const NF = {id:'i',label:'分钟',type:'number',ph:'0'};
+const GF = {id:'x',label:'性别',type:'select',opts:genderOpts,def:'0'};
 
-                <div class="lnm-cast-section">
-                    <button class="cast-btn" id="lnmCastBtn" onclick="castLNM()">抽 牌</button>
-                </div>
+// ═══════════════════════════════════
+//  MODULE DEFINITIONS
+// ═══════════════════════════════════
+const MODULES = [
+// ── 命理 ──
+{id:'bz',cat:'命理',name:'八字排盘',icon:'☰',desc:'排出四柱八字与大运流年',api:'day/paipan/bz',
+ fields:[YF,MF,DF,HF,NF,GF],
+ build(f){return{path:this.api,key:K,x:f.x||'0',y:f.y,m:f.m,d:f.d,h:f.h,i:f.i||'0',s:'0'}},
+ render:d=>renderBZ(d)},
 
-                <div class="loading" id="lnmLoading">
-                    <div class="loading-spinner"></div><span class="loading-text">命运之牌翻开中…</span>
-                </div>
-                <div class="lnm-fan" id="lnmFan"></div>
-                <div class="lnm-interp" id="lnmInterp"></div>
-            </div>
-        </div>
-    </section>
+{id:'zw',cat:'命理',name:'紫微斗数',icon:'☆',desc:'紫微星盘排布与命宫解析',api:'day/paipan/zwds',
+ fields:[YF,MF,DF,HF,NF,GF],
+ build(f){return{path:this.api,key:K,x:f.x||'0',y:f.y,m:f.m,d:f.d,h:f.h,i:f.i||'0'}},
+ render:d=>renderGeneric(d)},
 
-    <!-- ═══ FOOTER ═══ -->
-    <footer class="footer">
-        <div class="footer-logo">易道 · YiDao</div>
-        <p>传统文化仅供学习参考，不作为决策依据<br>数据来源：t1qq.com 免费易学 API</p>
-    </footer>
+{id:'xp',cat:'命理',name:'西洋星盘',icon:'✧',desc:'行星宫位与相位分析',api:'day/paipan/xp',
+ fields:[YF,MF,DF,HF,NF],
+ build(f){return{path:this.api,key:K,y:f.y,m:f.m,d:f.d,h:f.h,i:f.i||'0'}},
+ render:d=>renderGeneric(d)},
 
-    <script>
-        // ═══════════════════════════════════════
-        //  STATE
-        // ═══════════════════════════════════════
-        let apiKey = window.API_KEY || '';
-        let lnmType = 5;
+// ── 易经 ──
+{id:'ly',cat:'易经',name:'六爻占卜',icon:'☲',desc:'铜钱摇卦，六爻断事',api:'day/paipan/ly',
+ fields:[{id:'method',label:'起卦方式',type:'select',opts:[{v:'time',l:'时间起卦'},{v:'coin',l:'铜钱摇卦'}],def:'time'}],
+ build(f){return{path:this.api,key:K,method:f.method||'time'}},
+ render:d=>renderGeneric(d)},
 
-        // ═══════════════════════════════════════
-        //  INIT
-        // ═══════════════════════════════════════
-        document.addEventListener('DOMContentLoaded', () => {
-            buildWheel(); buildLegend(); updateKeyUI();
-            if (apiKey) document.getElementById('keyInput').value = apiKey;
-            window.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40));
-            new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); }), { threshold: 0.1 })
-                .observe && document.querySelectorAll('.reveal').forEach(el => {
-                    new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); }), { threshold: 0.1 }).observe(el);
-                });
+{id:'mh',cat:'易经',name:'梅花易数',icon:'❀',desc:'以数起卦，卦象断事',api:'day/paipan/mh',
+ fields:[{id:'num1',label:'上卦数',type:'number',ph:'如 5'},{id:'num2',label:'下卦数',type:'number',ph:'如 3'}],
+ build(f){return{path:this.api,key:K,num1:f.num1,num2:f.num2}},
+ render:d=>renderGeneric(d)},
+
+// ── 术数 ──
+{id:'qm',cat:'术数',name:'奇门遁甲',icon:'◎',desc:'奇门排盘与格局分析',api:'day/paipan/qm',
+ fields:[YF,MF,DF,HF],
+ build(f){return{path:this.api,key:K,y:f.y,m:f.m,d:f.d,h:f.h}},
+ render:d=>renderGeneric(d)},
+
+{id:'dlr',cat:'术数',name:'大六壬',icon:'☷',desc:'大六壬课式与判断',api:'day/paipan/dlr',
+ fields:[YF,MF,DF,HF],
+ build(f){return{path:this.api,key:K,y:f.y,m:f.m,d:f.d,h:f.h}},
+ render:d=>renderGeneric(d)},
+
+{id:'lr',cat:'术数',name:'小六壬',icon:'☴',desc:'掐指一算，月日时三课',api:'lr',
+ fields:[],
+ build(){return{path:this.api,key:K}},
+ render:d=>renderLR(d)},
+
+// ── 卡牌 ──
+{id:'tl',cat:'卡牌',name:'塔罗牌',icon:'🃏',desc:'22 张大阿尔卡那占卜',api:'tarot',
+ fields:[{id:'type',label:'牌阵',type:'select',opts:spread135,def:'3'}],
+ build(f){return{path:this.api,key:K,type:f.type||'3'}},
+ render:d=>renderCards(d,'tarot')},
+
+{id:'lnm',cat:'卡牌',name:'雷诺曼',icon:'🎴',desc:'36 张雷诺曼占卜',api:'lnmp',
+ fields:[{id:'type',label:'牌阵',type:'select',opts:spread13579,def:'5'}],
+ build(f){return{path:this.api,key:K,type:f.type||'5'}},
+ render:d=>renderCards(d,'lenormand')},
+
+// ── 灵签 ──
+{id:'lq',cat:'灵签',name:'求签问卜',icon:'🎋',desc:'诚心求取一支灵签',api:'lq',
+ fields:[{id:'temple',label:'寺庙',type:'select',opts:[{v:'guandi',l:'关帝庙'},{v:'guanyin',l:'观音庙'},{v:'yuelao',l:'月老庙'}],def:'guandi'}],
+ build(f){return{path:this.api,key:K,temple:f.temple||'guandi'}},
+ render:d=>renderLot(d)}
+];
+
+// ═══════════════════════════════════
+//  CARD DATABASES
+// ═══════════════════════════════════
+
+// TAROT 22 Major Arcana
+const TAROT = [
+[0,'愚者','🤡','新生、冒险、自由','新的旅程即将开始，以赤子之心面对未知，勇敢迈出第一步。'],
+[1,'魔术师','🎩','创造、意志、资源','你拥有实现目标所需的一切资源，集中意志，化不可能为可能。'],
+[2,'女祭司','🌙','直觉、神秘、潜意识','倾听内心深处的声音，答案就隐藏在你的直觉之中。'],
+[3,'皇后','👑','丰盛、母性、自然','充满创造力和滋养力量的时期，享受生命的美好与丰盛。'],
+[4,'皇帝','🏛️','权威、结构、稳定','建立秩序和规则，以坚定的意志和领导力掌控局面。'],
+[5,'教皇','📿','传统、指导、信仰','遵循传统智慧，寻求导师的指引，在信仰中找到方向。'],
+[6,'恋人','💕','爱情、选择、和谐','面临重要的感情选择，跟随内心的真实感受做出决定。'],
+[7,'战车','⚔️','胜利、意志、前进','以坚定的意志和自律冲破障碍，胜利就在前方。'],
+[8,'力量','🦁','勇气、耐心、内在力量','以柔克刚，用内心的勇气和耐心驯服困难。'],
+[9,'隐者','🏔️','内省、独处、智慧','暂时远离喧嚣，独自沉思，在安静中获得深刻的智慧。'],
+[10,'命运之轮','🎡','转机、命运、循环','命运之轮正在转动，变化即将到来，顺势而为。'],
+[11,'正义','⚖️','公正、真相、因果','真相终将大白，因果循环不爽，做出公正的判断。'],
+[12,'倒吊人','🔮','牺牲、换位、放下','换个角度看问题，暂时的牺牲和放下将带来新的领悟。'],
+[13,'死神','💀','结束、转化、新生','一个阶段的终结，虽然痛苦但这是重生的必经之路。'],
+[14,'节制','🏺','平衡、调和、耐心','在对立中寻找平衡，不急不躁，融合各方取得和谐。'],
+[15,'恶魔','😈','诱惑、束缚、物质','警惕物质和欲望的束缚，认清枷锁才能获得自由。'],
+[16,'塔','🗼','突变、崩塌、觉醒','旧有的结构突然崩塌，虽然震撼但这是净化和觉醒的开始。'],
+[17,'星星','⭐','希望、灵感、疗愈','星光照亮黑暗，充满希望和灵感，一切正在被疗愈。'],
+[18,'月亮','🌙','幻象、潜意识、迷惑','迷雾笼罩前路，不要被表象迷惑，深入潜意识寻找真相。'],
+[19,'太阳','☀️','成功、快乐、光明','阳光普照，一切明朗而温暖，成功和快乐正在降临。'],
+[20,'审判','📯','觉醒、重生、召唤','听从内心更高的召唤，觉醒和重生的时刻已经到来。'],
+[21,'世界','🌍','完成、圆满、成就','一个伟大的循环即将完成，收获圆满和成就，然后开启新的旅程。']
+];
+const TAROT_DB = {};
+TAROT.forEach(t=>{TAROT_DB[t[1]]={n:t[0],ic:t[2],kw:t[3],text:t[4]}});
+
+// LENORMAND 36 cards
+const LNM = [
+['骑手','🏇','消息、到来、新机遇','有新的消息或变化即将到来，保持警觉并积极把握眼前的机会。','可能出现新的追求者或收到意外的表白。','新的工作机会或合作项目正在靠近。','精力充沛，适合开启新的运动计划。'],
+['三叶草','🍀','幸运、小确幸、轻松','小幸运正在降临，知足常乐。','感情中出现小惊喜。','工作中小有收获。','身心轻松，精神状态良好。'],
+['船','⛵','旅行、远方、启航','远方的召唤响起，适合出行或开启新征程。','远距离恋情或与外地人结缘。','涉及海外或跨区域的业务有发展。','适合旅行休养换环境。'],
+['房子','🏠','家庭、安稳、根基','家庭事务是当前重心，安稳和归属感很重要。','感情走向稳定，可能涉及见家长。','与家庭相关的事业有好运。','在家休息调养最佳。'],
+['树','🌳','健康、成长、生命力','运势稳步生长，健康和精神上升。','感情需耐心培育慢慢扎根。','事业稳步成长，厚积薄发。','关注身体状况，养生为上。'],
+['云','☁️','困惑、模糊、犹豫','形势不明朗，有迷雾笼罩之感，不宜仓促决定。','感情中存在暧昧或猜疑。','工作中方向不清晰。','注意呼吸系统和情绪波动。'],
+['蛇','🐍','智慧、复杂、陷阱','事情比表面复杂，需运用智慧辨别真伪。','感情中可能出现第三者或复杂关系。','职场存在暗流，谨慎行事。','注意慢性疾病，定期体检。'],
+['棺材','⚰️','结束、转化、重生','一个阶段正在结束，这是新生的必经之路。','旧的感情模式需要终结。','旧项目结束，新开始来临。','身体重大转变，终将好转。'],
+['花束','💐','美好、礼物、赞美','美好的事物正在向你走来。','感情甜蜜，对方可能给你惊喜。','工作得到认可和赞赏。','心情愉悦带动身体健康。'],
+['镰刀','🔪','决断、突然、割舍','必须做出果断决定，该断则断。','可能面临突然分手或重大决断。','工作中可能有突然变动。','注意外伤和手术风险。'],
+['鞭子','🪶','冲突、争论、反复','口舌之争频繁，同一问题反复出现。','感情中争吵增多，需冷静沟通。','与同事意见不合，争执消耗精力。','注意炎症和反复发作的老毛病。'],
+['鸟','🐦','沟通、焦虑、闲话','消息纷飞，可能因信息过多而焦虑。','感情需更多坦诚沟通。','会议谈判频繁，注意言辞。','神经紧张导致失眠焦虑。'],
+['孩子','👶','新生、纯真、开始','全新开始正在展开，以纯真心态面对。','新的恋情萌芽。','新项目或创业初期。','生育方面的好消息。'],
+['狐狸','🦊','机智、警惕、工作','需运用机智应对当前局面，不要轻信表面现象，职场是重点。','感情中可能有隐瞒情况。','工作运强劲但需要策略。','注意眼睛疲劳和久坐问题。'],
+['熊','🐻','力量、财富、保护','强大的力量和财运正在守护你。','感情中有强烈的保护欲。','财运旺盛，涉及投资理财。','体魄强健，注意饮食。'],
+['星星','⭐','希望、灵感、指引','星光照亮前路，充满希望和灵感。','出现命中注定的感觉。','创意灵感迸发。','精神状态极佳。'],
+['鹳','🦅','变化、提升、改善','积极的变化正在发生。','感情提升到新层次。','岗位调动或升迁机会。','健康状况明显改善。'],
+['狗','🐕','忠诚、友情、信赖','忠诚的朋友或可靠伙伴是最大财富。','忠诚和信任是最重要的。','有值得信赖的合作伙伴。','朋友推荐的方法值得尝试。'],
+['塔','🗼','权威、孤独、远见','站在高处审视全局，获得远见。','因距离或身份差异产生隔阂。','与大型机构或权威人士有关。','注意骨骼和脊椎问题。'],
+['花园','🌿','社交、公开、人气','社交活动频繁，人脉大开。','可能在社交场合遇到心仪的人。','参加行业活动对事业有帮助。','户外活动对身心有益。'],
+['山','⛰️','阻碍、延迟、挑战','前方有障碍需克服，耐心是关键。','感情中遇到阻力。','工作中遇到瓶颈。','注意关节和背部问题。'],
+['十字路口','🛤️','选择、分离、多元','面临重要选择，需要做出决定。','感情中面临抉择。','职业方向的选择摆在面前。','不同治疗方案需选择。'],
+['老鼠','🐭','损耗、担忧、侵蚀','有细小但持续的损耗在发生。','感情可能被外界侵蚀。','小麻烦不断消耗精力。','注意免疫力下降。'],
+['心','❤️','爱情、真心、热情','内心充满爱和热情。','桃花运旺盛，真挚爱情在身边。','对工作充满热情。','保持愉悦心情是最好的养生。'],
+['戒指','💍','承诺、契约、结合','承诺和约定的能量很强。','感情走向承诺阶段。','签订重要合同或合作协议。','坚持健康承诺。'],
+['书','📖','知识、秘密、学习','有尚未揭开的秘密或需深入学习的领域。','感情中有隐藏信息。','学习新技能对事业发展至关重要。','做一次全面体检。'],
+['信件','✉️','消息、文书、通讯','重要的消息或文件即将到来。','可能收到表白信或消息。','涉及合同或书面沟通的事务。','体检报告会带来重要信息。'],
+['男人','👨','阳性能量、理性、行动','重要的男性可能出现或需展现果断行动力。','男性伴侣状态对关系影响大。','男性上司对工作有重要影响。','注意男性长辈健康。'],
+['女人','👩','阴性能量、直觉、关怀','重要的女性可能出现或需关注内心感受。','女性伴侣状态对关系影响大。','女性贵人在职场中可能带来帮助。','注意女性长辈健康。'],
+['百合','🌺','耐心、成熟、纯洁','以成熟和耐心面对当前局势。','感情中需耐心和包容。','经验和资历是最大优势。','养生重在持之以恒。'],
+['太阳','☀️','成功、喜悦、光明','阳光普照，运势大好！','感情明朗温暖，单身者遇阳光恋人。','事业迎来高光时刻。','身体充满活力。'],
+['月亮','🌙','直觉、情感、认可','直觉非常准确，跟随内心声音。','浪漫氛围浓厚。','创意和直觉助力工作。','注意情绪波动和睡眠。'],
+['钥匙','🔑','答案、突破、开启','关键突破即将到来，找到解决问题的答案。','感情中困惑将得到解答。','难题迎刃而解。','找到治愈的关键方法。'],
+['鱼','🐟','财富、丰盛、商业','财运亨通，物质丰盛。','可能遇到经济条件优越的对象。','商业运势极佳。','注意消化问题。'],
+['锚','⚓','稳定、安全、坚持','稳定和安全感是最重要的。','感情稳定持久。','工作稳定，坚持终有收获。','坚持规律作息和锻炼。'],
+['十字架','✝️','考验、命运、觉悟','命运的考验降临，这是灵魂成长的必经之路。','感情中经历痛苦考验。','工作压力巨大。','注意慢性疼痛和精神压力。']
+];
+const LNM_DB = {};
+LNM.forEach(c=>{LNM_DB[c[0]]={ic:c[1],kw:c[2],g:c[3],l:c[4],c:c[5],h:c[6]}});
+
+// LR POSITIONS
+const LR_POS = [
+{n:'大安',c:'#4a9e6e',el:'木',dir:'东方',sp:'青龙',f:'吉',b:'身不动时，凡事安稳，所求皆遂。'},
+{n:'留连',c:'#8b7355',el:'土',dir:'中央',sp:'玄武',f:'凶',b:'卜者逢之，事情拖延，暗昧不明。'},
+{n:'速喜',c:'#c94040',el:'火',dir:'南方',sp:'朱雀',f:'吉',b:'喜即至，求财向南，有好消息。'},
+{n:'赤口',c:'#b0b0b0',el:'金',dir:'西方',sp:'白虎',f:'凶',b:'口舌多，多争吵，宜守不宜动。'},
+{n:'小吉',c:'#4a80b4',el:'水',dir:'北方',sp:'六合',f:'吉',b:'最吉昌，诸事可为，贵人相助。'},
+{n:'空亡',c:'#5a5a5a',el:'土',dir:'中央',sp:'勾陈',f:'凶',b:'事不详，求财无益，暗中多阻。'}
+];
+
+// Spread position labels
+const SP = {
+1:{l:'单牌指引',p:['当前指引']},
+3:{l:'三牌 · 过去 / 现在 / 未来',p:['过去','现在','未来']},
+5:{l:'五牌 · 完整指引',p:['过去','现在','未来','建议','结果']},
+7:{l:'七牌 · 全面洞察',p:['过去','当前','近期','挑战','环境','建议','结果']},
+9:{l:'九牌 · 深度解读',p:['过去','潜意识','近期','障碍','核心','助力','建议','希望','结果']}
+};
+
+// ═══════════════════════════════════
+//  FIND CARD (null-safe)
+// ═══════════════════════════════════
+function findCard(name, db) {
+    if (!name) return null;
+    for (const [k, v] of Object.entries(db)) {
+        if (name.includes(k) || k.includes(name)) return { ...v, name: k };
+    }
+    return { name, ic: '🃏', kw: '—', g: `「${name}」牌义暂未录入，请参考牌面意象理解。` };
+}
+
+function cardIcon(name) {
+    if (!name) return '🃏';
+    for (const [k, v] of Object.entries(LNM_DB)) if (name.includes(k)) return v.ic;
+    for (const [k, v] of Object.entries(TAROT_DB)) if (name.includes(k) || k.includes(name)) return v.ic;
+    return '🃏';
+}
+
+// ═══════════════════════════════════
+//  INIT: BUILD TABS & PANELS
+// ═══════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+    const tabsEl = document.getElementById('tabs');
+    const panelsEl = document.getElementById('panels');
+    let lastCat = '';
+
+    MODULES.forEach(m => {
+        // Category separator in tabs
+        if (m.cat !== lastCat) {
+            const sep = document.createElement('span');
+            sep.style.cssText = 'color:var(--accent-dim);font-size:.68rem;font-family:var(--f1);display:flex;align-items:center;padding:0 6px;letter-spacing:.06em;opacity:.6';
+            sep.textContent = m.cat;
+            tabsEl.appendChild(sep);
+            lastCat = m.cat;
+        }
+
+        // Tab button
+        const tab = document.createElement('button');
+        tab.className = 'tab' + (m.id === cur ? ' active' : '');
+        tab.dataset.id = m.id;
+        tab.innerHTML = `${m.icon} ${m.name}`;
+        tab.onclick = () => switchTab(m.id);
+        tabsEl.appendChild(tab);
+
+        // Panel
+        const panel = document.createElement('div');
+        panel.className = 'panel' + (m.id === cur ? ' active' : '');
+        panel.id = `p-${m.id}`;
+
+        let formHtml = `<div class="sec-t" style="margin-top:0">${m.icon} ${m.name}</div><div class="sec-sub">${m.desc}</div><div class="divider"></div>`;
+
+        if (m.fields.length) {
+            formHtml += '<div class="form-wrap"><div class="fg">';
+            m.fields.forEach(f => {
+                formHtml += `<div class="fi"><label>${f.label}</label>`;
+                if (f.type === 'select') {
+                    formHtml += `<select id="${m.id}-${f.id}" ${f.req?'required':''}>${f.opts.map(o=>`<option value="${o.v}"${o.v===f.def?' selected':''}>${o.l}</option>`).join('')}</select>`;
+                } else {
+                    formHtml += `<input type="${f.type}" id="${m.id}-${f.id}" placeholder="${f.ph||''}" ${f.req?'required':''}>`;
+                }
+                formHtml += '</div>';
+            });
+            formHtml += `</div><div class="act"><button class="act-btn" id="btn-${m.id}" onclick="doAction('${m.id}')">${getActionLabel(m.id)}</button></div></div>`;
+        } else {
+            formHtml += `<div style="text-align:center;margin-bottom:24px"><button class="act-btn" id="btn-${m.id}" onclick="doAction('${m.id}')" style="display:inline-block">${getActionLabel(m.id)}</button></div>`;
+        }
+
+        formHtml += `<div class="ld" id="ld-${m.id}"><div class="ld-s"></div><span class="ld-t">${getLoadingText(m.id)}</span></div>`;
+        formHtml += `<div class="res" id="res-${m.id}"></div>`;
+        formHtml += `<div class="interp" id="interp-${m.id}"></div>`;
+
+        panel.innerHTML = formHtml;
+        panelsEl.appendChild(panel);
+    });
+
+    // Nav scroll
+    window.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 30));
+
+    // Reveal
+    document.querySelectorAll('.reveal').forEach(el => {
+        new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }), { threshold: 0.1 }).observe(el);
+    });
+});
+
+function getActionLabel(id) {
+    const labels = { bz:'排 盘', zw:'排 盘', xp:'排 盘', ly:'摇 卦', mh:'起 卦', qm:'排 盘', dlr:'排 盘', lr:'起 卦', tl:'抽 牌', lnm:'抽 牌', lq:'求 签' };
+    return labels[id] || '确 认';
+}
+function getLoadingText(id) {
+    const texts = { bz:'排盘计算中…', zw:'排盘计算中…', xp:'排盘计算中…', ly:'摇卦中…', mh:'起卦中…', qm:'排盘中…', dlr:'排盘中…', lr:'掐指推算中…', tl:'命运之牌翻开中…', lnm:'命运之牌翻开中…', lq:'诚心求签中…' };
+    return texts[id] || '加载中…';
+}
+
+function switchTab(id) {
+    cur = id;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.id === id));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === `p-${id}`));
+}
+
+// ═══════════════════════════════════
+//  API CALLER
+// ═══════════════════════════════════
+async function doAction(id) {
+    if (!K) { alert('请在 config.js 中配置 API Key'); return; }
+    const mod = MODULES.find(m => m.id === id);
+    const btn = document.getElementById(`btn-${id}`);
+    const ld = document.getElementById(`ld-${id}`);
+    const res = document.getElementById(`res-${id}`);
+    const interp = document.getElementById(`interp-${id}`);
+
+    btn.disabled = true;
+    res.classList.remove('show'); res.innerHTML = '';
+    if (interp) { interp.classList.remove('show'); interp.innerHTML = ''; }
+
+    // Collect form data
+    const formData = {};
+    mod.fields.forEach(f => {
+        const el = document.getElementById(`${id}-${f.id}`);
+        if (el) formData[f.id] = el.value;
+    });
+
+    const params = mod.build(formData);
+    ld.classList.add('show');
+
+    try {
+        const qs = new URLSearchParams(params).toString();
+        const resp = await fetch(`/.netlify/functions/proxy?${qs}`);
+        const data = await resp.json();
+
+        if (data.code !== 200 && data.code !== 0 && !data.data) {
+            throw new Error(data.msg || data.error || `接口返回异常 (code: ${data.code})`);
+        }
+
+        ld.classList.remove('show');
+        mod.render(data);
+    } catch (e) {
+        ld.classList.remove('show');
+        res.innerHTML = `<div class="res-body" style="text-align:center;color:#d06050">${e.message}<br><small style="color:var(--muted);font-size:.75rem">如持续报错，请检查 config.js 中的 API 路径是否正确</small></div>`;
+        res.classList.add('show');
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+// ═══════════════════════════════════
+//  RENDERERS
+// ═══════════════════════════════════
+
+// ── Generic ──
+function renderGeneric(data) {
+    const el = document.getElementById(`res-${cur}`);
+    el.innerHTML = `<div class="res-hd">${new Date().toLocaleString('zh-CN')}</div><div class="res-body">${objToHTML(data)}</div><div class="retry"><button class="retry-btn" onclick="doAction('${cur}')">重新操作</button></div>`;
+    el.classList.add('show');
+    setTimeout(() => el.scrollIntoView({ behavior:'smooth', block:'start' }), 200);
+}
+
+function objToHTML(obj, depth) {
+    depth = depth || 0;
+    if (obj === null || obj === undefined) return '<span style="color:var(--muted)">—</span>';
+    if (typeof obj === 'string' || typeof obj === 'number') return `<span>${obj}</span>`;
+    if (Array.isArray(obj)) {
+        if (obj.length === 0) return '<span style="color:var(--muted)">（空）</span>';
+        // If array of strings/numbers, show inline
+        if (typeof obj[0] !== 'object') return obj.map(v => `<span class="arr">${v}</span>`).join('　');
+        return obj.map((v, i) => `<div style="margin-bottom:8px;padding-left:${depth*8}px">${typeof v === 'object' ? objToHTML(v, depth+1) : `<span>${v}</span>`}</div>`).join('');
+    }
+    if (typeof obj === 'object') {
+        let html = '';
+        for (const [k, v] of Object.entries(obj)) {
+            if (k === 'code' || k === 'msg' && v === 'success') continue;
+            const label = typeof v === 'object' ? `<span class="dk">${k}</span>` : `<span class="dk">${k}：</span>`;
+            html += `<div style="padding-left:${depth*8}px">${label}<span class="dv">${objToHTML(v, depth+1)}</span></div>`;
+        }
+        return html;
+    }
+    return `<span>${obj}</span>`;
+}
+
+// ── Bazi ──
+function renderBZ(data) {
+    const d = data.data || data;
+    const el = document.getElementById(`res-${cur}`);
+    let h = '';
+
+    // Info grid
+    if (d.gl || d.nl || d.sx || d.xz || d.mz) {
+        h += '<div class="info-grid">';
+        const items = [
+            ['命造', d.mz], ['性别', d.xb], ['生肖', d.sx], ['星座', d.xz],
+            ['公历', Array.isArray(d.gl)?d.gl.join(' '):(d.gl||'')],
+            ['农历', typeof d.nl==='object'&&d.nl?.gz?d.nl.gz:(Array.isArray(d.nl)?d.nl.join(' '):(d.nl||''))],
+            ['日干阴阳', d.cyy], ['起运', d.qyy_desc]
+        ].filter(i => i[1]);
+        items.forEach(([lb, val]) => { h += `<div class="info-it"><span class="il">${lb}</span><span class="iv">${val}</span></div>`; });
+        h += '</div>';
+    }
+
+    // Pillars
+    const ctg = Array.isArray(d.ctg)?d.ctg:[], cdz = Array.isArray(d.cdz)?d.cdz:[];
+    const ewxtg = Array.isArray(d.ewxtg)?d.ewxtg:[], ewxdz = Array.isArray(d.ewxdz)?d.ewxdz:[];
+    if (ctg.length) {
+        h += '<div class="pillar-row">';
+        ['年柱','月柱','日柱','时柱'].forEach((lb, i) => {
+            h += `<div class="pillar"><div class="pillar-lb">${lb}</div><div class="pillar-stem">${ctg[i]||'—'}</div><div class="pillar-branch">${cdz[i]||'—'}</div><div class="pillar-el">${ewxtg[i]||''} · ${ewxdz[i]||''}</div></div>`;
         });
+        h += '</div>';
+    }
 
-        function closeMob() { document.getElementById('mobileMenu').classList.remove('open'); }
-
-        // ═══════════════════════════════════════
-        //  TABS
-        // ═══════════════════════════════════════
-        function switchTab(tab) {
-            document.querySelectorAll('.module-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
-            document.querySelectorAll('.module-panel').forEach(p => p.classList.toggle('active', p.id === `panel-${tab}`));
-        }
-
-        // ═══════════════════════════════════════
-        //  API KEY
-        // ═══════════════════════════════════════
-        function toggleVis() { const i = document.getElementById('keyInput'); i.type = i.type === 'password' ? 'text' : 'password'; }
-        function needKey() { if (!apiKey) { alert('请在 config.js 中填写 API Key'); return true; } return false; }
-        // ═══════════════════════════════════════
-        //  LR: POSITIONS & WHEEL
-        // ═══════════════════════════════════════
-        const POSITIONS = [
-            { name: '大安', color: '#4a9e6e', element: '木', dir: '东方', spirit: '青龙', fortune: '吉', brief: '身不动时，凡事安稳，所求皆遂。' },
-            { name: '留连', color: '#8b7355', element: '土', dir: '中央', spirit: '玄武', fortune: '凶', brief: '卜者逢之，事情拖延，暗昧不明。' },
-            { name: '速喜', color: '#c94040', element: '火', dir: '南方', spirit: '朱雀', fortune: '吉', brief: '喜即至，求财向南，有好消息。' },
-            { name: '赤口', color: '#b0b0b0', element: '金', dir: '西方', spirit: '白虎', fortune: '凶', brief: '口舌多，多争吵，宜守不宜动。' },
-            { name: '小吉', color: '#4a80b4', element: '水', dir: '北方', spirit: '六合', fortune: '吉', brief: '最吉昌，诸事可为，贵人相助。' },
-            { name: '空亡', color: '#5a5a5a', element: '土', dir: '中央', spirit: '勾陈', fortune: '凶', brief: '事不详，求财无益，暗中多阻。' }
-        ];
-
-        function buildWheel() {
-            const c = document.getElementById('wheelContainer');
-            POSITIONS.forEach((pos, i) => {
-                const a = (i * 60 - 90) * Math.PI / 180, r = 120;
-                const x = Math.cos(a) * r, y = Math.sin(a) * r;
-                const n = document.createElement('div');
-                n.className = 'pos-node'; n.id = `node-${i}`;
-                n.style.cssText = `--tx:${x}px;--ty:${y}px;--glow:${pos.color};transform:translate(${x}px,${y}px)`;
-                n.innerHTML = `<div class="pos-icon" style="border-color:${pos.color};color:${pos.color}">${pos.name[0]}</div><div class="pos-label">${pos.name}</div><div class="pos-element">${pos.element} · ${pos.fortune}</div>`;
-                n.onclick = () => alert(`${pos.name}\n五行：${pos.element}  方位：${pos.dir}\n神煞：${pos.spirit}  吉凶：${pos.fortune}\n\n${pos.brief}`);
-                c.appendChild(n);
-            });
-        }
-        function buildLegend() {
-            const l = document.getElementById('posLegend');
-            POSITIONS.forEach((pos, i) => {
-                const d = document.createElement('div');
-                d.className = 'pos-legend-item'; d.id = `legend-${i}`;
-                d.innerHTML = `<span class="legend-dot" style="background:${pos.color}"></span><span class="legend-name">${pos.name} · ${pos.spirit}</span>`;
-                l.appendChild(d);
-            });
-        }
-        function clearHL() { POSITIONS.forEach((_, i) => { document.getElementById(`node-${i}`).classList.remove('active'); document.getElementById(`legend-${i}`).classList.remove('active'); }); }
-        function findPosIdx(t) { if (!t) return -1; for (let i = 0; i < POSITIONS.length; i++) if (t.includes(POSITIONS[i].name)) return i; return -1; }
-
-        // ═══════════════════════════════════════
-        //  LR: CAST
-        // ═══════════════════════════════════════
-        async function castLR() {
-            if (needKey()) return;
-            const btn = document.getElementById('lrCastBtn'); btn.disabled = true;
-            document.getElementById('lrResults').classList.remove('show');
-            document.getElementById('lrLoading').classList.add('show'); clearHL();
-            try {
-                const res = await fetch(`/.netlify/functions/lr-proxy?key=${encodeURIComponent(apiKey)}`);
-                const data = await res.json();
-                if (data.code !== 200) throw new Error(data.error || `接口异常 code: ${data.code}`);
-                displayLR(data);
-            } catch (e) { alert('起卦失败：' + e.message); }
-            finally { document.getElementById('lrLoading').classList.remove('show'); btn.disabled = false; }
-        }
-
-        function displayLR(data) {
-            document.getElementById('lrTime').textContent = data.time || new Date().toLocaleString('zh-CN');
-            const cardsEl = document.getElementById('lrCards'); cardsEl.innerHTML = '';
-            const cls = [{ label: '月课', value: data.res?.monthclass }, { label: '日课', value: data.res?.dayclass }, { label: '时课', value: data.res?.nowclass }];
-            const active = new Set();
-            cls.forEach((c, ci) => {
-                const idx = findPosIdx(c.value); if (idx >= 0) active.add(idx);
-                const pos = idx >= 0 ? POSITIONS[idx] : null;
-                const card = document.createElement('div'); card.className = 'lr-card';
-                let h = `<div class="lr-card-title">${c.label}</div>`;
-                if (pos) { h += `<div class="lr-card-pos" style="color:${pos.color}">${pos.name}</div><div class="lr-card-element">${pos.element} · ${pos.spirit} · ${pos.dir}</div><span class="lr-card-fortune fortune-${pos.fortune}">${pos.fortune}</span><div class="lr-card-text">${pos.brief}</div>`; }
-                else { h += `<div class="lr-card-pos">${c.value || '—'}</div>`; }
-                card.innerHTML = h; cardsEl.appendChild(card);
-                requestAnimationFrame(() => setTimeout(() => card.classList.add('visible'), ci * 150));
-            });
-            active.forEach(i => { document.getElementById(`node-${i}`).classList.add('active'); document.getElementById(`legend-${i}`).classList.add('active'); });
-            const hmCard = document.getElementById('hourmsgCard'), hmBody = document.getElementById('hourmsgBody');
-            if (data.hourmsg) { hmBody.innerHTML = `<p>${data.hourmsg.replace(/。/g, '。<br>').replace(/！/g, '！<br>').replace(/<br>$/, '')}</p>`; hmCard.style.display = 'block'; setTimeout(() => hmCard.classList.add('visible'), 400); }
-            else { hmCard.style.display = 'none'; }
-            document.getElementById('lrResults').classList.add('show');
-            setTimeout(() => document.getElementById('lrResults').scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
-        }
-
-        // ═══════════════════════════════════════
-        //  BZ: CAST
-        // ═══════════════════════════════════════
-        async function castBZ() {
-            if (needKey()) return;
-            const year = document.getElementById('bzYear').value, month = document.getElementById('bzMonth').value, day = document.getElementById('bzDay').value, hour = document.getElementById('bzHour').value, minute = document.getElementById('bzMinute').value || '0', gender = document.getElementById('bzGender').value;
-            if (!year || !month || !day || hour === '') { alert('请填写完整的出生信息'); return; }
-            const btn = document.getElementById('bzCastBtn'); btn.disabled = true;
-            document.getElementById('bzResults').classList.remove('show'); document.getElementById('bzLoading').classList.add('show');
-            try {
-                const qs = new URLSearchParams({ key: apiKey, x: gender, y: year, m: month, d: day, h: hour, i: minute, s: '0' });
-                const res = await fetch(`/.netlify/functions/bz-proxy?${qs}`);
-                const data = await res.json();
-                if (data.code !== 200) throw new Error(data.msg || `接口异常 code: ${data.code}`);
-                displayBZ(data);
-            } catch (e) { alert('排盘失败：' + e.message); }
-            finally { document.getElementById('bzLoading').classList.remove('show'); btn.disabled = false; }
-        }
-
-        function displayBZ(data) {
-            const d = data.data, el = document.getElementById('bzResults');
-            let html = '';
-            // Info grid
-            html += `<div class="info-grid">`;
-            const infoItems = [
-                { label: '命造', value: d.mz || '—' }, { label: '性别', value: d.xb || '—' }, { label: '生肖', value: d.sx || '—' }, { label: '星座', value: d.xz || '—' },
-                { label: '公历', value: (Array.isArray(d.gl) ? d.gl.join(' ') : (d.gl || '—')) },
-                { label: '农历', value: (typeof d.nl === 'object' && d.nl?.gz ? d.nl.gz : (Array.isArray(d.nl) ? d.nl.join(' ') : (d.nl || '—'))) },
-                { label: '日干阴阳', value: d.cyy || '—' }, { label: '起运', value: d.qyy_desc || '—' }
-            ];
-            infoItems.forEach(it => { html += `<div class="info-item"><span class="info-item-label">${it.label}</span><span class="info-item-value">${it.value}</span></div>`; });
-            html += `</div>`;
-            // Pillars
-            const ctg = Array.isArray(d.ctg) ? d.ctg : [], cdz = Array.isArray(d.cdz) ? d.cdz : [], ewxtg = Array.isArray(d.ewxtg) ? d.ewxtg : [], ewxdz = Array.isArray(d.ewxdz) ? d.ewxdz : [];
-            const labels = ['年柱', '月柱', '日柱', '时柱'];
-            const branchOrder = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
-            const branchToIdx = {}; branchOrder.forEach((b, i) => branchToIdx[b] = i);
-            const bctg = Array.isArray(d.bctg) ? d.bctg : [], bzcg = Array.isArray(d.bzcg) ? d.bzcg : [];
-            html += `<div class="pillar-row">`;
-            for (let i = 0; i < 4; i++) {
-                const stem = ctg[i] || '—', branch = cdz[i] || '—';
-                const bi = branchToIdx[branch];
-                const hStems = []; if (bi !== undefined) { const h = bctg[bi]; if (h && h !== '') hStems.push(h); }
-                const tenGod = (i === 2) ? '日主' : (bi !== undefined ? (bzcg[bi] || '') : '');
-                html += `<div class="pillar"><div class="pillar-label">${labels[i]}</div><div class="pillar-stem">${stem}</div><div class="pillar-branch">${branch}</div><div class="pillar-element">${ewxtg[i] || ''} · ${ewxdz[i] || ''}</div>${hStems.length ? `<div class="pillar-hidden">藏：${hStems.join(' ')}</div>` : ''}${tenGod ? `<div class="pillar-god">${tenGod}</div>` : ''}</div>`;
-            }
-            html += `</div>`;
-            // QiYun
-            if (d.qyy_desc || d.qyy) { html += `<div class="qiyun-card"><h4>起运信息</h4><p>${d.qyy_desc || ''}</p>${d.qyy ? `<p>起运公历：<strong>${d.qyy}</strong> 年</p>` : ''}</div>`; }
-            // DaYun
-            const dy = Array.isArray(d.dy) ? d.dy : [];
-            if (dy.length) {
-                html += `<div class="dayun-title">大运排布</div><div class="dayun-grid">`;
-                dy.forEach((yun, yi) => {
-                    html += `<div class="dayun-card ${yi === 0 ? 'active' : ''}"><div class="dayun-age">${yun.zqage || ''}~${yun.zboz || ''}岁</div><div class="dayun-stems">${yun.zfma || '?'}</div><div class="dayun-branch">${yun.zfmb || '?'}</div>${yun.nzsc ? `<div class="dayun-12cs">${yun.nzsc}</div>` : ''}</div>`;
-                });
-                html += `</div>`;
-                // LiuNian for first DaYun
-                dy.forEach(yun => {
-                    const ly = Array.isArray(yun.ly) ? yun.ly : [];
-                    if (ly.length) {
-                        html += `<div class="ln-title">${yun.zfma || ''}${yun.zfmb || ''}运 · 流年（${yun.zqage || ''}~${yun.zboz || ''}岁）</div><div class="ln-scroll">`;
-                        ly.forEach(ln => { html += `<div class="ln-card"><div class="ln-year">${ln.year || ''}</div><div class="ln-stem">${ln.lye || ''}</div><div class="ln-age">${ln.age || ''}岁</div></div>`; });
-                        html += `</div>`;
-                    }
-                });
-            }
-            el.innerHTML = html; el.classList.add('show');
-            setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
-        }
-
-        // ═══════════════════════════════════════
-        //  LNM: LENORMAND
-        // ═══════════════════════════════════════
-        // Lenormand card name/icon lookup (36 cards)
-        // Card icon lookup
-        const LNM_ICONS = {
-            '骑手': '🏇', '三叶草': '🍀', '船': '⛵', '房子': '🏠', '树': '🌳', '云': '☁️',
-            '蛇': '🐍', '棺材': '⚰️', '花束': '💐', '镰刀': '🔪', '鞭子': '🪶', '鸟': '🐦',
-            '孩子': '👶', '狐狸': '🦊', '熊': '🐻', '星星': '⭐', '鹳': '🦅', '狗': '🐕',
-            '塔': '🗼', '花园': '🌿', '山': '⛰️', '十字路口': '🛤️', '老鼠': '🐭', '心': '❤️',
-            '戒指': '💍', '书': '📖', '信件': '✉️', '男人': '👨', '女人': '👩', '百合': '🌺',
-            '太阳': '☀️', '月亮': '🌙', '钥匙': '🔑', '鱼': '🐟', '锚': '⚓', '十字架': '✝️'
-        };
-
-        // Full 36-card database: g=general, l=love, c=career, h=health
-        const _LDB = [
-/* 1  */['骑手', '🏇', '消息、到来、新机遇', '有新的消息或变化即将到来，保持警觉并积极把握眼前的机会。', '可能出现新的追求者或收到意外的表白，感情生活迎来新鲜感。', '新的工作机会或合作项目正在靠近，宜主动出击把握良机。', '精力充沛，身体恢复力强，适合开启新的运动计划。'],
-/* 2  */['三叶草', '🍀', '幸运、小确幸、轻松', '小幸运正在降临，生活中有轻松愉快的事情发生，知足常乐。', '感情中出现小惊喜，一次约会或甜蜜互动让你心情愉悦。', '工作中小有收获，虽不是大成就但足以鼓舞士气。', '身心轻松，精神状态良好，保持积极乐观即可。'],
-/* 3  */['船', '⛵', '旅行、远方、启航', '远方的召唤正在响起，适合出行或开启新的征程，收获将来自远方。', '远距离恋情或与外地人结缘的可能性增大，感情跨越地域。', '涉及海外、外贸或跨区域的业务有良好发展。', '适合旅行休养，换一个环境对身心都有益处。'],
-/* 4  */['房子', '🏠', '家庭、安稳、根基', '家庭事务是当前重心，安稳和归属感是你需要珍惜的。', '感情走向稳定，可能涉及见家长、同居或装修爱巢。', '与家庭相关的事业或家族产业有好运，居家办公也适宜。', '在家休息调养最佳，注意家居环境对健康的影响。'],
-/* 5  */['树', '🌳', '健康、成长、生命力', '整体运势像大树般稳步生长，健康和精神都处于上升期。', '感情需要耐心培育，像树木一样慢慢扎根才能长久。', '事业正在稳步成长中，不求快但求稳，厚积薄发。', '这是最重要的健康信号牌，关注身体状况，养生为上。'],
-/* 6  */['云', '☁️', '困惑、模糊、犹豫', '前方形势不明朗，有迷雾笼罩之感，不宜仓促决定。', '感情中存在暧昧或猜疑，对方的真实想法尚不明确。', '工作中面临方向不清晰的局面，需要更多信息再做判断。', '注意呼吸系统和情绪波动，焦虑可能影响睡眠。'],
-/* 7  */['蛇', '🐍', '智慧、复杂、陷阱', '事情比表面看起来复杂，需要运用智慧辨别真伪，小心暗中阻碍。', '感情中可能出现第三者或复杂的三角关系，需保持警觉。', '职场中存在暗流，有人可能在背后算计，谨慎行事。', '注意慢性疾病和妇科/泌尿系统问题，定期体检。'],
-/* 8  */['棺材', '⚰️', '结束、转化、重生', '一个阶段正在结束，虽然令人不舍但这是新生的必经之路。', '旧的感情模式需要终结，才能迎来更健康的关系。', '旧项目结束或职位变动，表面的失去实则为新的开始。', '需要注意身体的重大转变，旧疾可能反复但终将好转。'],
-/* 9  */['花束', '💐', '美好、礼物、赞美', '美好的事物正在向你走来，可能会收到礼物或受到赞美。', '感情甜蜜如花，对方可能给你惊喜或浪漫的表白。', '工作得到认可和赞赏，客户或同事对你好评如潮。', '心情愉悦带动身体健康，笑容是最好的良药。'],
-/* 10 */['镰刀', '🔪', '决断、突然、割舍', '必须做出果断的决定，不要犹豫，该断则断才能避免更大损失。', '可能面临突然的分手或感情上的重大决断，需要勇气面对。', '工作中可能有突然的变动或裁员风险，做好心理准备。', '注意外伤和手术风险，使用锋利器具时格外小心。'],
-/* 11 */['鞭子', '🪶', '冲突、争论、反复', '口舌之争频繁，同一问题反复出现，需要找到根源才能解决。', '感情中争吵增多，同样的矛盾反复出现，需要冷静沟通。', '工作中与同事或上级意见不合，争执消耗精力。', '注意炎症、头痛和反复发作的老毛病。'],
-/* 12 */['鸟', '🐦', '沟通、焦虑、闲话', '消息纷飞，可能因过多信息而焦虑，也需注意闲言碎语。', '感情中需要更多坦诚的沟通，不要被外界的评价所影响。', '会议和谈判频繁，注意言辞表达，避免被人断章取义。', '神经紧张导致失眠或焦虑，适合冥想和深呼吸练习。'],
-/* 13 */['孩子', '👶', '新生、纯真、开始', '全新的开始正在展开，以孩童般纯真的心态面对世界。', '新的恋情萌芽，或者感情进入纯真美好的新阶段。', '新项目、新岗位或创业初期，一切都是新的开始。', '生育方面的好消息，或需要像孩子一样简单地照顾自己。'],
-/* 14 */['狐狸', '🦊', '机智、警惕、工作', '需要运用机智应对当前局面，不要轻信表面现象，职场是重点。', '感情中可能有隐瞒或不够坦诚的情况，需要多观察。', '工作运强劲但需要策略，运用你的聪明才智脱颖而出。', '注意眼睛疲劳和久坐带来的问题，工作再忙也要休息。'],
-/* 15 */['熊', '🐻', '力量、财富、保护', '强大的力量和财运正在守护你，可能涉及长辈或贵人的帮助。', '感情中有强烈的保护欲，可能是你也可能是对方太过强势。', '财运旺盛，涉及投资理财或与权力人物的合作。', '体魄强健，但注意饮食过量和体重管理。'],
-/* 16 */['星星', '⭐', '希望、灵感、指引', '星光照亮前路，充满希望和灵感，你的梦想正在被宇宙回应。', '感情中出现命中注定的感觉，灵魂层面的连接和共鸣。', '创意和灵感迸发，适合从事艺术、设计或策划类工作。', '精神状态极佳，冥想和灵性修行对你特别有益。'],
-/* 17 */['鹳', '🦅', '变化、提升、改善', '积极的变化正在发生，生活向更好的方向转变，拥抱改变。', '感情关系提升到新层次，可能从暧昧走向确定或订婚。', '岗位调动或升迁机会出现，变化带来更好的发展空间。', '健康状况明显改善，之前的不适正在好转。'],
-/* 18 */['狗', '🐕', '忠诚、友情、信赖', '忠诚的朋友或可靠的伙伴是你当前最大的财富，珍惜身边人。', '感情中忠诚和信任是最重要的，你或对方是可靠的伴侣。', '有值得信赖的合作伙伴或同事，团队协作顺利。', '朋友推荐的养生方法或医生值得尝试。'],
-/* 19 */['塔', '🗼', '权威、孤独、远见', '你正站在高处审视全局，可能有孤独感但也是获得远见的时刻。', '感情中可能因距离或身份差异产生隔阂，需要耐心化解。', '与大型机构、政府部门或权威人士有关的事务有利。', '注意骨骼和脊椎问题，久坐工作者需特别关注。'],
-/* 20 */['花园', '🌿', '社交、公开、人气', '社交活动频繁，在公共场合展现自我的好时机，人脉大开。', '可能在社交场合遇到心仪的人，或感情关系公开化。', '参加行业会议、展会或社交活动对事业有帮助。', '户外活动和社交聚会对身心健康都有益处。'],
-/* 21 */['山', '⛰️', '阻碍、延迟、挑战', '前方有障碍需要克服，事情可能延迟但并非不可能，耐心是关键。', '感情中遇到阻力，可能是家庭反对或异地等客观困难。', '工作中遇到瓶颈或强劲竞争对手，需要坚持不懈。', '注意关节、骨骼和背部问题，避免过度劳累。'],
-/* 22 */['十字路口', '🛤️', '选择、分离、多元', '你正面临重要的选择，多条道路摆在面前，需要做出决定。', '感情中面临抉择，可能有多位追求者或需要决定关系走向。', '职业方向的选择摆在面前，可能涉及跳槽或转行。', '不同治疗方案需要你做出选择，多听取专业意见。'],
-/* 23 */['老鼠', '🐭', '损耗、担忧、侵蚀', '有细小但持续的损耗在发生，注意财物的流失和精力的消耗。', '感情中可能有小三或外界因素在慢慢侵蚀你们的关系。', '工作中有持续的小麻烦不断消耗你的精力和资源。', '注意免疫力下降和小病不断，及时补充营养和休息。'],
-/* 24 */['心', '❤️', '爱情、真心、热情', '内心充满了爱和热情，真心对待一切，爱的能量正在流动。', '桃花运旺盛，真挚的爱情就在身边，大胆表达你的感情。', '对工作充满热情，用心做事必有回报。', '心脏健康良好，保持愉悦心情是最好的养生。'],
-/* 25 */['戒指', '💍', '承诺、契约、结合', '承诺和约定的能量很强，适合签订合同、做出承诺或订婚。', '感情走向承诺阶段，可能订婚、结婚或复合。', '签订重要合同或合作协议，商业伙伴关系确立。', '定期体检和健康承诺，与自己约定好的养生计划要坚持。'],
-/* 26 */['书', '📖', '知识、秘密、学习', '有尚未揭开的秘密或需要深入学习的领域，知识就是力量。', '感情中有隐藏的信息，可能对方有未说出的心事。', '学习新技能或深造对事业发展至关重要，考证也适宜。', '了解自己的身体状况，做一次全面体检。'],
-/* 27 */['信件', '✉️', '消息、文书、通讯', '重要的消息或文件即将到来，密切关注通讯和邮件。', '可能收到表白信、消息或通过网络认识新的对象。', '涉及合同、报告或书面沟通的事务进展顺利。', '体检报告或医疗文件会带来重要的健康信息。'],
-/* 28 */['男人', '👨', '阳性能量、理性、行动', '一位重要的男性可能出现在你的生活中，或你需要展现果断的行动力。', '如果有男性伴侣，他目前的状态对关系影响很大。', '男性上司或同事对你的工作有重要影响。', '注意男性长辈的健康状况，或自身的阳性能量平衡。'],
-/* 29 */['女人', '👩', '阴性能量、直觉、关怀', '一位重要的女性可能出现在你的生活中，或你需要更多关注内心感受。', '如果有女性伴侣，她目前的状态对关系影响很大。', '女性贵人在职场中可能给你带来帮助。', '注意女性长辈的健康，或自身的内分泌系统。'],
-/* 30 */['百合', '🌺', '耐心、成熟、纯洁', '以成熟和耐心面对当前局势，时间会给你最好的答案。', '感情中需要耐心和包容，成熟稳重的态度最有吸引力。', '经验和资历是你最大的优势，不急于求成。', '注意保暖和季节性疾病，养生重在持之以恒。'],
-/* 31 */['太阳', '☀️', '成功、喜悦、光明', '阳光普照，运势大好！成功和喜悦正在向你走来，尽情绽放。', '感情明朗而温暖，单身者遇到阳光般的恋人，情侣感情升温。', '事业迎来高光时刻，努力得到丰厚回报，名利双收。', '身体充满活力，免疫力强，精力旺盛。'],
-/* 32 */['月亮', '🌙', '直觉、情感、认可', '你的直觉非常准确，跟随内心的声音，情感世界丰富多彩。', '浪漫氛围浓厚，月光下的邂逅或深层的情感交流令人难忘。', '创意和直觉助力工作，可能获得公众认可或好评。', '注意情绪波动和睡眠质量，月圆之夜适合放松冥想。'],
-/* 33 */['钥匙', '🔑', '答案、突破、开启', '关键的突破即将到来，你将找到解决问题的答案，一切豁然开朗。', '感情中的困惑将得到解答，关键的对话或表白带来突破。', '难题迎刃而解，关键的资源或人脉帮你打开新局面。', '找到治愈的关键方法，之前的健康困扰将得到解决。'],
-/* 34 */['鱼', '🐟', '财富、丰盛、商业', '财运亨通，物质丰盛，商业投资或交易有丰厚回报。', '感情中可能遇到经济条件优越的对象，或共同投资理财。', '商业运势极佳，投资、创业或大额交易适宜进行。', '注意饮食丰富带来的消化问题，丰盛也要适度。'],
-/* 35 */['锚', '⚓', '稳定、安全、坚持', '稳定和安全感是当前最重要的，坚守阵地，持续努力终有收获。', '感情稳定而持久，彼此是对方安全的港湾。', '工作稳定，坚持当前方向终会达到目标，不宜频繁跳槽。', '身体底子扎实，坚持规律的作息和锻炼是健康基石。'],
-/* 36 */['十字架', '✝️', '考验、命运、觉悟', '命运的考验降临，虽然辛苦但这是灵魂成长的必经之路。', '感情中可能经历痛苦和考验，但经过磨炼的关系更加坚固。', '工作压力巨大或承担沉重的责任，需要坚强面对。', '注意慢性疼痛和精神压力对身体的影响，寻求心灵慰藉。']
-        ];
-
-        // Build lookup object
-        const LNM_DB = {};
-        _LDB.forEach((c, i) => {
-            LNM_DB[c[0]] = { n: i + 1, ic: c[1], kw: c[2], g: c[3], l: c[4], c: c[5], h: c[6] };
-        });
-
-        // Spread position definitions
-        const SPREAD_POS = {
-            1: { label: '单牌指引', pos: ['当前指引'] },
-            3: { label: '三牌 · 过去 / 现在 / 未来', pos: ['过去', '现在', '未来'] },
-            5: { label: '五牌 · 完整指引', pos: ['过去', '现在', '未来', '建议', '结果'] },
-            7: { label: '七牌 · 全面洞察', pos: ['过去', '当前', '近期', '挑战', '环境', '建议', '结果'] },
-            9: { label: '九牌 · 深度解读', pos: ['过去', '潜意识', '近期', '障碍', '核心', '助力', '建议', '希望', '结果'] }
-        };
-
-        // Find card in DB with fuzzy matching
-        function findCard(name) {
-            if (!name) return null;
-            for (const [key, card] of Object.entries(LNM_DB)) {
-                if (name.includes(key) || key.includes(name)) return { ...card, name: key };
-            }
-            // Fallback: try icon match
-            for (const [key, icon] of Object.entries(LNM_ICONS)) {
-                if (name.includes(key)) return LNM_DB[key] ? { ...LNM_DB[key], name: key } : null;
-            }
-            return null;
-        }
-
-        function getCardIcon(name) {
-            if (!name) return '🃏';
-            for (const [k, v] of Object.entries(LNM_ICONS)) if (name.includes(k)) return v;
-            return '🃏';
-        }
-
-        function setLnmType(type) {
-            lnmType = type;
-            document.querySelectorAll('.lnm-opt').forEach(b => b.classList.toggle('active', parseInt(b.dataset.type) === type));
-        }
-
-        async function castLNM() {
-            if (needKey()) return;
-            const btn = document.getElementById('lnmCastBtn'); btn.disabled = true;
-            document.getElementById('lnmInterp').classList.remove('show');
-            document.getElementById('lnmInterp').innerHTML = '';
-            document.getElementById('lnmFan').innerHTML = '';
-            document.getElementById('lnmLoading').classList.add('show');
-
-            try {
-                const qs = new URLSearchParams({ key: apiKey, type: String(lnmType) });
-                const res = await fetch(`/.netlify/functions/lnm-proxy?${qs}`);
-                const data = await res.json();
-                if (data.code !== 200) throw new Error(data.msg || data.error || `接口异常 code: ${data.code}`);
-                displayLNM(data);
-            } catch (e) { alert('抽牌失败：' + e.message); }
-            finally { document.getElementById('lnmLoading').classList.remove('show'); btn.disabled = false; }
-        }
-
-        function displayLNM(data) {
-            const fan = document.getElementById('lnmFan');
-            fan.innerHTML = '';
-
-            // Parse card names
-            let cardNames = [];
-            const raw = data.data || '';
-            if (typeof raw === 'string') cardNames = raw.split(/[,，、\n\r|｜]+/).map(s => s.trim()).filter(Boolean);
-            else if (Array.isArray(raw)) cardNames = raw.map(c => typeof c === 'object' ? (c.name || c.title || JSON.stringify(c)) : String(c));
-            if (!cardNames.length && raw) cardNames = [String(raw)];
-
-            // Resolve cards
-            const resolvedCards = cardNames.map((name, i) => {
-                const card = findCard(name);
-                return { rawName: name, card, idx: i };
-            });
-
-            // ── Card Fan ──
-            resolvedCards.forEach(({ rawName, card, idx }) => {
-                const el = document.createElement('div');
-                el.className = 'lnm-card';
-                el.style.transitionDelay = `${idx * 0.12}s`;
-                const icon = card ? card.ic : getCardIcon(rawName);
-                const displayName = card ? card.name : rawName;
-                el.innerHTML = `
-            <div class="lnm-card-inner">
-                <div class="lnm-card-front"><div class="lnm-card-front-pattern"></div><span class="card-back-symbol">✦</span><span class="card-back-text">LENORMAND</span></div>
-                <div class="lnm-card-back"><span class="lnm-card-idx">${idx + 1}</span><div class="lnm-card-icon">${icon}</div><div class="lnm-card-name">${displayName}</div></div>
+    // DaYun
+    const dy = Array.isArray(d.dy)?d.dy:[];
+    if (dy.length) {
+        h += '<div style="font-family:var(--f1);font-size:1rem;color:var(--accent);margin:24px 0 12px;padding-left:10px;border-left:3px solid var(--accent);letter-spacing:.05em">大运排布</div>';
+        h += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-bottom:20px">';
+        dy.forEach((yun, i) => {
+            h += `<div style="background:var(--surface);border:1px solid var(--border);padding:10px 6px;text-align:center;${i===0?'border-color:var(--accent);box-shadow:0 0 10px var(--accent-glow);':''}">
+                <div style="font-size:.65rem;color:var(--muted)">${yun.zqage||''}~${yun.zboz||''}岁</div>
+                <div style="font-family:var(--f1);font-size:1rem;font-weight:700;color:var(--accent)">${yun.zfma||'?'}</div>
+                <div style="font-family:var(--f1);font-size:.9rem;font-weight:700">${yun.zfmb||'?'}</div>
+                ${yun.nzsc?`<div style="font-size:.6rem;color:var(--accent-dim);margin-top:3px">${yun.nzsc}</div>`:''}
             </div>`;
-                fan.appendChild(el);
-                requestAnimationFrame(() => setTimeout(() => { el.classList.add('visible'); setTimeout(() => el.classList.add('flipped'), 400 + idx * 100); }, idx * 150));
-            });
+        });
+        h += '</div>';
 
-            // ── Interpretation Section ──
-            const interp = document.getElementById('lnmInterp');
-            const spreadDef = SPREAD_POS[lnmType] || SPREAD_POS[5];
-            const timeStr = data.time || new Date().toLocaleString('zh-CN');
-            const hasCardDB = resolvedCards.some(r => r.card);
-
-            let html = '';
-            html += `<div class="lnm-interp-head"><h3>${spreadDef.label}</h3><span>${timeStr}</span></div>`;
-
-            // Card-by-card interpretation
-            if (hasCardDB) {
-                const colsClass = lnmType <= 1 ? '' : (lnmType <= 5 ? 'cols-3' : 'cols-2');
-                html += `<div class="lnm-interp-cards ${colsClass}">`;
-                resolvedCards.forEach(({ rawName, card, idx }) => {
-                    if (!card) return;
-                    const posLabel = spreadDef.pos[idx] || `第${idx + 1}位`;
-                    const uid = `ic${idx}`;
-                    html += `
-                <div class="lnm-interp-card" id="interp-${idx}">
-                    <div class="interp-card-left">
-                        <div class="interp-card-pos">${posLabel}</div>
-                        <div class="interp-card-icon">${card.ic}</div>
-                        <div class="interp-card-name">${card.name}</div>
-                    </div>
-                    <div class="interp-card-right">
-                        <div class="interp-kw">${card.kw}</div>
-                        <div class="interp-tabs">
-                            <button class="interp-tab active" onclick="switchInterpTab('${uid}','g',this)">总论</button>
-                            <button class="interp-tab" onclick="switchInterpTab('${uid}','l',this)">感情</button>
-                            <button class="interp-tab" onclick="switchInterpTab('${uid}','c',this)">事业</button>
-                            <button class="interp-tab" onclick="switchInterpTab('${uid}','h',this)">健康</button>
-                        </div>
-                        <div class="interp-text" id="interp-text-${uid}">${card.g}</div>
-                    </div>
-                </div>`;
+        // LiuNian for each DaYun
+        dy.forEach(yun => {
+            const ly = Array.isArray(yun.ly)?yun.ly:[];
+            if (ly.length) {
+                h += `<div style="font-family:var(--f1);font-size:.88rem;color:var(--text);margin:14px 0 8px">${yun.zfma||''}${yun.zfmb||''}运 · 流年（${yun.zqage||''}~${yun.zboz||''}岁）</div>`;
+                h += '<div style="display:flex;gap:5px;overflow-x:auto;padding-bottom:6px">';
+                ly.forEach(ln => {
+                    h += `<div style="min-width:52px;background:var(--s2);border:1px solid var(--border);padding:7px 5px;text-align:center;flex-shrink:0"><div style="font-size:.58rem;color:var(--muted)">${ln.year||''}</div><div style="font-family:var(--f1);font-size:.82rem;font-weight:700;color:var(--accent)">${ln.lye||''}</div><div style="font-size:.55rem;color:var(--muted)">${ln.age||''}岁</div></div>`;
                 });
-                html += `</div>`;
-
-                // Overall summary
-                html += buildSummary(resolvedCards, lnmType);
-            } else {
-                // Fallback: just show card names
-                html += `<div class="lnm-summary"><h4>牌面</h4><p>${cardNames.map((n, i) => `<strong>${spreadDef.pos[i] || (i + 1) + '号'}</strong>：${n}`).join('；')}</p></div>`;
-                if (data.msg && data.msg !== 'success') html += `<div class="lnm-summary"><h4>解读</h4><p>${data.msg}</p></div>`;
+                h += '</div>';
             }
+        });
+    }
 
-            html += `<div class="retry-section"><button class="retry-btn" onclick="castLNM()">重新抽牌</button></div>`;
+    el.innerHTML = h + `<div class="retry"><button class="retry-btn" onclick="doAction('bz')">重新排盘</button></div>`;
+    el.classList.add('show');
+    setTimeout(() => el.scrollIntoView({ behavior:'smooth', block:'start' }), 200);
+}
 
-            interp.innerHTML = html;
-            interp.classList.add('show');
+// ── Xiao Liu Ren ──
+function renderLR(data) {
+    const el = document.getElementById(`res-${cur}`);
+    let h = `<div class="res-hd">${data.time || new Date().toLocaleString('zh-CN')}</div>`;
 
-            // Stagger card animations
-            resolvedCards.forEach((_, i) => {
-                setTimeout(() => {
-                    const el = document.getElementById(`interp-${i}`);
-                    if (el) el.classList.add('visible');
-                }, resolvedCards.length * 200 + i * 120);
+    // Wheel (build if not exists)
+    const wheelEl = document.querySelector(`#p-${cur} .wheel`);
+    if (!wheelEl) {
+        let wh = '<div class="wheel"><div class="wheel-ring"></div><div class="wheel-ctr">☰</div>';
+        LR_POS.forEach((pos, i) => {
+            const a = (i*60-90)*Math.PI/180, r=100;
+            const x=Math.cos(a)*r, y=Math.sin(a)*r;
+            wh += `<div class="pn" id="lrn-${i}" style="--tx:${x}px;--ty:${y}px;--gw:${pos.c};transform:translate(${x}px,${y}px)" onclick="alert('${pos.n}\\n五行：${pos.el}  方位：${pos.dir}\\n神煞：${pos.sp}  吉凶：${pos.f}\\n\\n${pos.b}')"><div class="pn-ic" style="border-color:${pos.c};color:${pos.c}">${pos.n[0]}</div><div class="pn-lb">${pos.n}</div></div>`;
+        });
+        wh += '</div>';
+        // Inject before results
+        el.insertAdjacentHTML('beforebegin', wh);
+    }
+
+    // Clear highlights
+    LR_POS.forEach((_, i) => { const n=document.getElementById(`lrn-${i}`); if(n)n.classList.remove('act'); });
+
+    // Cards
+    h += '<div class="lr-cards">';
+    const cls = [{l:'月课',v:data.res?.monthclass},{l:'日课',v:data.res?.dayclass},{l:'时课',v:data.res?.nowclass}];
+    const activeIdx = new Set();
+    cls.forEach(c => {
+        const idx = LR_POS.findIndex(p => c.v && c.v.includes(p.n));
+        if (idx >= 0) activeIdx.add(idx);
+        const pos = idx >= 0 ? LR_POS[idx] : null;
+        if (pos) {
+            h += `<div class="lr-card"><div class="lr-card-t">${c.l}</div><div class="lr-card-n" style="color:${pos.c}">${pos.n}</div><div class="lr-card-e">${pos.el} · ${pos.sp} · ${pos.dir}</div><span class="lr-card-f f-${pos.f==='吉'?'g':pos.f==='凶'?'b':'n'}">${pos.f}</span></div>`;
+        } else {
+            h += `<div class="lr-card"><div class="lr-card-t">${c.l}</div><div class="lr-card-n">${c.v||'—'}</div></div>`;
+        }
+    });
+    h += '</div>';
+
+    // Highlight
+    activeIdx.forEach(i => { const n=document.getElementById(`lrn-${i}`); if(n)n.classList.add('act'); });
+
+    // Hourmsg
+    if (data.hourmsg) {
+        h += `<div class="hm-card"><h4>时辰注解</h4><p>${data.hourmsg.replace(/。/g,'。<br>')}</p></div>`;
+    }
+
+    h += `<div class="retry"><button class="retry-btn" onclick="doAction('lr')">重新起卦</button></div>`;
+    el.innerHTML = h;
+    el.classList.add('show');
+    setTimeout(() => el.scrollIntoView({ behavior:'smooth', block:'start' }), 200);
+}
+
+// ── Card Draw (Tarot & Lenormand) ──
+function renderCards(data, type) {
+    const el = document.getElementById(`res-${cur}`);
+    const interpEl = document.getElementById(`interp-${cur}`);
+    el.innerHTML = '';
+    interpEl.innerHTML = '';
+
+    // Parse card names
+    const raw = data.data || '';
+    let names = [];
+    if (typeof raw === 'string') names = raw.split(/[,，、\n\r|｜]+/).map(s=>s.trim()).filter(Boolean);
+    else if (Array.isArray(raw)) names = raw.map(c => typeof c === 'object' ? (c.name || c.title || JSON.stringify(c)) : String(c));
+    if (!names.length && raw) names = [String(raw)];
+
+    const db = type === 'tarot' ? TAROT_DB : LNM_DB;
+
+    // Card fan
+    let fanHtml = '<div class="card-fan">';
+    names.forEach((nm, i) => {
+        const icon = cardIcon(nm);
+        fanHtml += `<div class="cd" id="cd-${cur}-${i}" style="transition-delay:${i*0.12}s">
+            <div class="cd-inner">
+                <div class="cd-f"><div class="cd-f-pat"></div><span class="cb-sym">✦</span><span class="cb-txt">${type==='tarot'?'TAROT':'LENORMAND'}</span></div>
+                <div class="cd-b"><span class="cd-idx">${i+1}</span><div class="cd-icon">${icon}</div><div class="cd-name">${nm}</div></div>
+            </div>
+        </div>`;
+    });
+    fanHtml += '</div>';
+    el.innerHTML = fanHtml;
+    el.classList.add('show');
+
+    // Animate cards
+    names.forEach((_, i) => {
+        const card = document.getElementById(`cd-${cur}-${i}`);
+        if (!card) return;
+        setTimeout(() => {
+            card.classList.add('vis');
+            setTimeout(() => card.classList.add('fl'), 400 + i * 100);
+        }, i * 150);
+    });
+
+    // Build interpretation
+    setTimeout(() => {
+        const spread = SP[names.length] || { l: `${names.length}牌阵`, p: names.map((_,i) => `第${i+1}位`) };
+        const timeStr = data.time || new Date().toLocaleString('zh-CN');
+        const resolved = names.map((nm, i) => ({ name: nm, card: findCard(nm, db), idx: i }));
+        const hasDB = resolved.some(r => r.card && r.card.g && r.card.g !== `「${r.card.name}」牌义暂未录入，请参考牌面意象理解。`);
+
+        let ih = `<div class="interp-hd"><h3>${spread.l}</h3><span>${timeStr}</span></div>`;
+
+        if (hasDB) {
+            ih += `<div class="ic-grid" style="grid-template-columns:repeat(${names.length<=3?names.length:(names.length<=5?3:2)},1fr)">`;
+            resolved.forEach(({ name, card, idx }) => {
+                if (!card) return;
+                const posLabel = spread.p[idx] || `第${idx+1}位`;
+                const uid = `${cur}i${idx}`;
+                const text = card.text || card.g || '';
+                ih += `<div class="ic-card" id="ic-${cur}-${idx}">
+                    <div class="ic-l"><div class="ip">${posLabel}</div><div class="ii">${card.ic||'🃏'}</div><div class="in">${card.name}</div></div>
+                    <div class="ic-r">
+                        <div class="ik">${card.kw||''}</div>`;
+
+                if (type === 'lenormand' && card.l) {
+                    ih += `<div class="itabs">
+                        <button class="itab on" onclick="swTab('${uid}','g',this)">总论</button>
+                        <button class="itab" onclick="swTab('${uid}','l',this)">感情</button>
+                        <button class="itab" onclick="swTab('${uid}','c',this)">事业</button>
+                        <button class="itab" onclick="swTab('${uid}','h',this)">健康</button>
+                    </div>`;
+                }
+                ih += `<div class="itxt" id="it-${uid}">${text || card.g || ''}</div></div></div>`;
             });
+            ih += '</div>';
 
-            setTimeout(() => interp.scrollIntoView({ behavior: 'smooth', block: 'start' }), resolvedCards.length * 250 + 400);
+            // Summary
+            ih += buildCardSummary(resolved, names.length, type);
+        } else {
+            ih += `<div class="summary"><h4>牌面</h4><p>${resolved.map((r,i) => `<strong>${spread.p[i]||''}</strong>：${r.name}`).join('；')}</p></div>`;
+            if (data.msg && data.msg !== 'success') ih += `<div class="summary"><h4>解读</h4><p>${data.msg}</p></div>`;
         }
 
-        // Switch between 总论/感情/事业/健康 tabs on a card
-        function switchInterpTab(uid, type, btnEl) {
-            const textEl = document.getElementById(`interp-text-${uid}`);
-            if (!textEl) return;
-            // Find the card data from the text content
-            const cardEl = btnEl.closest('.lnm-interp-card');
-            const cardName = cardEl.querySelector('.interp-card-name')?.textContent;
-            const card = cardName ? LNM_DB[cardName] : null;
-            if (!card) return;
-            textEl.textContent = card[type] || card.g;
-            // Update active tab
-            cardEl.querySelectorAll('.interp-tab').forEach(t => t.classList.remove('active'));
-            btnEl.classList.add('active');
-        }
+        ih += `<div class="retry"><button class="retry-btn" onclick="doAction('${cur}')">重新抽牌</button></div>`;
+        interpEl.innerHTML = ih;
+        interpEl.classList.add('show');
 
-        // Build overall summary
-        function buildSummary(cards, type) {
-            const validCards = cards.filter(c => c.card);
-            if (!validCards.length) return '';
+        // Stagger interp cards
+        resolved.forEach((_, i) => {
+            setTimeout(() => { const c = document.getElementById(`ic-${cur}-${i}`); if (c) c.classList.add('vis'); }, i * 100);
+        });
 
-            const list = validCards.map(v => v.card);
+        setTimeout(() => interpEl.scrollIntoView({ behavior:'smooth', block:'start' }), 200);
+    }, names.length * 250 + 600);
+}
 
-            let summaryText = '';
+function swTab(uid, type, btn) {
+    const textEl = document.getElementById(`it-${uid}`);
+    if (!textEl) return;
+    const cardEl = btn.closest('.ic-card');
+    const cardName = cardEl.querySelector('.in')?.textContent;
+    // Try Lenormand DB first, then Tarot
+    const lnmCard = cardName ? LNM_DB[cardName] : null;
+    const tarotCard = cardName ? TAROT_DB[cardName] : null;
+    const card = lnmCard || tarotCard;
+    if (!card) return;
+    textEl.textContent = card[type] || card.g || card.text || '';
+    cardEl.querySelectorAll('.itab').forEach(t => t.classList.remove('on'));
+    btn.classList.add('on');
+}
 
-            if (type === 1 && list[0]) {
-                summaryText = `本次抽到<strong>${list[0].name}</strong>，${list[0].g}`;
-            }
-            else if (type === 3) {
-                const parts = [];
-                if (list[0]) parts.push(`过去位的<strong>${list[0].name}</strong>提示你：${list[0].g.slice(0, 25)}…`);
-                if (list[1]) parts.push(`现在位的<strong>${list[1].name}</strong>表明：${list[1].g.slice(0, 25)}…`);
-                if (list[2]) parts.push(`未来位的<strong>${list[2].name}</strong>预示：${list[2].g.slice(0, 25)}…`);
-                summaryText = parts.join('　') + `　请结合各位置含义综合判断。`;
-            }
-            else if (type === 5) {
-                const parts = [];
-                if (list[0]) parts.push(`过去<strong>${list[0].name}</strong>奠定基础`);
-                if (list[1]) parts.push(`当前<strong>${list[1].name}</strong>揭示现状`);
-                if (list[2]) parts.push(`未来<strong>${list[2].name}</strong>指明方向`);
-                if (list[3]) parts.push(`建议：<strong>${list[3].name}</strong>提醒你${list[3].g.slice(0, 20)}…`);
-                if (list[4]) parts.push(`结果<strong>${list[4].name}</strong>预示${list[4].g.slice(0, 20)}…`);
-                summaryText = parts.join('。') + '。';
-            }
-            else {
-                const positions = SPREAD_POS[type]?.pos || [];
-                summaryText = `本次${type}牌阵抽到：${list.map(c => c.name).join('、')}。`;
-                summaryText += `牌阵从${positions[0] || '起始'}到${positions[positions.length - 1] || '终结'}，`;
-                summaryText += `各张牌面含义丰富，请逐张查看详细解读，综合理解整体走势。`;
-            }
+function buildCardSummary(cards, count, type) {
+    const valid = cards.filter(c => c.card && c.card.g);
+    if (!valid.length) return '';
+    const list = valid.map(v => v.card);
+    const sp = SP[count];
+    let t = '';
 
-            return `<div class="lnm-summary"><h4>综合解读</h4><p>${summaryText}</p></div>`;
-        }
-    </script>
+    if (count === 1 && list[0]) {
+        t = `本次抽到<strong>${list[0].name}</strong>，${(list[0].text||list[0].g).slice(0,40)}…`;
+    } else if (count === 3) {
+        const parts = [];
+        if (list[0]) parts.push(`过去<strong>${list[0].name}</strong>：${(list[0].text||list[0].g).slice(0,25)}…`);
+        if (list[1]) parts.push(`现在<strong>${list[1].name}</strong>：${(list[1].text||list[1].g).slice(0,25)}…`);
+        if (list[2]) parts.push(`未来<strong>${list[2].name}</strong>：${(list[2].text||list[2].g).slice(0,25)}…`);
+        t = parts.join('　');
+    } else if (count === 5) {
+        const parts = [];
+        if (list[0]) parts.push(`过去<strong>${list[0].name}</strong>奠定基础`);
+        if (list[1]) parts.push(`当前<strong>${list[1].name}</strong>揭示现状`);
+        if (list[2]) parts.push(`未来<strong>${list[2].name}</strong>指明方向`);
+        if (list[3]) parts.push(`建议<strong>${list[3].name}</strong>：${(list[3].text||list[3].g).slice(0,20)}…`);
+        if (list[4]) parts.push(`结果<strong>${list[4].name}</strong>：${(list[4].text||list[4].g).slice(0,20)}…`);
+        t = parts.join('。');
+    } else {
+        t = `本次${count}牌阵抽到：${list.map(c=>c.name).join('、')}。请逐张查看详细解读，综合理解整体走势。`;
+    }
+
+    return `<div class="summary"><h4>综合解读</h4><p>${t}</p></div>`;
+}
+
+// ── Lot (灵签) ──
+function renderLot(data) {
+    const el = document.getElementById(`res-${cur}`);
+    const d = data.data || data;
+    let h = '';
+
+    // Try to extract lot info from data
+    const name = d.name || d.title || d.lot_name || d.sign || '';
+    const level = d.level || d.fortune || d.ji || '';
+    const poem = d.poem || d.content || d.text || d.poem_text || '';
+    const explain = d.explain || d.explanation || d.meaning || d.desc || '';
+
+    if (name || poem) {
+        h += '<div class="lot-box">';
+        h += `<div class="lot-icon">🎋</div>`;
+        if (name) h += `<div class="lot-title">${name}</div>`;
+        if (level) h += `<div class="lot-sub">${level}</div>`;
+        h += '</div>';
+
+        if (poem) h += `<div class="res-body" style="text-align:center;font-family:var(--f1);font-size:1rem;line-height:2.2;white-space:pre-line">${poem}</div>`;
+        if (explain) h += `<div class="res-body" style="margin-top:12px">${explain}</div>`;
+    } else {
+        // Fallback to generic
+        h += `<div class="res-hd">${new Date().toLocaleString('zh-CN')}</div>`;
+        h += `<div class="res-body">${objToHTML(data)}</div>`;
+    }
+
+    h += `<div class="retry"><button class="retry-btn" onclick="doAction('lq')">重新求签</button></div>`;
+    el.innerHTML = h;
+    el.classList.add('show');
+    setTimeout(() => el.scrollIntoView({ behavior:'smooth', block:'start' }), 200);
+}
+</script>
 </body>
-
-</html>
+</html> 
